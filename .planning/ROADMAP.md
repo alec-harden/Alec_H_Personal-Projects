@@ -1,0 +1,132 @@
+# Roadmap: WoodShop Toolbox
+
+## Overview
+
+Build a modular web application for woodworking tools, starting with an AI-powered Bill of Materials generator. The journey goes from project scaffolding through AI integration, guided BOM workflow, editing capabilities, export, and final polish — delivering a usable personal tool for woodworking project planning.
+
+## Phases
+
+**Phase Numbering:**
+- Integer phases (1, 2, 3): Planned milestone work
+- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+
+Decimal phases appear between their surrounding integers in numeric order.
+
+- [ ] **Phase 1: Foundation** - SvelteKit scaffolding, database, dashboard shell
+- [ ] **Phase 2: AI Integration** - Vercel AI SDK infrastructure with streaming chat
+- [ ] **Phase 3: BOM Core Flow** - Guided prompts, templates, BOM generation
+- [ ] **Phase 4: BOM Editing** - Edit quantities, add items, toggle visibility, categories
+- [ ] **Phase 5: Export** - CSV export functionality
+- [ ] **Phase 6: Polish & Integration** - End-to-end flow refinement
+
+## Phase Details
+
+### Phase 1: Foundation
+**Goal**: Project scaffolding with SvelteKit, database, and basic routing
+**Depends on**: Nothing (first phase)
+**Requirements**: PLAT-01
+**Success Criteria** (what must be TRUE):
+  1. Project builds and runs locally without errors
+  2. Dashboard home page displays with placeholder tool card(s)
+  3. Database connection established (Drizzle + Turso)
+  4. Basic app shell/layout in place (header, main content area)
+**Research**: Unlikely (tech stack decided, following SvelteKit patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 01-01: TBD
+
+### Phase 2: AI Integration
+**Goal**: Working AI conversation infrastructure with Vercel AI SDK
+**Depends on**: Phase 1
+**Requirements**: BOM-02
+**Success Criteria** (what must be TRUE):
+  1. AI chat endpoint responds to messages
+  2. Configurable LLM provider (Claude/GPT switchable via env)
+  3. Streaming responses work in the UI
+  4. Basic chat UI component exists and functions
+**Research**: Likely (Vercel AI SDK + SvelteKit integration patterns)
+**Research topics**: Vercel AI SDK with SvelteKit, streaming UI patterns, provider configuration
+**Plans**: TBD
+
+Plans:
+- [ ] 02-01: TBD
+
+### Phase 3: BOM Core Flow
+**Goal**: User can complete guided prompt workflow and receive AI-generated BOM
+**Depends on**: Phase 2
+**Requirements**: BOM-01, BOM-03, BOM-04
+**Success Criteria** (what must be TRUE):
+  1. User can start new BOM project from dashboard
+  2. User answers guided questions (project type, dimensions, joinery, materials)
+  3. User can select project template (table, cabinet, shelf, etc.) to guide AI
+  4. AI generates comprehensive BOM with all categories (lumber, hardware, finishes, consumables)
+  5. Generated BOM displays in organized, readable view
+**Research**: Likely (template structure, prompt engineering for woodworking domain)
+**Research topics**: Prompt templates for BOM generation, project template data model, woodworking domain knowledge
+**Plans**: TBD
+
+Plans:
+- [ ] 03-01: TBD
+
+### Phase 4: BOM Editing
+**Goal**: User can edit and customize generated BOM
+**Depends on**: Phase 3
+**Requirements**: EDIT-01, EDIT-02, EDIT-03, EDIT-04
+**Success Criteria** (what must be TRUE):
+  1. User can edit quantity for any material in the BOM
+  2. User can add custom materials not suggested by AI
+  3. User can toggle visibility on items (greyed out, excluded from export and totals)
+  4. Materials are grouped by category (Lumber, Hardware, Finishes, Consumables)
+**Research**: Unlikely (standard CRUD + state management patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 04-01: TBD
+
+### Phase 5: Export
+**Goal**: User can export completed BOM to CSV
+**Depends on**: Phase 4
+**Requirements**: EXPORT-01
+**Success Criteria** (what must be TRUE):
+  1. Export button visible on BOM view
+  2. CSV downloads with all visible items (hidden items excluded)
+  3. CSV includes category grouping, quantities, and item details
+**Research**: Unlikely (standard CSV generation)
+**Plans**: TBD
+
+Plans:
+- [ ] 05-01: TBD
+
+### Phase 6: Polish & Integration
+**Goal**: End-to-end flow works smoothly, ready for personal use
+**Depends on**: Phase 5
+**Requirements**: None new (integration of all previous)
+**Success Criteria** (what must be TRUE):
+  1. Complete flow works: Dashboard -> Start BOM -> Answer prompts -> View BOM -> Edit -> Export
+  2. Error states handled gracefully (network errors, AI failures)
+  3. Loading states provide visual feedback
+  4. UI is usable on desktop and tablet viewports
+**Research**: Unlikely (internal polish)
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Foundation | 0/TBD | Not started | - |
+| 2. AI Integration | 0/TBD | Not started | - |
+| 3. BOM Core Flow | 0/TBD | Not started | - |
+| 4. BOM Editing | 0/TBD | Not started | - |
+| 5. Export | 0/TBD | Not started | - |
+| 6. Polish & Integration | 0/TBD | Not started | - |
+
+---
+*Roadmap created: 2026-01-20*
+*Last updated: 2026-01-20*
