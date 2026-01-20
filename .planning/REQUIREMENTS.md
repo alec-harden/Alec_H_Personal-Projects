@@ -66,9 +66,9 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PLAT-01 | Phase 1 | Pending |
+| PLAT-01 | Phase 1 | Complete |
 | BOM-01 | Phase 3 | Pending |
-| BOM-02 | Phase 2 | Pending |
+| BOM-02 | Phase 2 | Complete |
 | BOM-03 | Phase 3 | Pending |
 | BOM-04 | Phase 3 | Pending |
 | EDIT-01 | Phase 4 | Pending |
@@ -84,4 +84,4 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 ---
 *Requirements defined: 2026-01-20*
-*Last updated: 2026-01-20 after roadmap creation*
+*Last updated: 2026-01-20 after Phase 2 completion*

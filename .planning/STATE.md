@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Phase 2 — AI Integration
+**Current focus:** Phase 3 — BOM Core Flow
 
 ## Current Position
 
-Phase: 2 of 6 (AI Integration)
-Plan: 2 of TBD (Chat UI Component)
-Status: In progress
-Last activity: 2026-01-20 — Completed 02-02-PLAN.md
+Phase: 3 of 6 (BOM Core Flow)
+Plan: 0 of TBD (awaiting planning)
+Status: Ready to plan
+Last activity: 2026-01-20 — Completed Phase 2 (AI Integration)
 
 Progress: [====================================] 4 plans complete
 
