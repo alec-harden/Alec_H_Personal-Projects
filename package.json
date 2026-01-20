@@ -9,7 +9,9 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"db:push": "drizzle-kit push",
+		"db:studio": "drizzle-kit studio"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.0",
@@ -17,11 +19,16 @@
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/vite": "^4.1.18",
 		"autoprefixer": "^10.4.23",
+		"drizzle-kit": "^0.31.8",
 		"postcss": "^8.5.6",
 		"svelte": "^5.45.6",
 		"svelte-check": "^4.3.4",
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
 		"vite": "^7.2.6"
+	},
+	"dependencies": {
+		"@libsql/client": "^0.17.0",
+		"drizzle-orm": "^0.45.1"
 	}
 }
