@@ -1,10 +1,10 @@
 import { anthropic } from '@ai-sdk/anthropic';
 import { openai } from '@ai-sdk/openai';
-import { AI_PROVIDER } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 export type AIProvider = 'anthropic' | 'openai';
 
-const provider = (AI_PROVIDER || 'anthropic') as AIProvider;
+const provider = (env.AI_PROVIDER || 'anthropic') as AIProvider;
 
 export function getModel() {
 	switch (provider) {
