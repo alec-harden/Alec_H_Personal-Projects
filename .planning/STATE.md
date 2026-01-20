@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 2 — AI Integration
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation)
-Plan: 2 of TBD (Dashboard UI)
+Phase: 2 of 6 (AI Integration)
+Plan: 1 of TBD (AI SDK Setup)
 Status: In progress
-Last activity: 2026-01-20 — Completed 01-02-PLAN.md
+Last activity: 2026-01-20 — Completed 02-01-PLAN.md
 
-Progress: [====================] 2 plans complete
+Progress: [===========================] 3 plans complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 8m
-- Total execution time: 0.27 hours
+- Total plans completed: 3
+- Average duration: 7m
+- Total execution time: 0.35 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 2 | 16m | 8m |
+| 2. AI Integration | 1 | 5m | 5m |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (13m), 01-02 (3m)
+- Last 5 plans: 01-01 (13m), 01-02 (3m), 02-01 (5m)
 - Trend: Improving (faster execution)
 
 ## Accumulated Context
@@ -45,6 +46,8 @@ Recent decisions affecting current work:
 - Local SQLite (file:local.db) for development, Turso for production
 - Amber color scheme for header (woodworking theme)
 - HTML entities for emoji icons (encoding reliability)
+- Dynamic env import ($env/dynamic/private) for optional AI_PROVIDER config
+- Woodworking system prompt embedded in chat endpoint
 
 ### Pending Todos
 
@@ -57,5 +60,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Phase 1 complete, ready for Phase 2
-Resume file: .planning/RESUME.md
+Stopped at: Completed 02-01-PLAN.md (AI SDK Setup)
+Resume file: None
