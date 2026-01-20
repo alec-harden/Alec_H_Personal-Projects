@@ -64,6 +64,7 @@ Plans:
   5. Generated BOM displays in organized, readable view
 **Research**: Likely (template structure, prompt engineering for woodworking domain)
 **Research topics**: Prompt templates for BOM generation, project template data model, woodworking domain knowledge
+**Design**: Use `/frontend-design` skill for guided prompt UI and BOM display view
 **Plans**: TBD
 
 Plans:
@@ -79,6 +80,7 @@ Plans:
   3. User can toggle visibility on items (greyed out, excluded from export and totals)
   4. Materials are grouped by category (Lumber, Hardware, Finishes, Consumables)
 **Research**: Unlikely (standard CRUD + state management patterns)
+**Design**: Use `/frontend-design` skill for edit interface, quantity controls, and category grouping
 **Plans**: TBD
 
 Plans:
@@ -108,6 +110,7 @@ Plans:
   3. Loading states provide visual feedback
   4. UI is usable on desktop and tablet viewports
 **Research**: Unlikely (internal polish)
+**Design**: Use `/frontend-design` skill to polish dashboard and BOM tool entry pages
 **Plans**: TBD
 
 Plans:
