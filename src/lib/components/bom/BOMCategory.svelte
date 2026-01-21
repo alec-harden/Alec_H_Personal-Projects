@@ -10,14 +10,20 @@
 		items: BOMItemType[];
 		defaultExpanded?: boolean;
 		onQuantityChange?: (id: string, quantity: number) => void;
+		onToggleVisibility?: (id: string) => void;
 	}
 
-	const { category, items, defaultExpanded = true, onQuantityChange }: Props = $props();
+	const { category, items, defaultExpanded = true, onQuantityChange, onToggleVisibility }: Props = $props();
 
 	// Initialize state (captured once at mount)
 	const initExpanded = defaultExpanded;
 
 	let expanded = $state(initExpanded);
+
+	// Calculate visible/hidden item counts
+	const visibleCount = $derived(items.filter(i => !i.hidden).length);
+	const totalCount = $derived(items.length);
+	const hasHidden = $derived(visibleCount < totalCount);
 
 	// Category display configuration
 	const categoryConfig: Record<BOMCategory, { label: string; accentClass: string }> = {
@@ -50,14 +56,18 @@
 			<h3 class="text-lg font-semibold text-gray-900">{config.label}</h3>
 		</div>
 		<span class="rounded-full bg-gray-200 px-2.5 py-0.5 text-sm font-medium text-gray-700">
-			{items.length} {items.length === 1 ? 'item' : 'items'}
+			{#if hasHidden}
+				{visibleCount} of {totalCount} items
+			{:else}
+				{totalCount} {totalCount === 1 ? 'item' : 'items'}
+			{/if}
 		</span>
 	</button>
 
 	{#if expanded}
 		<div class="border-t border-gray-200">
 			{#each items as item (item.id)}
-				<BOMItem {item} {onQuantityChange} />
+				<BOMItem {item} {onQuantityChange} {onToggleVisibility} />
 			{/each}
 		</div>
 	{/if}
