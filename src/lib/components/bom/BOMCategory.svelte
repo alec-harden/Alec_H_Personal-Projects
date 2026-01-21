@@ -11,9 +11,12 @@
 		defaultExpanded?: boolean;
 	}
 
-	let { category, items, defaultExpanded = true }: Props = $props();
+	const { category, items, defaultExpanded = true }: Props = $props();
 
-	let expanded = $state(defaultExpanded);
+	// Initialize state (captured once at mount)
+	const initExpanded = defaultExpanded;
+
+	let expanded = $state(initExpanded);
 
 	// Category display configuration
 	const categoryConfig: Record<BOMCategory, { label: string; accentClass: string }> = {

@@ -17,13 +17,18 @@
 		onBack: () => void;
 	}
 
-	let { template, initialValues, onSubmit, onBack }: Props = $props();
+	const { template, initialValues, onSubmit, onBack }: Props = $props();
 
-	let woodSpecies = $state(initialValues?.woodSpecies ?? template.suggestedWoods[0] ?? '');
+	// Initialize state (captured once at mount)
+	const initWoodSpecies = initialValues?.woodSpecies ?? template.suggestedWoods[0] ?? '';
+	const initFinish = initialValues?.finish ?? template.suggestedFinishes[0] ?? '';
+	const initNotes = initialValues?.additionalNotes ?? '';
+
+	let woodSpecies = $state(initWoodSpecies);
 	let customWood = $state('');
-	let finish = $state(initialValues?.finish ?? template.suggestedFinishes[0] ?? '');
+	let finish = $state(initFinish);
 	let customFinish = $state('');
-	let additionalNotes = $state(initialValues?.additionalNotes ?? '');
+	let additionalNotes = $state(initNotes);
 
 	let errors = $state<Record<string, string>>({});
 

@@ -19,14 +19,20 @@
 		onBack: () => void;
 	}
 
-	let { template, initialValues, onSubmit, onBack }: Props = $props();
+	const { template, initialValues, onSubmit, onBack }: Props = $props();
 
-	// Initialize state from template defaults or initial values
-	let length = $state(initialValues?.length ?? template.defaultDimensions.length.default);
-	let width = $state(initialValues?.width ?? template.defaultDimensions.width.default);
-	let height = $state(initialValues?.height ?? template.defaultDimensions.height?.default ?? 0);
-	let unit = $state<'inches' | 'cm'>(initialValues?.unit ?? 'inches');
-	let projectName = $state(initialValues?.projectName ?? '');
+	// Initialize state from template defaults or initial values (captured once at mount)
+	const initLength = initialValues?.length ?? template.defaultDimensions.length.default;
+	const initWidth = initialValues?.width ?? template.defaultDimensions.width.default;
+	const initHeight = initialValues?.height ?? template.defaultDimensions.height?.default ?? 0;
+	const initUnit = initialValues?.unit ?? 'inches';
+	const initProjectName = initialValues?.projectName ?? '';
+
+	let length = $state(initLength);
+	let width = $state(initWidth);
+	let height = $state(initHeight);
+	let unit = $state<'inches' | 'cm'>(initUnit);
+	let projectName = $state(initProjectName);
 
 	// Validation errors
 	let errors = $state<Record<string, string>>({});
@@ -86,8 +92,8 @@
 
 		<!-- Unit Selector -->
 		<div>
-			<label class="block text-sm font-medium text-gray-700">Units</label>
-			<div class="mt-1 flex gap-4">
+			<span id="unit-label" class="block text-sm font-medium text-gray-700">Units</span>
+			<div class="mt-1 flex gap-4" role="radiogroup" aria-labelledby="unit-label">
 				<label class="flex items-center gap-2">
 					<input
 						type="radio"

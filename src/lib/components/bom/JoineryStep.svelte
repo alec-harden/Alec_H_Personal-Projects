@@ -11,9 +11,12 @@
 		onBack: () => void;
 	}
 
-	let { template, initialValues = [], onSubmit, onBack }: Props = $props();
+	const { template, initialValues = [], onSubmit, onBack }: Props = $props();
 
-	let selectedIds = $state<string[]>([...initialValues]);
+	// Initialize state (captured once at mount)
+	const initSelectedIds = [...initialValues];
+
+	let selectedIds = $state<string[]>(initSelectedIds);
 	let error = $state('');
 
 	function toggleOption(id: string) {
