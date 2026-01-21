@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-16)
 ## Current Position
 
 Phase: 4 of 6 (BOM Editing)
-Plan: 1 of 3 complete
+Plan: 2 of 3 complete
 Status: In progress
-Last activity: 2026-01-21 — Completed 04-01-PLAN.md (Inline Quantity Editing)
+Last activity: 2026-01-21 — Completed 04-02-PLAN.md (Visibility Toggle)
 
-Progress: [████████████████████████████████████████████████████████████████░░░░░░░░] 9 plans complete
+Progress: [██████████████████████████████████████████████████████████████████████░░░░░░] 10 plans complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 5.3m
-- Total execution time: 0.8 hours
+- Total plans completed: 10
+- Average duration: 5.4m
+- Total execution time: 0.9 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [███████████████████████
 | 1. Foundation | 2 | 16m | 8m |
 | 2. AI Integration | 2 | 9m | 4.5m |
 | 3. BOM Core Flow | 4 | 24m | 6m |
-| 4. BOM Editing | 1 | 4m | 4m |
+| 4. BOM Editing | 2 | 10m | 5m |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (6m), 03-03 (6m), 03-04 (8m), 04-01 (4m)
+- Last 5 plans: 03-03 (6m), 03-04 (8m), 04-01 (4m), 04-02 (6m)
 - Trend: Stable (consistent 4-8m execution)
 
 ## Accumulated Context
@@ -63,6 +63,7 @@ Recent decisions affecting current work:
 - View state machine pattern for multi-step flows (wizard/loading/result)
 - Click-to-edit pattern: button displays value, input appears on click, Enter/blur commits, Escape cancels
 - Callback prop drilling for edit operations (page -> display -> category -> item)
+- Visibility toggle: checkbox checked = visible (intuitive 'include' semantics)
 
 ### Pending Todos
 
@@ -75,5 +76,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Completed 04-01-PLAN.md (Inline Quantity Editing)
+Stopped at: Completed 04-02-PLAN.md (Visibility Toggle)
 Resume file: None
