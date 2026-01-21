@@ -13,8 +13,8 @@
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 		<ToolCard
 			title="BOM Generator"
-			description="Generate comprehensive bills of materials for your woodworking projects with AI assistance."
-			href="/bom"
+			description="Create bills of materials through a guided workflow with AI-powered generation."
+			href="/bom/new"
 			icon="&#x1f4cb;"
 		/>
 
