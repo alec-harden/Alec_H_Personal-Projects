@@ -4,6 +4,7 @@
 
 	import type { BOM, BOMCategory as BOMCategoryType, BOMItem } from '$lib/types/bom';
 	import BOMCategory from './BOMCategory.svelte';
+	import { generateBOMCSV, downloadCSV, generateBOMFilename } from '$lib/utils/csv';
 
 	interface Props {
 		bom: BOM;
@@ -54,6 +55,13 @@
 			return isoDate;
 		}
 	}
+
+	// Export BOM to CSV file download
+	function handleExport() {
+		const csv = generateBOMCSV(bom);
+		const filename = generateBOMFilename(bom);
+		downloadCSV(csv, filename);
+	}
 </script>
 
 <div class="mx-auto max-w-3xl">
@@ -67,13 +75,25 @@
 				Generated {formatDate(bom.generatedAt)}
 			</p>
 		</div>
-		<button
-			type="button"
-			onclick={onStartOver}
-			class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
-		>
-			Start Over
-		</button>
+		<div class="flex gap-2">
+			<button
+				type="button"
+				onclick={handleExport}
+				class="flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+			>
+				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+				</svg>
+				Export CSV
+			</button>
+			<button
+				type="button"
+				onclick={onStartOver}
+				class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+			>
+				Start Over
+			</button>
+		</div>
 	</div>
 
 	<!-- Categories -->
