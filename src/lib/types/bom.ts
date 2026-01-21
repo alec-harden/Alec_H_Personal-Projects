@@ -24,6 +24,7 @@ export interface BOMItem {
 	unit: string; // e.g., 'pcs', 'bf', 'oz', 'each'
 	category: BOMCategory;
 	notes?: string;
+	hidden?: boolean; // Phase 4: visibility toggle support (EDIT-03)
 }
 
 /**
