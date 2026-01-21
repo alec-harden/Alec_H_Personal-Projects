@@ -4,6 +4,7 @@
 
 	import type { BOMCategory, BOMItem as BOMItemType } from '$lib/types/bom';
 	import BOMItem from './BOMItem.svelte';
+	import AddItemForm from './AddItemForm.svelte';
 
 	interface Props {
 		category: BOMCategory;
@@ -11,14 +12,16 @@
 		defaultExpanded?: boolean;
 		onQuantityChange?: (id: string, quantity: number) => void;
 		onToggleVisibility?: (id: string) => void;
+		onAddItem?: (item: BOMItemType) => void;
 	}
 
-	const { category, items, defaultExpanded = true, onQuantityChange, onToggleVisibility }: Props = $props();
+	const { category, items, defaultExpanded = true, onQuantityChange, onToggleVisibility, onAddItem }: Props = $props();
 
 	// Initialize state (captured once at mount)
 	const initExpanded = defaultExpanded;
 
 	let expanded = $state(initExpanded);
+	let showAddForm = $state(false);
 
 	// Calculate visible/hidden item counts
 	const visibleCount = $derived(items.filter(i => !i.hidden).length);
@@ -70,5 +73,30 @@
 				<BOMItem {item} {onQuantityChange} {onToggleVisibility} />
 			{/each}
 		</div>
+
+		<!-- Add Item section -->
+		{#if onAddItem}
+			{#if showAddForm}
+				<AddItemForm
+					{category}
+					onAdd={(item) => {
+						onAddItem(item);
+						showAddForm = false;
+					}}
+					onCancel={() => (showAddForm = false)}
+				/>
+			{:else}
+				<button
+					type="button"
+					onclick={() => (showAddForm = true)}
+					class="flex w-full items-center gap-2 border-t border-gray-200 px-4 py-2 text-sm text-amber-700 hover:bg-amber-50"
+				>
+					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+					</svg>
+					Add Item
+				</button>
+			{/if}
+		{/if}
 	{/if}
 </div>
