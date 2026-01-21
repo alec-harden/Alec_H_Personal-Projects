@@ -8,10 +8,11 @@
 	interface Props {
 		item: BOMItem;
 		onQuantityChange?: (id: string, quantity: number) => void;
+		onToggleVisibility?: (id: string) => void;
 		editable?: boolean;
 	}
 
-	let { item, onQuantityChange, editable = true }: Props = $props();
+	let { item, onQuantityChange, onToggleVisibility, editable = true }: Props = $props();
 
 	// Edit mode state
 	let editing = $state(false);
@@ -58,9 +59,18 @@
 </script>
 
 <div
-	class="flex items-center justify-between border-b border-gray-100 px-4 py-3 last:border-b-0 hover:bg-gray-50/50"
+	class="flex items-center justify-between border-b border-gray-100 px-4 py-3 last:border-b-0 hover:bg-gray-50/50 {item.hidden ? 'opacity-50' : ''}"
 >
 	<div class="flex items-center gap-3">
+		{#if onToggleVisibility}
+			<input
+				type="checkbox"
+				checked={!item.hidden}
+				onchange={() => onToggleVisibility(item.id)}
+				class="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+				aria-label="Include in BOM"
+			/>
+		{/if}
 		{#if editing}
 			<span class="min-w-[80px] text-sm font-medium text-gray-700">
 				<input
@@ -86,7 +96,7 @@
 				{item.unit}
 			</button>
 		{/if}
-		<span class="text-gray-900">{item.name}</span>
+		<span class={item.hidden ? 'line-through text-gray-400' : 'text-gray-900'}>{item.name}</span>
 	</div>
 	{#if item.notes}
 		<span class="text-sm text-gray-500 italic">{item.notes}</span>
