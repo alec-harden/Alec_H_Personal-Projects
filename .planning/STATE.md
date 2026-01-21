@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Phase 3 — BOM Core Flow
+**Current focus:** Phase 3 Complete - BOM Core Flow delivered
 
 ## Current Position
 
-Phase: 3 of 6 (BOM Core Flow)
-Plan: 3 of 4 complete
-Status: In progress
-Last activity: 2026-01-21 — Completed 03-03-PLAN.md (Guided Prompt Wizard UI)
+Phase: 3 of 6 (BOM Core Flow) - COMPLETE
+Plan: 4 of 4 complete
+Status: Phase complete
+Last activity: 2026-01-21 — Completed 03-04-PLAN.md (BOM Display & Flow Integration)
 
-Progress: [████████████████████████████████████████████████████] 7 plans complete
+Progress: [████████████████████████████████████████████████████████████] 8 plans complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 5.6m
-- Total execution time: 0.65 hours
+- Total plans completed: 8
+- Average duration: 5.5m
+- Total execution time: 0.73 hours
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [███████████████████████
 |-------|-------|-------|----------|
 | 1. Foundation | 2 | 16m | 8m |
 | 2. AI Integration | 2 | 9m | 4.5m |
-| 3. BOM Core Flow | 3 | 16m | 5.3m |
+| 3. BOM Core Flow | 4 | 24m | 6m |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (4m), 03-01 (4m), 03-02 (6m), 03-03 (6m)
-- Trend: Stable (consistent 4-6m execution)
+- Last 5 plans: 03-01 (4m), 03-02 (6m), 03-03 (6m), 03-04 (8m)
+- Trend: Stable (consistent 4-8m execution)
 
 ## Accumulated Context
 
@@ -57,6 +57,9 @@ Recent decisions affecting current work:
 - Zod schema with .describe() annotations for AI context in structured generation
 - Template-aware prompt construction (resolve joinery names, include typicalHardware)
 - Wizard step pattern: capture initial values at mount time (acceptable for parent-managed state)
+- AI SDK provider factory pattern: use createAnthropic/createOpenAI with explicit apiKey for SvelteKit dynamic env
+- Category display order: Lumber, Hardware, Finishes, Consumables
+- View state machine pattern for multi-step flows (wizard/loading/result)
 
 ### Pending Todos
 
@@ -69,5 +72,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Completed 03-03-PLAN.md (Guided Prompt Wizard UI)
+Stopped at: Completed 03-04-PLAN.md (BOM Display & Flow Integration) - Phase 3 Complete
 Resume file: None
