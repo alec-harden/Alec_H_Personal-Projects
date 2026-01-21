@@ -20,10 +20,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### BOM Generator - Editing
 
-- [ ] **EDIT-01**: User can edit quantities for any material
-- [ ] **EDIT-02**: User can add custom materials not suggested by AI
-- [ ] **EDIT-03**: User can toggle visibility on items (greyed out, excluded from export and totals)
-- [ ] **EDIT-04**: Materials are grouped by category (Lumber, Hardware, Finishes, Consumables)
+- [x] **EDIT-01**: User can edit quantities for any material
+- [x] **EDIT-02**: User can add custom materials not suggested by AI
+- [x] **EDIT-03**: User can toggle visibility on items (greyed out, excluded from export and totals)
+- [x] **EDIT-04**: Materials are grouped by category (Lumber, Hardware, Finishes, Consumables)
 
 ### BOM Generator - Export
 
@@ -71,10 +71,10 @@ Which phases cover which requirements. Updated by create-roadmap.
 | BOM-02 | Phase 2 | Complete |
 | BOM-03 | Phase 3 | Complete |
 | BOM-04 | Phase 3 | Complete |
-| EDIT-01 | Phase 4 | Pending |
-| EDIT-02 | Phase 4 | Pending |
-| EDIT-03 | Phase 4 | Pending |
-| EDIT-04 | Phase 4 | Pending |
+| EDIT-01 | Phase 4 | Complete |
+| EDIT-02 | Phase 4 | Complete |
+| EDIT-03 | Phase 4 | Complete |
+| EDIT-04 | Phase 4 | Complete |
 | EXPORT-01 | Phase 5 | Pending |
 
 **Coverage:**
@@ -84,4 +84,4 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 ---
 *Requirements defined: 2026-01-20*
-*Last updated: 2026-01-21 after Phase 3 completion*
+*Last updated: 2026-01-21 after Phase 4 completion*
