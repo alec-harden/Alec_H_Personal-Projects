@@ -4,7 +4,7 @@
 
 	import BOMWizard from '$lib/components/bom/BOMWizard.svelte';
 	import BOMDisplay from '$lib/components/bom/BOMDisplay.svelte';
-	import type { BOM, ProjectDetails } from '$lib/types/bom';
+	import type { BOM, ProjectDetails, BOMItem } from '$lib/types/bom';
 
 	// View state
 	type ViewState = 'wizard' | 'loading' | 'result';
@@ -44,6 +44,35 @@
 		generatedBOM = null;
 		error = null;
 		currentView = 'wizard';
+	}
+
+	// Handle quantity change
+	function handleQuantityChange(id: string, quantity: number) {
+		if (!generatedBOM) return;
+		generatedBOM = {
+			...generatedBOM,
+			items: generatedBOM.items.map((item) => (item.id === id ? { ...item, quantity } : item))
+		};
+	}
+
+	// Handle visibility toggle
+	function handleToggleVisibility(id: string) {
+		if (!generatedBOM) return;
+		generatedBOM = {
+			...generatedBOM,
+			items: generatedBOM.items.map((item) =>
+				item.id === id ? { ...item, hidden: !item.hidden } : item
+			)
+		};
+	}
+
+	// Handle add item
+	function handleAddItem(item: BOMItem) {
+		if (!generatedBOM) return;
+		generatedBOM = {
+			...generatedBOM,
+			items: [...generatedBOM.items, item]
+		};
 	}
 </script>
 
@@ -90,5 +119,11 @@
 		</a>
 	</div>
 
-	<BOMDisplay bom={generatedBOM} onStartOver={handleStartOver} />
+	<BOMDisplay
+		bom={generatedBOM}
+		onStartOver={handleStartOver}
+		onQuantityChange={handleQuantityChange}
+		onToggleVisibility={handleToggleVisibility}
+		onAddItem={handleAddItem}
+	/>
 {/if}
