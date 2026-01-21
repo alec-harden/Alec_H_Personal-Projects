@@ -9,9 +9,10 @@
 		category: BOMCategory;
 		items: BOMItemType[];
 		defaultExpanded?: boolean;
+		onQuantityChange?: (id: string, quantity: number) => void;
 	}
 
-	const { category, items, defaultExpanded = true }: Props = $props();
+	const { category, items, defaultExpanded = true, onQuantityChange }: Props = $props();
 
 	// Initialize state (captured once at mount)
 	const initExpanded = defaultExpanded;
@@ -56,7 +57,7 @@
 	{#if expanded}
 		<div class="border-t border-gray-200">
 			{#each items as item (item.id)}
-				<BOMItem {item} />
+				<BOMItem {item} {onQuantityChange} />
 			{/each}
 		</div>
 	{/if}
