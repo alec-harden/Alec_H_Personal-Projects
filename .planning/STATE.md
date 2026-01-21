@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Phase 4 - BOM Editing (inline editing, visibility toggle, add items)
+**Current focus:** Phase 4 Complete - Ready for Phase 5 (Persistence)
 
 ## Current Position
 
-Phase: 4 of 6 (BOM Editing)
-Plan: 2 of 3 complete
-Status: In progress
-Last activity: 2026-01-21 — Completed 04-02-PLAN.md (Visibility Toggle)
+Phase: 4 of 6 (BOM Editing) - COMPLETE
+Plan: 3 of 3 complete
+Status: Phase complete
+Last activity: 2026-01-21 — Completed 04-03-PLAN.md (Add Custom Materials)
 
-Progress: [██████████████████████████████████████████████████████████████████████░░░░░░] 10 plans complete
+Progress: [████████████████████████████████████████████████████████████████████████████░] 11 plans complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 5.4m
-- Total execution time: 0.9 hours
+- Total execution time: 1.0 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [███████████████████████
 | 1. Foundation | 2 | 16m | 8m |
 | 2. AI Integration | 2 | 9m | 4.5m |
 | 3. BOM Core Flow | 4 | 24m | 6m |
-| 4. BOM Editing | 2 | 10m | 5m |
+| 4. BOM Editing | 3 | 15m | 5m |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (6m), 03-04 (8m), 04-01 (4m), 04-02 (6m)
+- Last 5 plans: 03-04 (8m), 04-01 (4m), 04-02 (6m), 04-03 (5m)
 - Trend: Stable (consistent 4-8m execution)
 
 ## Accumulated Context
@@ -64,6 +64,10 @@ Recent decisions affecting current work:
 - Click-to-edit pattern: button displays value, input appears on click, Enter/blur commits, Escape cancels
 - Callback prop drilling for edit operations (page -> display -> category -> item)
 - Visibility toggle: checkbox checked = visible (intuitive 'include' semantics)
+- AddItemForm inline in category (not modal) for quick add workflow
+- Unique ID generation: custom-{timestamp}-{random} pattern
+- Category-specific unit defaults (bf for lumber, pcs for hardware, etc.)
+- Immutable state updates for Svelte reactivity
 
 ### Pending Todos
 
@@ -76,5 +80,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Completed 04-02-PLAN.md (Visibility Toggle)
+Stopped at: Completed 04-03-PLAN.md (Add Custom Materials) - Phase 4 Complete
 Resume file: None
