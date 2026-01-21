@@ -9,14 +9,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Platform
 
-- [ ] **PLAT-01**: User can view dashboard home page with tool cards
+- [x] **PLAT-01**: User can view dashboard home page with tool cards
 
 ### BOM Generator - Core Flow
 
-- [ ] **BOM-01**: User completes guided prompt workflow (project type → dimensions → joinery → materials)
-- [ ] **BOM-02**: User receives AI-powered material suggestions from configurable LLM provider
-- [ ] **BOM-03**: User can select project template (table, cabinet, shelf, etc.) to guide AI suggestions
-- [ ] **BOM-04**: System generates comprehensive BOM covering lumber, hardware, finishes, consumables
+- [x] **BOM-01**: User completes guided prompt workflow (project type → dimensions → joinery → materials)
+- [x] **BOM-02**: User receives AI-powered material suggestions from configurable LLM provider
+- [x] **BOM-03**: User can select project template (table, cabinet, shelf, etc.) to guide AI suggestions
+- [x] **BOM-04**: System generates comprehensive BOM covering lumber, hardware, finishes, consumables
 
 ### BOM Generator - Editing
 
@@ -67,10 +67,10 @@ Which phases cover which requirements. Updated by create-roadmap.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | PLAT-01 | Phase 1 | Complete |
-| BOM-01 | Phase 3 | Pending |
+| BOM-01 | Phase 3 | Complete |
 | BOM-02 | Phase 2 | Complete |
-| BOM-03 | Phase 3 | Pending |
-| BOM-04 | Phase 3 | Pending |
+| BOM-03 | Phase 3 | Complete |
+| BOM-04 | Phase 3 | Complete |
 | EDIT-01 | Phase 4 | Pending |
 | EDIT-02 | Phase 4 | Pending |
 | EDIT-03 | Phase 4 | Pending |
@@ -84,4 +84,4 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 ---
 *Requirements defined: 2026-01-20*
-*Last updated: 2026-01-20 after Phase 2 completion*
+*Last updated: 2026-01-21 after Phase 3 completion*
