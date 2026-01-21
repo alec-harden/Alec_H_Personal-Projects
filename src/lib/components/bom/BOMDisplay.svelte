@@ -8,9 +8,12 @@
 	interface Props {
 		bom: BOM;
 		onStartOver: () => void;
+		onQuantityChange?: (id: string, quantity: number) => void;
+		onToggleVisibility?: (id: string) => void;
+		onAddItem?: (item: BOMItem) => void;
 	}
 
-	let { bom, onStartOver }: Props = $props();
+	let { bom, onStartOver, onQuantityChange, onToggleVisibility, onAddItem }: Props = $props();
 
 	// Category order for consistent display
 	const categoryOrder: BOMCategoryType[] = ['lumber', 'hardware', 'finishes', 'consumables'];
@@ -30,6 +33,14 @@
 	}
 
 	const groupedItems = $derived(groupByCategory(bom.items));
+
+	// Summary calculations
+	const totalItems = $derived(bom.items.length);
+	const visibleItems = $derived(bom.items.filter((i) => !i.hidden).length);
+	const hasHiddenItems = $derived(visibleItems < totalItems);
+	const categoriesWithItems = $derived(
+		categoryOrder.filter((c) => (groupedItems.get(c)?.length ?? 0) > 0).length
+	);
 
 	// Format date for display
 	function formatDate(isoDate: string): string {
@@ -75,7 +86,13 @@
 			{#each categoryOrder as category}
 				{@const items = groupedItems.get(category) ?? []}
 				{#if items.length > 0}
-					<BOMCategory {category} {items} />
+					<BOMCategory
+						{category}
+						{items}
+						{onQuantityChange}
+						{onToggleVisibility}
+						{onAddItem}
+					/>
 				{/if}
 			{/each}
 		</div>
@@ -84,8 +101,12 @@
 	<!-- Summary Footer -->
 	<div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
 		<p class="text-sm text-gray-600">
-			<span class="font-medium">{bom.items.length} total items</span>
-			across {categoryOrder.filter((c) => (groupedItems.get(c)?.length ?? 0) > 0).length} categories
+			{#if hasHiddenItems}
+				<span class="font-medium">{visibleItems} visible</span> of {totalItems} total items
+			{:else}
+				<span class="font-medium">{totalItems} total items</span>
+			{/if}
+			across {categoriesWithItems} categories
 		</p>
 	</div>
 </div>
