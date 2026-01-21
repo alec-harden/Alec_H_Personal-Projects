@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Phase 4 Complete - Ready for Phase 5 (Persistence)
+**Current focus:** Phase 5 In Progress - Export & Print (EXPORT-01 complete)
 
 ## Current Position
 
-Phase: 4 of 6 (BOM Editing) - COMPLETE
-Plan: 3 of 3 complete
-Status: Phase complete
-Last activity: 2026-01-21 — Completed 04-03-PLAN.md (Add Custom Materials)
+Phase: 5 of 6 (Export & Print)
+Plan: 1 of 2 complete
+Status: In progress
+Last activity: 2026-01-21 — Completed 05-01-PLAN.md (CSV Export)
 
-Progress: [████████████████████████████████████████████████████████████████████████████░] 11 plans complete
+Progress: [██████████████████████████████████████████████████████████████████████████████░░] 12 plans complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 5.4m
-- Total execution time: 1.0 hours
+- Total execution time: 1.1 hours
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: [███████████████████████
 | 2. AI Integration | 2 | 9m | 4.5m |
 | 3. BOM Core Flow | 4 | 24m | 6m |
 | 4. BOM Editing | 3 | 15m | 5m |
+| 5. Export & Print | 1 | 5m | 5m |
 
 **Recent Trend:**
-- Last 5 plans: 03-04 (8m), 04-01 (4m), 04-02 (6m), 04-03 (5m)
-- Trend: Stable (consistent 4-8m execution)
+- Last 5 plans: 04-01 (4m), 04-02 (6m), 04-03 (5m), 05-01 (5m)
+- Trend: Stable (consistent 4-6m execution)
 
 ## Accumulated Context
 
@@ -68,6 +69,9 @@ Recent decisions affecting current work:
 - Unique ID generation: custom-{timestamp}-{random} pattern
 - Category-specific unit defaults (bf for lumber, pcs for hardware, etc.)
 - Immutable state updates for Svelte reactivity
+- RFC 4180 CSV escaping for export (handles commas, quotes, newlines)
+- Blob-based file download for cross-browser CSV export
+- Sanitized filename format: {name}-bom-{YYYY-MM-DD}.csv
 
 ### Pending Todos
 
@@ -80,5 +84,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Completed 04-03-PLAN.md (Add Custom Materials) - Phase 4 Complete
+Stopped at: Completed 05-01-PLAN.md (CSV Export)
 Resume file: None
