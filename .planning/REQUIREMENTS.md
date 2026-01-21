@@ -27,7 +27,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### BOM Generator - Export
 
-- [ ] **EXPORT-01**: User can export BOM to CSV format
+- [x] **EXPORT-01**: User can export BOM to CSV format
 
 ## v2 Requirements
 
@@ -75,7 +75,7 @@ Which phases cover which requirements. Updated by create-roadmap.
 | EDIT-02 | Phase 4 | Complete |
 | EDIT-03 | Phase 4 | Complete |
 | EDIT-04 | Phase 4 | Complete |
-| EXPORT-01 | Phase 5 | Pending |
+| EXPORT-01 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 10 total
@@ -84,4 +84,4 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 ---
 *Requirements defined: 2026-01-20*
-*Last updated: 2026-01-21 after Phase 4 completion*
+*Last updated: 2026-01-21 after Phase 5 completion*
