@@ -12,12 +12,12 @@ Build a modular web application for woodworking tools, starting with an AI-power
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - SvelteKit scaffolding, database, dashboard shell
-- [ ] **Phase 2: AI Integration** - Vercel AI SDK infrastructure with streaming chat
-- [ ] **Phase 3: BOM Core Flow** - Guided prompts, templates, BOM generation
-- [ ] **Phase 4: BOM Editing** - Edit quantities, add items, toggle visibility, categories
-- [ ] **Phase 5: Export** - CSV export functionality
-- [ ] **Phase 6: Polish & Integration** - End-to-end flow refinement
+- [x] **Phase 1: Foundation** - SvelteKit scaffolding, database, dashboard shell
+- [x] **Phase 2: AI Integration** - Vercel AI SDK infrastructure with streaming chat
+- [x] **Phase 3: BOM Core Flow** - Guided prompts, templates, BOM generation
+- [x] **Phase 4: BOM Editing** - Edit quantities, add items, toggle visibility, categories
+- [x] **Phase 5: Export** - CSV export functionality
+- [x] **Phase 6: Polish & Integration** - End-to-end flow refinement
 
 ## Phase Details
 
@@ -123,13 +123,13 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
-| 2. AI Integration | 0/TBD | Not started | - |
-| 3. BOM Core Flow | 0/TBD | Not started | - |
-| 4. BOM Editing | 0/TBD | Not started | - |
-| 5. Export | 0/TBD | Not started | - |
-| 6. Polish & Integration | 0/TBD | Not started | - |
+| 1. Foundation | 2/2 | ✓ Complete | 2026-01-20 |
+| 2. AI Integration | 2/2 | ✓ Complete | 2026-01-20 |
+| 3. BOM Core Flow | 4/4 | ✓ Complete | 2026-01-20 |
+| 4. BOM Editing | 3/3 | ✓ Complete | 2026-01-21 |
+| 5. Export | 1/1 | ✓ Complete | 2026-01-21 |
+| 6. Polish & Integration | 2/2 | ✓ Complete | 2026-01-22 |
 
 ---
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-20*
+*Last updated: 2026-01-22*
