@@ -12,10 +12,24 @@
 	let generatedBOM = $state<BOM | null>(null);
 	let error = $state<string | null>(null);
 
+	// Retry capability
+	let lastProjectDetails = $state<ProjectDetails | null>(null);
+
+	// Extended loading feedback
+	let showExtendedWait = $state(false);
+	let loadingTimeout: ReturnType<typeof setTimeout> | null = null;
+
 	// Handle wizard completion - trigger BOM generation
 	async function handleWizardComplete(details: ProjectDetails) {
+		lastProjectDetails = details; // Store for retry
 		currentView = 'loading';
 		error = null;
+		showExtendedWait = false;
+
+		// Start extended wait timer (10 seconds)
+		loadingTimeout = setTimeout(() => {
+			showExtendedWait = true;
+		}, 10000);
 
 		try {
 			const response = await fetch('/api/bom/generate', {
@@ -36,6 +50,12 @@
 			console.error('BOM generation failed:', e);
 			error = e instanceof Error ? e.message : 'An unexpected error occurred';
 			currentView = 'wizard';
+		} finally {
+			if (loadingTimeout) {
+				clearTimeout(loadingTimeout);
+				loadingTimeout = null;
+			}
+			showExtendedWait = false;
 		}
 	}
 
@@ -44,6 +64,13 @@
 		generatedBOM = null;
 		error = null;
 		currentView = 'wizard';
+	}
+
+	// Retry generation with last project details
+	function handleRetry() {
+		if (lastProjectDetails) {
+			handleWizardComplete(lastProjectDetails);
+		}
 	}
 
 	// Handle quantity change
@@ -95,13 +122,24 @@
 		<div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
 			<p class="font-medium text-red-800">Generation Failed</p>
 			<p class="mt-1 text-sm text-red-700">{error}</p>
-			<button
-				type="button"
-				onclick={() => (error = null)}
-				class="mt-2 text-sm font-medium text-red-700 underline hover:no-underline"
-			>
-				Dismiss
-			</button>
+			<div class="mt-3 flex gap-2">
+				{#if lastProjectDetails}
+					<button
+						type="button"
+						onclick={handleRetry}
+						class="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700"
+					>
+						Retry
+					</button>
+				{/if}
+				<button
+					type="button"
+					onclick={() => (error = null)}
+					class="text-sm font-medium text-red-700 underline hover:no-underline"
+				>
+					Dismiss
+				</button>
+			</div>
 		</div>
 	{/if}
 
@@ -111,6 +149,9 @@
 		<div class="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-amber-200 border-t-amber-600"></div>
 		<p class="text-lg font-medium text-gray-900">Generating your bill of materials...</p>
 		<p class="mt-1 text-gray-600">This may take a few moments.</p>
+		{#if showExtendedWait}
+			<p class="mt-4 text-sm text-amber-700">Taking longer than usual - still working...</p>
+		{/if}
 	</div>
 {:else if currentView === 'result' && generatedBOM}
 	<div class="mb-6">
