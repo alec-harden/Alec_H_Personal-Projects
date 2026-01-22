@@ -121,17 +121,42 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (error) {
 		console.error('BOM generation error:', error);
 
-		// Handle specific AI errors
-		if (error instanceof Error) {
-			if (error.message.includes('API key')) {
-				return new Response(JSON.stringify({ error: 'AI service configuration error' }), {
-					status: 503,
-					headers: { 'Content-Type': 'application/json' }
-				});
-			}
+		const message = error instanceof Error ? error.message.toLowerCase() : '';
+
+		// Timeout
+		if (message.includes('timeout') || message.includes('etimedout') || message.includes('econnaborted')) {
+			return new Response(JSON.stringify({ error: 'Generation timed out. The AI service is slow - please try again.' }), {
+				status: 504,
+				headers: { 'Content-Type': 'application/json' }
+			});
 		}
 
-		return new Response(JSON.stringify({ error: 'Failed to generate BOM' }), {
+		// Rate limit
+		if (message.includes('rate limit') || message.includes('429') || message.includes('too many')) {
+			return new Response(JSON.stringify({ error: 'Too many requests. Please wait a moment and try again.' }), {
+				status: 429,
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
+		// API key (existing)
+		if (message.includes('api key') || message.includes('unauthorized') || message.includes('401')) {
+			return new Response(JSON.stringify({ error: 'AI service configuration error. Check API keys.' }), {
+				status: 503,
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
+		// Network
+		if (message.includes('enotfound') || message.includes('econnrefused') || message.includes('network')) {
+			return new Response(JSON.stringify({ error: 'Cannot reach AI service. Check your connection.' }), {
+				status: 503,
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
+		// Default
+		return new Response(JSON.stringify({ error: 'Failed to generate BOM. Please try again.' }), {
 			status: 500,
 			headers: { 'Content-Type': 'application/json' }
 		});
