@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Phase 5 In Progress - Export & Print (EXPORT-01 complete)
+**Current focus:** Phase 6 In Progress - Polish & Integration (06-02 complete)
 
 ## Current Position
 
-Phase: 5 of 6 (Export & Print)
+Phase: 6 of 6 (Polish & Integration)
 Plan: 1 of 2 complete
 Status: In progress
-Last activity: 2026-01-21 — Completed 05-01-PLAN.md (CSV Export)
+Last activity: 2026-01-22 — Completed 06-02-PLAN.md (Responsive Layout Fixes)
 
-Progress: [██████████████████████████████████████████████████████████████████████████████░░] 12 plans complete
+Progress: [████████████████████████████████████████████████████████████████████████████████░] 13 plans complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 5.4m
-- Total execution time: 1.1 hours
+- Total execution time: 1.2 hours
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Progress: [███████████████████████
 | 3. BOM Core Flow | 4 | 24m | 6m |
 | 4. BOM Editing | 3 | 15m | 5m |
 | 5. Export & Print | 1 | 5m | 5m |
+| 6. Polish & Integration | 1 | 5m | 5m |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (4m), 04-02 (6m), 04-03 (5m), 05-01 (5m)
-- Trend: Stable (consistent 4-6m execution)
+- Last 5 plans: 04-02 (6m), 04-03 (5m), 05-01 (5m), 06-02 (5m)
+- Trend: Stable (consistent 5-6m execution)
 
 ## Accumulated Context
 
@@ -72,6 +73,9 @@ Recent decisions affecting current work:
 - RFC 4180 CSV escaping for export (handles commas, quotes, newlines)
 - Blob-based file download for cross-browser CSV export
 - Sanitized filename format: {name}-bom-{YYYY-MM-DD}.csv
+- Mobile-first responsive design: w-full base with sm: breakpoint overrides
+- sm: breakpoint (640px) as mobile/desktop transition point
+- Responsive padding: smaller on mobile (px-4 py-6), larger on desktop (sm:px-6 sm:py-8)
 
 ### Pending Todos
 
@@ -83,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-21
-Stopped at: Completed 05-01-PLAN.md (CSV Export)
+Last session: 2026-01-22
+Stopped at: Completed 06-02-PLAN.md (Responsive Layout Fixes)
 Resume file: None
