@@ -12,7 +12,7 @@
 
 <div class="min-h-screen bg-gray-50">
 	<Header />
-	<main class="max-w-6xl mx-auto px-6 py-8">
+	<main class="max-w-6xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
 		{@render children()}
 	</main>
 </div>
