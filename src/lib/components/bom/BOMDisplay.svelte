@@ -66,7 +66,7 @@
 
 <div class="mx-auto max-w-3xl">
 	<!-- Header Section -->
-	<div class="mb-6 flex items-start justify-between">
+	<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-gray-900">{bom.projectName}</h1>
 			<p class="mt-1 text-gray-600">
@@ -75,7 +75,7 @@
 				Generated {formatDate(bom.generatedAt)}
 			</p>
 		</div>
-		<div class="flex gap-2">
+		<div class="flex flex-wrap gap-2">
 			<button
 				type="button"
 				onclick={handleExport}

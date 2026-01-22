@@ -52,9 +52,9 @@
 
 <form
 	onsubmit={handleSubmit}
-	class="flex flex-wrap items-end gap-2 border-t border-gray-200 bg-gray-50 p-3"
+	class="flex flex-col gap-3 border-t border-gray-200 bg-gray-50 p-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-2"
 >
-	<div class="min-w-[150px] flex-1">
+	<div class="w-full sm:min-w-[150px] sm:flex-1">
 		<label for="add-item-name" class="mb-1 block text-xs font-medium text-gray-600">Name</label>
 		<input
 			id="add-item-name"
@@ -65,7 +65,7 @@
 			placeholder="Material name"
 		/>
 	</div>
-	<div class="w-20">
+	<div class="w-full sm:w-20">
 		<label for="add-item-qty" class="mb-1 block text-xs font-medium text-gray-600">Qty</label>
 		<input
 			id="add-item-qty"
@@ -76,7 +76,7 @@
 			class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
 		/>
 	</div>
-	<div class="w-24">
+	<div class="w-full sm:w-24">
 		<label for="add-item-unit" class="mb-1 block text-xs font-medium text-gray-600">Unit</label>
 		<select
 			id="add-item-unit"
@@ -88,7 +88,7 @@
 			{/each}
 		</select>
 	</div>
-	<div class="min-w-[100px] flex-1">
+	<div class="w-full sm:min-w-[100px] sm:flex-1">
 		<label for="add-item-notes" class="mb-1 block text-xs font-medium text-gray-600">Notes</label>
 		<input
 			id="add-item-notes"
@@ -98,7 +98,7 @@
 			placeholder="Optional"
 		/>
 	</div>
-	<div class="flex gap-2">
+	<div class="flex gap-2 sm:flex-none">
 		<button
 			type="submit"
 			class="rounded px-3 py-1.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
