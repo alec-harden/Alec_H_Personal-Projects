@@ -30,7 +30,6 @@
 	"dependencies": {
 		"@ai-sdk/anthropic": "^3.0.16",
 		"@ai-sdk/openai": "^3.0.12",
-		"@ai-sdk/svelte": "^4.0.42",
 		"@libsql/client": "^0.17.0",
 		"ai": "^6.0.42",
 		"drizzle-orm": "^0.45.1",
