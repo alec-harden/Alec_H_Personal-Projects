@@ -118,7 +118,7 @@ Plans:
 - [ ] 06-01: TBD
 
 ### Phase 7: Tech Debt Cleanup
-**Goal**: Remove orphaned chat interface files from Phase 2→3 architecture pivot
+**Goal**: Remove orphaned chat interface files from Phase 2->3 architecture pivot
 **Depends on**: Phase 6
 **Requirements**: None (tech debt cleanup)
 **Gap Closure**: Addresses tech debt from v1-MILESTONE-AUDIT.md
@@ -129,10 +129,10 @@ Plans:
   4. No broken imports or references remain
   5. Application builds and runs without errors
 **Research**: Unlikely (file deletion and import cleanup)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 07-01: TBD
+- [ ] 07-01-PLAN.md — Delete orphaned chat files and remove unused @ai-sdk/svelte dependency
 
 ## Progress
 
