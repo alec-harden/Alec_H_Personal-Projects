@@ -18,6 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: BOM Editing** - Edit quantities, add items, toggle visibility, categories
 - [x] **Phase 5: Export** - CSV export functionality
 - [x] **Phase 6: Polish & Integration** - End-to-end flow refinement
+- [ ] **Phase 7: Tech Debt Cleanup** - Remove orphaned chat interface from Phase 2→3 pivot
 
 ## Phase Details
 
@@ -116,10 +117,27 @@ Plans:
 Plans:
 - [ ] 06-01: TBD
 
+### Phase 7: Tech Debt Cleanup
+**Goal**: Remove orphaned chat interface files from Phase 2→3 architecture pivot
+**Depends on**: Phase 6
+**Requirements**: None (tech debt cleanup)
+**Gap Closure**: Addresses tech debt from v1-MILESTONE-AUDIT.md
+**Success Criteria** (what must be TRUE):
+  1. Orphaned /bom chat page removed
+  2. Orphaned /api/chat endpoint removed
+  3. Orphaned ChatMessage.svelte and ChatInput.svelte components removed
+  4. No broken imports or references remain
+  5. Application builds and runs without errors
+**Research**: Unlikely (file deletion and import cleanup)
+**Plans**: TBD
+
+Plans:
+- [ ] 07-01: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -129,7 +147,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 4. BOM Editing | 3/3 | ✓ Complete | 2026-01-21 |
 | 5. Export | 1/1 | ✓ Complete | 2026-01-21 |
 | 6. Polish & Integration | 2/2 | ✓ Complete | 2026-01-22 |
+| 7. Tech Debt Cleanup | 0/1 | ◯ Pending | — |
 
 ---
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-22*
+*Last updated: 2026-01-23*
