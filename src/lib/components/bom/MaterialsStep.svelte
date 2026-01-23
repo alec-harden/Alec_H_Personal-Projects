@@ -19,16 +19,31 @@
 
 	const { template, initialValues, onSubmit, onBack }: Props = $props();
 
-	// Initialize state (captured once at mount)
-	const initWoodSpecies = initialValues?.woodSpecies ?? template.suggestedWoods[0] ?? '';
-	const initFinish = initialValues?.finish ?? template.suggestedFinishes[0] ?? '';
-	const initNotes = initialValues?.additionalNotes ?? '';
+	// Derive default values reactively from props
+	const defaultWoodSpecies = $derived(initialValues?.woodSpecies ?? template.suggestedWoods[0] ?? '');
+	const defaultFinish = $derived(initialValues?.finish ?? template.suggestedFinishes[0] ?? '');
+	const defaultNotes = $derived(initialValues?.additionalNotes ?? '');
 
-	let woodSpecies = $state(initWoodSpecies);
+	let woodSpecies = $state('');
 	let customWood = $state('');
-	let finish = $state(initFinish);
+	let finish = $state('');
 	let customFinish = $state('');
-	let additionalNotes = $state(initNotes);
+	let additionalNotes = $state('');
+
+	// Track template to detect when user switches project type
+	let lastTemplateId = $state('');
+
+	// Sync state when props change (e.g., navigating back or switching template)
+	$effect(() => {
+		if (template.id !== lastTemplateId) {
+			woodSpecies = defaultWoodSpecies;
+			finish = defaultFinish;
+			additionalNotes = defaultNotes;
+			customWood = '';
+			customFinish = '';
+			lastTemplateId = template.id;
+		}
+	});
 
 	let errors = $state<Record<string, string>>({});
 

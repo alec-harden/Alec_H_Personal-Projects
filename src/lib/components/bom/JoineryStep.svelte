@@ -13,11 +13,19 @@
 
 	const { template, initialValues = [], onSubmit, onBack }: Props = $props();
 
-	// Initialize state (captured once at mount)
-	const initSelectedIds = [...initialValues];
-
-	let selectedIds = $state<string[]>(initSelectedIds);
+	let selectedIds = $state<string[]>([]);
 	let error = $state('');
+
+	// Track template to detect when user switches project type
+	let lastTemplateId = $state('');
+
+	// Sync state when props change (e.g., navigating back or switching template)
+	$effect(() => {
+		if (template.id !== lastTemplateId) {
+			selectedIds = [...initialValues];
+			lastTemplateId = template.id;
+		}
+	});
 
 	function toggleOption(id: string) {
 		if (selectedIds.includes(id)) {

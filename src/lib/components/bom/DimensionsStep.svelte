@@ -21,18 +21,33 @@
 
 	const { template, initialValues, onSubmit, onBack }: Props = $props();
 
-	// Initialize state from template defaults or initial values (captured once at mount)
-	const initLength = initialValues?.length ?? template.defaultDimensions.length.default;
-	const initWidth = initialValues?.width ?? template.defaultDimensions.width.default;
-	const initHeight = initialValues?.height ?? template.defaultDimensions.height?.default ?? 0;
-	const initUnit = initialValues?.unit ?? 'inches';
-	const initProjectName = initialValues?.projectName ?? '';
+	// Derive default values reactively from props
+	const defaultLength = $derived(initialValues?.length ?? template.defaultDimensions.length.default);
+	const defaultWidth = $derived(initialValues?.width ?? template.defaultDimensions.width.default);
+	const defaultHeight = $derived(initialValues?.height ?? template.defaultDimensions.height?.default ?? 0);
+	const defaultUnit = $derived(initialValues?.unit ?? 'inches');
+	const defaultProjectName = $derived(initialValues?.projectName ?? '');
 
-	let length = $state(initLength);
-	let width = $state(initWidth);
-	let height = $state(initHeight);
-	let unit = $state<'inches' | 'cm'>(initUnit);
-	let projectName = $state(initProjectName);
+	let length = $state(0);
+	let width = $state(0);
+	let height = $state(0);
+	let unit = $state<'inches' | 'cm'>('inches');
+	let projectName = $state('');
+
+	// Track template to detect when user switches project type
+	let lastTemplateId = $state('');
+
+	// Sync state when props change (e.g., navigating back or switching template)
+	$effect(() => {
+		if (template.id !== lastTemplateId) {
+			length = defaultLength;
+			width = defaultWidth;
+			height = defaultHeight;
+			unit = defaultUnit;
+			projectName = defaultProjectName;
+			lastTemplateId = template.id;
+		}
+	});
 
 	// Validation errors
 	let errors = $state<Record<string, string>>({});

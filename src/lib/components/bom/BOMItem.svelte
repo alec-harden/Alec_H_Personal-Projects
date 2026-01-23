@@ -16,8 +16,15 @@
 
 	// Edit mode state
 	let editing = $state(false);
-	let inputValue = $state(item.quantity.toString());
+	let inputValue = $state('');
 	let inputRef: HTMLInputElement | null = $state(null);
+
+	// Sync inputValue with item.quantity when not actively editing
+	$effect(() => {
+		if (!editing) {
+			inputValue = item.quantity.toString();
+		}
+	});
 
 	function startEditing() {
 		if (!editable || !onQuantityChange) return;

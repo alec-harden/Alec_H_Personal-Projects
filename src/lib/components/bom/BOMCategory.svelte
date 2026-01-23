@@ -17,11 +17,13 @@
 
 	const { category, items, defaultExpanded = true, onQuantityChange, onToggleVisibility, onAddItem }: Props = $props();
 
-	// Initialize state (captured once at mount)
-	const initExpanded = defaultExpanded;
-
-	let expanded = $state(initExpanded);
+	let expanded = $state(true);
 	let showAddForm = $state(false);
+
+	// Sync expanded state when defaultExpanded prop changes
+	$effect(() => {
+		expanded = defaultExpanded;
+	});
 
 	// Calculate visible/hidden item counts
 	const visibleCount = $derived(items.filter(i => !i.hidden).length);
