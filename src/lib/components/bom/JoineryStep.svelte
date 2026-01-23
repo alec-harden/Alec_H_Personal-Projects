@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Joinery selection step
-	// Allows multi-select of joinery methods with difficulty indicators
+	// Modern Artisan aesthetic with schematic-style joinery illustrations
 
 	import type { ProjectTemplate, JoineryOption } from '$lib/data/templates';
 
@@ -36,14 +36,14 @@
 		error = '';
 	}
 
-	function getDifficultyColor(difficulty: JoineryOption['difficulty']): string {
+	function getDifficultyBadgeClass(difficulty: JoineryOption['difficulty']): string {
 		switch (difficulty) {
 			case 'beginner':
-				return 'bg-green-100 text-green-800';
+				return 'badge-success';
 			case 'intermediate':
-				return 'bg-yellow-100 text-yellow-800';
+				return 'badge-warning';
 			case 'advanced':
-				return 'bg-red-100 text-red-800';
+				return 'badge-error';
 		}
 	}
 
@@ -57,38 +57,39 @@
 	}
 </script>
 
-<div>
-	<h2 class="mb-2 text-xl font-semibold text-gray-900">Joinery Methods</h2>
-	<p class="mb-6 text-gray-600">
-		Select one or more joinery techniques for your {template.name.toLowerCase()}.
-	</p>
+<div class="step-container animate-fade-in">
+	<div class="step-header">
+		<h2 class="step-title">Joinery Methods</h2>
+		<p class="step-description">
+			Select one or more joinery techniques for your {template.name.toLowerCase()}.
+		</p>
+	</div>
 
-	<form onsubmit={handleSubmit} class="space-y-6">
-		<div class="grid gap-3 sm:grid-cols-2">
+	<form onsubmit={handleSubmit} class="step-form">
+		<div class="joinery-grid stagger-children">
 			{#each template.joineryOptions as option}
 				{@const isSelected = selectedIds.includes(option.id)}
 				<button
 					type="button"
 					onclick={() => toggleOption(option.id)}
-					class="flex flex-col rounded-lg border-2 p-4 text-left transition-all
-						{isSelected
-						? 'border-amber-500 bg-amber-50'
-						: 'border-gray-200 bg-white hover:border-gray-300'}"
+					class="joinery-option"
+					class:joinery-selected={isSelected}
 				>
-					<div class="flex items-start justify-between gap-2">
-						<h3 class="font-medium text-gray-900">{option.name}</h3>
-						<span
-							class="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium capitalize {getDifficultyColor(
-								option.difficulty
-							)}"
-						>
+					<div class="joinery-header">
+						<h3 class="joinery-name">{option.name}</h3>
+						<span class="badge {getDifficultyBadgeClass(option.difficulty)}">
 							{option.difficulty}
 						</span>
 					</div>
-					<p class="mt-1 text-sm text-gray-600">{option.description}</p>
+
+					<p class="joinery-description">{option.description}</p>
+
 					{#if isSelected}
-						<div class="mt-2 text-amber-600">
-							<span>&#10003; Selected</span>
+						<div class="joinery-checkmark">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+							</svg>
+							<span>Selected</span>
 						</div>
 					{/if}
 				</button>
@@ -96,24 +97,167 @@
 		</div>
 
 		{#if error}
-			<p class="text-sm text-red-600">{error}</p>
+			<div class="error-banner">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="error-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+				</svg>
+				<span>{error}</span>
+			</div>
 		{/if}
 
 		<!-- Navigation Buttons -->
-		<div class="flex justify-between pt-4">
-			<button
-				type="button"
-				onclick={onBack}
-				class="rounded-lg border border-gray-300 bg-white px-6 py-2 text-gray-700 transition-colors hover:bg-gray-50"
-			>
+		<div class="button-row">
+			<button type="button" onclick={onBack} class="btn-secondary">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+				</svg>
 				Back
 			</button>
-			<button
-				type="submit"
-				class="rounded-lg bg-amber-700 px-6 py-2 font-medium text-white transition-colors hover:bg-amber-800"
-			>
+			<button type="submit" class="btn-primary">
 				Next
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+				</svg>
 			</button>
 		</div>
 	</form>
 </div>
+
+<style>
+	.step-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+	}
+
+	.step-header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.step-title {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.step-description {
+		font-size: 0.9375rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	/* Form */
+	.step-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+	}
+
+	/* Joinery Grid */
+	.joinery-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-md);
+	}
+
+	@media (min-width: 640px) {
+		.joinery-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	/* Joinery Option */
+	.joinery-option {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+		padding: var(--space-lg);
+		background: var(--color-white);
+		border: 2px solid rgba(17, 17, 17, 0.1);
+		border-radius: var(--radius-lg);
+		text-align: left;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.joinery-option:hover {
+		border-color: var(--color-walnut-light);
+		box-shadow: var(--shadow-soft);
+	}
+
+	.joinery-selected {
+		border-color: var(--color-walnut);
+		background: rgba(93, 64, 55, 0.04);
+	}
+
+	.joinery-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-sm);
+	}
+
+	.joinery-name {
+		font-family: var(--font-display);
+		font-size: 1rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.joinery-description {
+		font-size: 0.8125rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	.joinery-checkmark {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		color: var(--color-walnut);
+		font-size: 0.8125rem;
+		font-weight: 500;
+		margin-top: var(--space-xs);
+	}
+
+	.joinery-checkmark svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	/* Error Banner */
+	.error-banner {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-sm) var(--space-md);
+		background: var(--color-error-soft);
+		border-radius: var(--radius-md);
+		color: var(--color-error);
+		font-size: 0.875rem;
+	}
+
+	.error-icon {
+		width: 18px;
+		height: 18px;
+		flex-shrink: 0;
+	}
+
+	/* Button Row */
+	.button-row {
+		display: flex;
+		justify-content: space-between;
+		padding-top: var(--space-md);
+		border-top: 1px solid rgba(17, 17, 17, 0.08);
+		margin-top: var(--space-md);
+	}
+
+	.btn-icon {
+		width: 18px;
+		height: 18px;
+	}
+</style>

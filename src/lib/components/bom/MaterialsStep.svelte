@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Materials selection step
-	// Collects wood species, finish, and additional notes
+	// Modern Artisan aesthetic with elegant form styling
 
 	import type { ProjectTemplate } from '$lib/data/templates';
 
@@ -76,23 +76,23 @@
 	}
 </script>
 
-<div>
-	<h2 class="mb-2 text-xl font-semibold text-gray-900">Materials &amp; Finish</h2>
-	<p class="mb-6 text-gray-600">
-		Specify wood species and finish for your {template.name.toLowerCase()}.
-	</p>
+<div class="step-container animate-fade-in">
+	<div class="step-header">
+		<h2 class="step-title">Materials & Finish</h2>
+		<p class="step-description">
+			Specify wood species and finish for your {template.name.toLowerCase()}.
+		</p>
+	</div>
 
-	<form onsubmit={handleSubmit} class="space-y-6">
+	<form onsubmit={handleSubmit} class="step-form">
 		<!-- Wood Species -->
-		<div>
-			<label for="woodSpecies" class="block text-sm font-medium text-gray-700">
-				Wood Species
-			</label>
+		<div class="form-group">
+			<label for="woodSpecies" class="label">Wood Species</label>
 			<select
 				id="woodSpecies"
 				bind:value={woodSpecies}
-				class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20
-					{errors.woodSpecies ? 'border-red-500' : ''}"
+				class="input-field select-field"
+				class:input-error={errors.woodSpecies}
 			>
 				{#each template.suggestedWoods as wood}
 					<option value={wood}>{wood}</option>
@@ -104,24 +104,22 @@
 					type="text"
 					bind:value={customWood}
 					placeholder="Enter wood species"
-					class="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+					class="input-field custom-input"
 				/>
 			{/if}
 			{#if errors.woodSpecies}
-				<p class="mt-1 text-xs text-red-600">{errors.woodSpecies}</p>
+				<p class="error-message">{errors.woodSpecies}</p>
 			{/if}
 		</div>
 
 		<!-- Finish Type -->
-		<div>
-			<label for="finish" class="block text-sm font-medium text-gray-700">
-				Finish Type
-			</label>
+		<div class="form-group">
+			<label for="finish" class="label">Finish Type</label>
 			<select
 				id="finish"
 				bind:value={finish}
-				class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20
-					{errors.finish ? 'border-red-500' : ''}"
+				class="input-field select-field"
+				class:input-error={errors.finish}
 			>
 				{#each template.suggestedFinishes as finishOption}
 					<option value={finishOption}>{finishOption}</option>
@@ -133,43 +131,119 @@
 					type="text"
 					bind:value={customFinish}
 					placeholder="Enter finish type"
-					class="mt-2 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+					class="input-field custom-input"
 				/>
 			{/if}
 			{#if errors.finish}
-				<p class="mt-1 text-xs text-red-600">{errors.finish}</p>
+				<p class="error-message">{errors.finish}</p>
 			{/if}
 		</div>
 
 		<!-- Additional Notes -->
-		<div>
-			<label for="additionalNotes" class="block text-sm font-medium text-gray-700">
-				Additional Notes (optional)
+		<div class="form-group">
+			<label for="additionalNotes" class="label">
+				Additional Notes <span class="label-optional">(optional)</span>
 			</label>
 			<textarea
 				id="additionalNotes"
 				bind:value={additionalNotes}
-				rows="3"
+				rows="4"
 				placeholder="Any special requirements, modifications, or details..."
-				class="mt-1 block w-full resize-none rounded-lg border border-gray-300 px-4 py-2 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+				class="input-field textarea-field"
 			></textarea>
 		</div>
 
 		<!-- Navigation Buttons -->
-		<div class="flex justify-between pt-4">
-			<button
-				type="button"
-				onclick={onBack}
-				class="rounded-lg border border-gray-300 bg-white px-6 py-2 text-gray-700 transition-colors hover:bg-gray-50"
-			>
+		<div class="button-row">
+			<button type="button" onclick={onBack} class="btn-secondary">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+				</svg>
 				Back
 			</button>
-			<button
-				type="submit"
-				class="rounded-lg bg-amber-700 px-6 py-2 font-medium text-white transition-colors hover:bg-amber-800"
-			>
+			<button type="submit" class="btn-primary">
 				Generate BOM
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+				</svg>
 			</button>
 		</div>
 	</form>
 </div>
+
+<style>
+	.step-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+	}
+
+	.step-header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.step-title {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.step-description {
+		font-size: 0.9375rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	/* Form */
+	.step-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+	}
+
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.label-optional {
+		font-weight: 400;
+		color: var(--color-ink-muted);
+	}
+
+	/* Custom Input */
+	.custom-input {
+		margin-top: var(--space-sm);
+	}
+
+	/* Textarea */
+	.textarea-field {
+		resize: none;
+		min-height: 100px;
+	}
+
+	/* Error Message */
+	.error-message {
+		font-size: 0.75rem;
+		color: var(--color-error);
+		margin: 0;
+	}
+
+	/* Button Row */
+	.button-row {
+		display: flex;
+		justify-content: space-between;
+		padding-top: var(--space-md);
+		border-top: 1px solid rgba(17, 17, 17, 0.08);
+		margin-top: var(--space-md);
+	}
+
+	.btn-icon {
+		width: 18px;
+		height: 18px;
+	}
+</style>

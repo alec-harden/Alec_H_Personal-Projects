@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Project type selection step
-	// Displays template cards for user to select a project type
+	// Modern Artisan aesthetic with schematic-style project icons
 
 	import type { ProjectTemplate } from '$lib/data/templates';
 
@@ -12,21 +12,149 @@
 	let { templates, onSelect }: Props = $props();
 </script>
 
-<div>
-	<h2 class="mb-2 text-xl font-semibold text-gray-900">What are you building?</h2>
-	<p class="mb-6 text-gray-600">Select a project type to get started with customized options.</p>
+<div class="step-container animate-fade-in">
+	<div class="step-header">
+		<h2 class="step-title">What are you building?</h2>
+		<p class="step-description">Select a project type to get started with customized options.</p>
+	</div>
 
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="template-grid stagger-children">
 		{#each templates as template}
 			<button
 				type="button"
 				onclick={() => onSelect(template)}
-				class="block rounded-xl border border-gray-200 bg-white p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500"
+				class="template-card artisan-card sanded-surface"
 			>
-				<div class="mb-3 text-4xl">{@html template.icon}</div>
-				<h3 class="text-lg font-semibold text-gray-900">{template.name}</h3>
-				<p class="mt-1 text-sm text-gray-600">{template.description}</p>
+				<!-- Schematic-style icon placeholder -->
+				<div class="template-icon illustration-placeholder">
+					<span class="icon-text">{@html template.icon}</span>
+				</div>
+
+				<div class="template-content">
+					<h3 class="template-name">{template.name}</h3>
+					<p class="template-description">{template.description}</p>
+				</div>
+
+				<div class="template-arrow">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+					</svg>
+				</div>
 			</button>
 		{/each}
 	</div>
 </div>
+
+<style>
+	.step-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+	}
+
+	.step-header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.step-title {
+		font-family: var(--font-display);
+		font-size: 1.5rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.step-description {
+		font-size: 0.9375rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	/* Template Grid */
+	.template-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-md);
+	}
+
+	@media (min-width: 640px) {
+		.template-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.template-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	/* Template Card */
+	.template-card {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding: var(--space-lg);
+		text-align: left;
+		cursor: pointer;
+		position: relative;
+		border: none;
+	}
+
+	.template-card:focus-visible {
+		outline: 2px solid var(--color-walnut);
+		outline-offset: 2px;
+	}
+
+	/* Icon */
+	.template-icon {
+		width: 64px;
+		height: 64px;
+		font-size: 2rem;
+	}
+
+	.icon-text {
+		filter: grayscale(20%);
+	}
+
+	/* Content */
+	.template-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+		flex: 1;
+	}
+
+	.template-name {
+		font-family: var(--font-display);
+		font-size: 1.125rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.template-description {
+		font-size: 0.8125rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	/* Arrow */
+	.template-arrow {
+		position: absolute;
+		bottom: var(--space-lg);
+		right: var(--space-lg);
+		width: 20px;
+		height: 20px;
+		color: var(--color-walnut-light);
+		opacity: 0;
+		transform: translateX(-4px);
+		transition: all var(--transition-fast);
+	}
+
+	.template-card:hover .template-arrow {
+		opacity: 1;
+		transform: translateX(0);
+	}
+</style>

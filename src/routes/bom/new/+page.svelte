@@ -1,6 +1,6 @@
 <script lang="ts">
 	// New BOM page - integrates wizard and display components
-	// Manages the full flow: wizard -> loading -> result
+	// Modern Artisan aesthetic with warm wood-toned styling
 
 	import BOMWizard from '$lib/components/bom/BOMWizard.svelte';
 	import BOMDisplay from '$lib/components/bom/BOMDisplay.svelte';
@@ -107,64 +107,257 @@
 	<title>New BOM | WoodShop Toolbox</title>
 </svelte:head>
 
-{#if currentView === 'wizard'}
-	<div class="mb-6">
-		<a href="/" class="text-amber-700 hover:text-amber-800 text-sm mb-2 inline-block">
-			&larr; Back to Dashboard
-		</a>
-		<h1 class="text-2xl font-bold text-gray-900">Create New BOM</h1>
-		<p class="text-gray-600 mt-1">
-			Follow the guided steps to generate your bill of materials.
-		</p>
-	</div>
+<div class="bom-new-page animate-fade-in">
+	{#if currentView === 'wizard'}
+		<header class="page-header">
+			<a href="/" class="back-link">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="back-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+				</svg>
+				Back to Dashboard
+			</a>
+			<h1 class="page-title">Create New BOM</h1>
+			<p class="page-description">
+				Follow the guided steps to generate your bill of materials.
+			</p>
+		</header>
 
-	{#if error}
-		<div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
-			<p class="font-medium text-red-800">Generation Failed</p>
-			<p class="mt-1 text-sm text-red-700">{error}</p>
-			<div class="mt-3 flex gap-2">
-				{#if lastProjectDetails}
-					<button
-						type="button"
-						onclick={handleRetry}
-						class="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700"
-					>
-						Retry
+		{#if error}
+			<div class="error-banner">
+				<div class="error-icon">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+					</svg>
+				</div>
+				<div class="error-content">
+					<p class="error-title">Generation Failed</p>
+					<p class="error-detail">{error}</p>
+				</div>
+				<div class="error-actions">
+					{#if lastProjectDetails}
+						<button type="button" onclick={handleRetry} class="btn-primary btn-sm">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+							</svg>
+							Retry
+						</button>
+					{/if}
+					<button type="button" onclick={() => (error = null)} class="btn-ghost btn-sm">
+						Dismiss
 					</button>
-				{/if}
-				<button
-					type="button"
-					onclick={() => (error = null)}
-					class="text-sm font-medium text-red-700 underline hover:no-underline"
-				>
-					Dismiss
-				</button>
+				</div>
 			</div>
-		</div>
-	{/if}
-
-	<BOMWizard onComplete={handleWizardComplete} />
-{:else if currentView === 'loading'}
-	<div class="flex min-h-[400px] flex-col items-center justify-center">
-		<div class="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-amber-200 border-t-amber-600"></div>
-		<p class="text-lg font-medium text-gray-900">Generating your bill of materials...</p>
-		<p class="mt-1 text-gray-600">This may take a few moments.</p>
-		{#if showExtendedWait}
-			<p class="mt-4 text-sm text-amber-700">Taking longer than usual - still working...</p>
 		{/if}
-	</div>
-{:else if currentView === 'result' && generatedBOM}
-	<div class="mb-6">
-		<a href="/" class="text-amber-700 hover:text-amber-800 text-sm mb-2 inline-block">
-			&larr; Back to Dashboard
-		</a>
-	</div>
 
-	<BOMDisplay
-		bom={generatedBOM}
-		onStartOver={handleStartOver}
-		onQuantityChange={handleQuantityChange}
-		onToggleVisibility={handleToggleVisibility}
-		onAddItem={handleAddItem}
-	/>
-{/if}
+		<BOMWizard onComplete={handleWizardComplete} />
+
+	{:else if currentView === 'loading'}
+		<div class="loading-state">
+			<div class="loading-spinner">
+				<svg viewBox="0 0 50 50" class="spinner-svg">
+					<circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="spinner-track" />
+					<circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="spinner-fill" />
+				</svg>
+			</div>
+			<p class="loading-title">Generating your bill of materials...</p>
+			<p class="loading-hint">This may take a few moments.</p>
+			{#if showExtendedWait}
+				<p class="loading-extended">Taking longer than usual - still working...</p>
+			{/if}
+		</div>
+
+	{:else if currentView === 'result' && generatedBOM}
+		<header class="page-header">
+			<a href="/" class="back-link">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="back-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+				</svg>
+				Back to Dashboard
+			</a>
+		</header>
+
+		<BOMDisplay
+			bom={generatedBOM}
+			onStartOver={handleStartOver}
+			onQuantityChange={handleQuantityChange}
+			onToggleVisibility={handleToggleVisibility}
+			onAddItem={handleAddItem}
+		/>
+	{/if}
+</div>
+
+<style>
+	.bom-new-page {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	/* Header */
+	.page-header {
+		margin-bottom: var(--space-xl);
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		font-size: 0.875rem;
+		color: var(--color-walnut);
+		text-decoration: none;
+		margin-bottom: var(--space-sm);
+		transition: color var(--transition-fast);
+	}
+
+	.back-link:hover {
+		color: var(--color-walnut-dark);
+	}
+
+	.back-icon {
+		width: 16px;
+		height: 16px;
+	}
+
+	.page-title {
+		font-family: var(--font-display);
+		font-size: 1.75rem;
+		color: var(--color-ink);
+		margin: 0 0 var(--space-xs) 0;
+	}
+
+	.page-description {
+		font-size: 0.9375rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	/* Error Banner */
+	.error-banner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: var(--space-md);
+		padding: var(--space-lg);
+		background: var(--color-error-soft);
+		border: 1px solid var(--color-error);
+		border-radius: var(--radius-lg);
+		margin-bottom: var(--space-xl);
+	}
+
+	.error-icon {
+		flex-shrink: 0;
+		width: 24px;
+		height: 24px;
+		color: var(--color-error);
+	}
+
+	.error-icon svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.error-content {
+		flex: 1;
+		min-width: 200px;
+	}
+
+	.error-title {
+		font-weight: 600;
+		color: var(--color-error);
+		margin: 0 0 var(--space-xs) 0;
+	}
+
+	.error-detail {
+		font-size: 0.875rem;
+		color: var(--color-ink-soft);
+		margin: 0;
+	}
+
+	.error-actions {
+		display: flex;
+		gap: var(--space-sm);
+		flex-wrap: wrap;
+	}
+
+	.btn-sm {
+		padding: var(--space-xs) var(--space-md);
+		font-size: 0.8125rem;
+	}
+
+	.btn-icon {
+		width: 14px;
+		height: 14px;
+	}
+
+	/* Loading State */
+	.loading-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 400px;
+		text-align: center;
+	}
+
+	.loading-spinner {
+		width: 56px;
+		height: 56px;
+		margin-bottom: var(--space-lg);
+	}
+
+	.spinner-svg {
+		width: 100%;
+		height: 100%;
+		animation: rotate 2s linear infinite;
+	}
+
+	.spinner-track {
+		stroke: var(--color-paper-dark);
+	}
+
+	.spinner-fill {
+		stroke: var(--color-walnut);
+		stroke-dasharray: 80, 200;
+		stroke-dashoffset: 0;
+		animation: dash 1.5s ease-in-out infinite;
+	}
+
+	@keyframes rotate {
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes dash {
+		0% {
+			stroke-dasharray: 1, 200;
+			stroke-dashoffset: 0;
+		}
+		50% {
+			stroke-dasharray: 80, 200;
+			stroke-dashoffset: -35;
+		}
+		100% {
+			stroke-dasharray: 80, 200;
+			stroke-dashoffset: -125;
+		}
+	}
+
+	.loading-title {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--color-ink);
+		margin: 0 0 var(--space-xs) 0;
+	}
+
+	.loading-hint {
+		font-size: 0.9375rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	.loading-extended {
+		margin-top: var(--space-lg);
+		font-size: 0.875rem;
+		color: var(--color-walnut);
+	}
+</style>

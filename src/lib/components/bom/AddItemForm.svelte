@@ -1,6 +1,6 @@
 <script lang="ts">
 	// AddItemForm component
-	// Inline form for adding custom materials to the BOM
+	// Modern Artisan aesthetic with inline form styling
 
 	import type { BOMCategory, BOMItem } from '$lib/types/bom';
 
@@ -50,67 +50,155 @@
 	}
 </script>
 
-<form
-	onsubmit={handleSubmit}
-	class="flex flex-col gap-3 border-t border-gray-200 bg-gray-50 p-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-2"
->
-	<div class="w-full sm:min-w-[150px] sm:flex-1">
-		<label for="add-item-name" class="mb-1 block text-xs font-medium text-gray-600">Name</label>
-		<input
-			id="add-item-name"
-			type="text"
-			bind:value={name}
-			required
-			class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-			placeholder="Material name"
-		/>
+<form onsubmit={handleSubmit} class="add-form">
+	<div class="form-row">
+		<div class="form-field form-field-name">
+			<label for="add-item-name" class="field-label">Name</label>
+			<input
+				id="add-item-name"
+				type="text"
+				bind:value={name}
+				required
+				class="input-field"
+				placeholder="Material name"
+			/>
+		</div>
+
+		<div class="form-field form-field-qty">
+			<label for="add-item-qty" class="field-label">Qty</label>
+			<input
+				id="add-item-qty"
+				type="number"
+				bind:value={quantity}
+				min="1"
+				required
+				class="input-field"
+			/>
+		</div>
+
+		<div class="form-field form-field-unit">
+			<label for="add-item-unit" class="field-label">Unit</label>
+			<select id="add-item-unit" bind:value={unit} class="input-field select-field">
+				{#each unitOptions[category] as opt}
+					<option value={opt}>{opt}</option>
+				{/each}
+			</select>
+		</div>
+
+		<div class="form-field form-field-notes">
+			<label for="add-item-notes" class="field-label">Notes</label>
+			<input
+				id="add-item-notes"
+				type="text"
+				bind:value={notes}
+				class="input-field"
+				placeholder="Optional"
+			/>
+		</div>
 	</div>
-	<div class="w-full sm:w-20">
-		<label for="add-item-qty" class="mb-1 block text-xs font-medium text-gray-600">Qty</label>
-		<input
-			id="add-item-qty"
-			type="number"
-			bind:value={quantity}
-			min="1"
-			required
-			class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-		/>
-	</div>
-	<div class="w-full sm:w-24">
-		<label for="add-item-unit" class="mb-1 block text-xs font-medium text-gray-600">Unit</label>
-		<select
-			id="add-item-unit"
-			bind:value={unit}
-			class="w-full rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-		>
-			{#each unitOptions[category] as opt}
-				<option value={opt}>{opt}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="w-full sm:min-w-[100px] sm:flex-1">
-		<label for="add-item-notes" class="mb-1 block text-xs font-medium text-gray-600">Notes</label>
-		<input
-			id="add-item-notes"
-			type="text"
-			bind:value={notes}
-			class="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-			placeholder="Optional"
-		/>
-	</div>
-	<div class="flex gap-2 sm:flex-none">
-		<button
-			type="submit"
-			class="rounded px-3 py-1.5 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
-		>
+
+	<div class="form-actions">
+		<button type="submit" class="btn-primary btn-sm">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+			</svg>
 			Add
 		</button>
-		<button
-			type="button"
-			onclick={onCancel}
-			class="rounded bg-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-		>
+		<button type="button" onclick={onCancel} class="btn-secondary btn-sm">
 			Cancel
 		</button>
 	</div>
 </form>
+
+<style>
+	.add-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+		padding: var(--space-md) var(--space-lg);
+		background: var(--color-paper);
+		border-top: 1px solid rgba(17, 17, 17, 0.08);
+	}
+
+	.form-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+	}
+
+	.form-field {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.form-field-name {
+		flex: 1;
+		min-width: 150px;
+	}
+
+	.form-field-qty {
+		width: 70px;
+	}
+
+	.form-field-unit {
+		width: 90px;
+	}
+
+	.form-field-notes {
+		flex: 1;
+		min-width: 100px;
+	}
+
+	.field-label {
+		font-size: 0.6875rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--color-ink-muted);
+	}
+
+	.form-actions {
+		display: flex;
+		gap: var(--space-sm);
+		justify-content: flex-end;
+	}
+
+	.btn-sm {
+		padding: var(--space-xs) var(--space-md);
+		font-size: 0.8125rem;
+	}
+
+	.btn-icon {
+		width: 14px;
+		height: 14px;
+	}
+
+	/* Mobile stacking */
+	@media (max-width: 640px) {
+		.add-form {
+			padding: var(--space-md);
+		}
+
+		.form-row {
+			flex-direction: column;
+		}
+
+		.form-field-name,
+		.form-field-qty,
+		.form-field-unit,
+		.form-field-notes {
+			width: 100%;
+			min-width: unset;
+		}
+
+		.form-actions {
+			flex-direction: column;
+		}
+
+		.form-actions button {
+			width: 100%;
+			justify-content: center;
+		}
+	}
+</style>

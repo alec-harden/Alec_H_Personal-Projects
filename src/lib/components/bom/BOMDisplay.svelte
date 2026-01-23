@@ -1,6 +1,6 @@
 <script lang="ts">
 	// BOM Display container component
-	// Main container for showing a complete Bill of Materials
+	// Modern Artisan aesthetic with warm card styling
 
 	import type { BOM, BOMCategory as BOMCategoryType, BOMItem } from '$lib/types/bom';
 	import BOMCategory from './BOMCategory.svelte';
@@ -64,45 +64,42 @@
 	}
 </script>
 
-<div class="mx-auto max-w-3xl">
+<div class="bom-display animate-fade-in">
 	<!-- Header Section -->
-	<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-		<div>
-			<h1 class="text-2xl font-bold text-gray-900">{bom.projectName}</h1>
-			<p class="mt-1 text-gray-600">
-				<span class="capitalize">{bom.projectType}</span>
-				&middot;
-				Generated {formatDate(bom.generatedAt)}
+	<header class="bom-header">
+		<div class="header-content">
+			<h1 class="bom-title">{bom.projectName}</h1>
+			<p class="bom-meta">
+				<span class="project-type">{bom.projectType}</span>
+				<span class="meta-dot">&middot;</span>
+				<span class="generated-date">Generated {formatDate(bom.generatedAt)}</span>
 			</p>
 		</div>
-		<div class="flex flex-wrap gap-2">
-			<button
-				type="button"
-				onclick={handleExport}
-				class="flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
-			>
-				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+		<div class="header-actions">
+			<button type="button" onclick={handleExport} class="btn-primary">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
 				</svg>
 				Export CSV
 			</button>
-			<button
-				type="button"
-				onclick={onStartOver}
-				class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
-			>
+			<button type="button" onclick={onStartOver} class="btn-secondary">
 				Start Over
 			</button>
 		</div>
-	</div>
+	</header>
 
 	<!-- Categories -->
 	{#if bom.items.length === 0}
-		<div class="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-			<p class="text-gray-600">No items in this bill of materials.</p>
+		<div class="empty-state">
+			<div class="empty-icon">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+					<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+			</div>
+			<p class="empty-text">No items in this bill of materials.</p>
 		</div>
 	{:else}
-		<div class="space-y-4">
+		<div class="categories-list stagger-children">
 			{#each categoryOrder as category}
 				{@const items = groupedItems.get(category) ?? []}
 				{#if items.length > 0}
@@ -119,14 +116,156 @@
 	{/if}
 
 	<!-- Summary Footer -->
-	<div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-		<p class="text-sm text-gray-600">
-			{#if hasHiddenItems}
-				<span class="font-medium">{visibleItems} visible</span> of {totalItems} total items
-			{:else}
-				<span class="font-medium">{totalItems} total items</span>
-			{/if}
-			across {categoriesWithItems} categories
-		</p>
-	</div>
+	<footer class="bom-footer">
+		<div class="summary-stat">
+			<span class="stat-value">
+				{#if hasHiddenItems}
+					{visibleItems} <span class="stat-label">visible of</span> {totalItems}
+				{:else}
+					{totalItems}
+				{/if}
+			</span>
+			<span class="stat-label">total items</span>
+		</div>
+		<div class="summary-divider"></div>
+		<div class="summary-stat">
+			<span class="stat-value">{categoriesWithItems}</span>
+			<span class="stat-label">categories</span>
+		</div>
+	</footer>
 </div>
+
+<style>
+	.bom-display {
+		max-width: 800px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+	}
+
+	/* Header */
+	.bom-header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+	}
+
+	@media (min-width: 640px) {
+		.bom-header {
+			flex-direction: row;
+			align-items: flex-start;
+			justify-content: space-between;
+		}
+	}
+
+	.header-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.bom-title {
+		font-family: var(--font-display);
+		font-size: 1.75rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.bom-meta {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		font-size: 0.875rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	.project-type {
+		text-transform: capitalize;
+	}
+
+	.meta-dot {
+		opacity: 0.5;
+	}
+
+	.header-actions {
+		display: flex;
+		gap: var(--space-sm);
+		flex-wrap: wrap;
+	}
+
+	/* Categories */
+	.categories-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	/* Empty State */
+	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-md);
+		padding: var(--space-3xl);
+		background: var(--color-white);
+		border: 1px solid rgba(17, 17, 17, 0.08);
+		border-radius: var(--radius-lg);
+		text-align: center;
+	}
+
+	.empty-icon {
+		width: 48px;
+		height: 48px;
+		color: var(--color-ink-muted);
+		opacity: 0.5;
+	}
+
+	.empty-text {
+		font-size: 0.9375rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	/* Footer */
+	.bom-footer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-lg);
+		padding: var(--space-md) var(--space-lg);
+		background: var(--color-white);
+		border: 1px solid rgba(17, 17, 17, 0.08);
+		border-radius: var(--radius-lg);
+	}
+
+	.summary-stat {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-xs);
+	}
+
+	.stat-value {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--color-ink);
+	}
+
+	.stat-label {
+		font-size: 0.8125rem;
+		color: var(--color-ink-muted);
+	}
+
+	.summary-divider {
+		width: 1px;
+		height: 24px;
+		background: rgba(17, 17, 17, 0.1);
+	}
+
+	.btn-icon {
+		width: 18px;
+		height: 18px;
+	}
+</style>

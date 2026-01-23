@@ -1,7 +1,6 @@
 <script lang="ts">
 	// BOM Item display component
-	// Renders a single line item from the Bill of Materials
-	// Supports inline quantity editing
+	// Modern Artisan aesthetic with refined item rows
 
 	import type { BOMItem } from '$lib/types/bom';
 
@@ -65,21 +64,29 @@
 	}
 </script>
 
-<div
-	class="flex items-center justify-between border-b border-gray-100 px-4 py-3 last:border-b-0 hover:bg-gray-50/50 {item.hidden ? 'opacity-50' : ''}"
->
-	<div class="flex items-center gap-3">
+<div class="item-row" class:item-hidden={item.hidden}>
+	<div class="item-left">
 		{#if onToggleVisibility}
-			<input
-				type="checkbox"
-				checked={!item.hidden}
-				onchange={() => onToggleVisibility(item.id)}
-				class="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
-				aria-label="Include in BOM"
-			/>
+			<label class="checkbox-wrapper">
+				<input
+					type="checkbox"
+					checked={!item.hidden}
+					onchange={() => onToggleVisibility(item.id)}
+					class="checkbox-input"
+					aria-label="Include in BOM"
+				/>
+				<span class="checkbox-custom">
+					{#if !item.hidden}
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+						</svg>
+					{/if}
+				</span>
+			</label>
 		{/if}
+
 		{#if editing}
-			<span class="min-w-[80px] text-sm font-medium text-gray-700">
+			<span class="quantity-edit">
 				<input
 					bind:this={inputRef}
 					type="number"
@@ -87,25 +94,199 @@
 					bind:value={inputValue}
 					onblur={commitEdit}
 					onkeydown={handleKeydown}
-					class="w-14 rounded border border-gray-300 px-2 py-0.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+					class="quantity-input"
 				/>
-				{item.unit}
+				<span class="unit-label">{item.unit}</span>
 			</span>
 		{:else}
 			<button
 				type="button"
 				onclick={startEditing}
 				disabled={!editable || !onQuantityChange}
-				class="min-w-[80px] text-left text-sm font-medium text-gray-700
-					{editable && onQuantityChange ? 'cursor-pointer rounded px-1 -ml-1 hover:bg-amber-100/50 transition-colors' : ''}"
+				class="quantity-display"
+				class:quantity-editable={editable && onQuantityChange}
 			>
-				{item.quantity}
-				{item.unit}
+				<span class="quantity-value">{item.quantity}</span>
+				<span class="unit-label">{item.unit}</span>
 			</button>
 		{/if}
-		<span class={item.hidden ? 'line-through text-gray-400' : 'text-gray-900'}>{item.name}</span>
+
+		<span class="item-name" class:item-name-hidden={item.hidden}>{item.name}</span>
 	</div>
+
 	{#if item.notes}
-		<span class="text-sm text-gray-500 italic">{item.notes}</span>
+		<span class="item-notes">{item.notes}</span>
 	{/if}
 </div>
+
+<style>
+	.item-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: var(--space-sm) var(--space-lg);
+		border-bottom: 1px solid rgba(17, 17, 17, 0.06);
+		transition: background-color var(--transition-fast);
+	}
+
+	.item-row:last-child {
+		border-bottom: none;
+	}
+
+	.item-row:hover {
+		background: rgba(17, 17, 17, 0.02);
+	}
+
+	.item-hidden {
+		opacity: 0.5;
+	}
+
+	.item-left {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+	}
+
+	/* Custom Checkbox */
+	.checkbox-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
+
+	.checkbox-input {
+		position: absolute;
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	.checkbox-custom {
+		width: 18px;
+		height: 18px;
+		border: 2px solid var(--color-paper-dark);
+		border-radius: var(--radius-sm);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all var(--transition-fast);
+		background: var(--color-white);
+	}
+
+	.checkbox-input:checked + .checkbox-custom {
+		background: var(--color-walnut);
+		border-color: var(--color-walnut);
+	}
+
+	.checkbox-custom svg {
+		width: 12px;
+		height: 12px;
+		color: var(--color-white);
+	}
+
+	.checkbox-input:focus + .checkbox-custom {
+		box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.15);
+	}
+
+	/* Quantity Display */
+	.quantity-display {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-xs);
+		min-width: 80px;
+		padding: var(--space-xs) var(--space-sm);
+		margin-left: calc(var(--space-sm) * -1);
+		background: none;
+		border: none;
+		border-radius: var(--radius-sm);
+		font-size: 0.875rem;
+		text-align: left;
+		cursor: default;
+		transition: background-color var(--transition-fast);
+	}
+
+	.quantity-editable {
+		cursor: pointer;
+	}
+
+	.quantity-editable:hover {
+		background: rgba(93, 64, 55, 0.08);
+	}
+
+	.quantity-value {
+		font-family: var(--font-display);
+		font-weight: 500;
+		color: var(--color-ink);
+	}
+
+	.unit-label {
+		font-size: 0.75rem;
+		color: var(--color-ink-muted);
+	}
+
+	/* Quantity Edit Mode */
+	.quantity-edit {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-xs);
+		min-width: 80px;
+	}
+
+	.quantity-input {
+		width: 56px;
+		padding: var(--space-xs) var(--space-sm);
+		border: 1px solid var(--color-walnut);
+		border-radius: var(--radius-sm);
+		font-size: 0.875rem;
+		font-family: var(--font-display);
+		background: var(--color-white);
+		color: var(--color-ink);
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.1);
+	}
+
+	.quantity-input::-webkit-inner-spin-button,
+	.quantity-input::-webkit-outer-spin-button {
+		opacity: 1;
+	}
+
+	/* Item Name */
+	.item-name {
+		font-size: 0.9375rem;
+		color: var(--color-ink);
+	}
+
+	.item-name-hidden {
+		text-decoration: line-through;
+		color: var(--color-ink-muted);
+	}
+
+	/* Item Notes */
+	.item-notes {
+		font-size: 0.8125rem;
+		font-style: italic;
+		color: var(--color-ink-muted);
+		max-width: 200px;
+		text-align: right;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Mobile responsiveness */
+	@media (max-width: 640px) {
+		.item-row {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-xs);
+			padding: var(--space-md) var(--space-md);
+		}
+
+		.item-notes {
+			max-width: 100%;
+			text-align: left;
+			padding-left: calc(18px + var(--space-md) + 80px + var(--space-md));
+		}
+	}
+</style>
