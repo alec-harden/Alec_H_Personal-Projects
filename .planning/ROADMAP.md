@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: BOM Editing** - Edit quantities, add items, toggle visibility, categories
 - [x] **Phase 5: Export** - CSV export functionality
 - [x] **Phase 6: Polish & Integration** - End-to-end flow refinement
-- [ ] **Phase 7: Tech Debt Cleanup** - Remove orphaned chat interface from Phase 2→3 pivot
+- [x] **Phase 7: Tech Debt Cleanup** - Remove orphaned chat interface from Phase 2→3 pivot
 
 ## Phase Details
 
@@ -132,7 +132,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 07-01-PLAN.md — Delete orphaned chat files and remove unused @ai-sdk/svelte dependency
+- [x] 07-01-PLAN.md — Delete orphaned chat files and remove unused @ai-sdk/svelte dependency
 
 ## Progress
 
@@ -147,7 +147,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 4. BOM Editing | 3/3 | ✓ Complete | 2026-01-21 |
 | 5. Export | 1/1 | ✓ Complete | 2026-01-21 |
 | 6. Polish & Integration | 2/2 | ✓ Complete | 2026-01-22 |
-| 7. Tech Debt Cleanup | 0/1 | ◯ Pending | — |
+| 7. Tech Debt Cleanup | 1/1 | ✓ Complete | 2026-01-23 |
 
 ---
 *Roadmap created: 2026-01-20*
