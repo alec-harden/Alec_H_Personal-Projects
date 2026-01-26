@@ -7,18 +7,18 @@
 
 | Phase | Name | Status | Requirements |
 |-------|------|--------|--------------|
-| 1 | Foundation | ✓ Complete | v1.0 |
-| 2 | AI Integration | ✓ Complete | v1.0 |
-| 3 | BOM Core Flow | ✓ Complete | v1.0 |
-| 4 | BOM Editing | ✓ Complete | v1.0 |
-| 5 | Export | ✓ Complete | v1.0 |
-| 6 | Polish & Integration | ✓ Complete | v1.0 |
-| 7 | Tech Debt Cleanup | ✓ Complete | v1.0 |
-| 8 | Authentication Foundation | ○ Pending | AUTH-01 to AUTH-04 |
-| 9 | Project Management | ○ Pending | PROJ-01 to PROJ-04 |
-| 10 | BOM Persistence | ○ Pending | BOM-01 to BOM-04 |
-| 11 | Template Management | ○ Pending | TMPL-01 to TMPL-05 |
-| 12 | CSV Import | ○ Pending | CSV-01 to CSV-04 |
+| 1 | Foundation | Complete | v1.0 |
+| 2 | AI Integration | Complete | v1.0 |
+| 3 | BOM Core Flow | Complete | v1.0 |
+| 4 | BOM Editing | Complete | v1.0 |
+| 5 | Export | Complete | v1.0 |
+| 6 | Polish & Integration | Complete | v1.0 |
+| 7 | Tech Debt Cleanup | Complete | v1.0 |
+| 8 | Authentication Foundation | Planned | AUTH-01 to AUTH-04 |
+| 9 | Project Management | Pending | PROJ-01 to PROJ-04 |
+| 10 | BOM Persistence | Pending | BOM-01 to BOM-04 |
+| 11 | Template Management | Pending | TMPL-01 to TMPL-05 |
+| 12 | CSV Import | Pending | CSV-01 to CSV-04 |
 
 ---
 
@@ -29,31 +29,31 @@
 
 ### Phase 1: Foundation
 **Goal:** Establish SvelteKit project with Tailwind and database foundation.
-**Status:** ✓ Complete
+**Status:** Complete
 
 ### Phase 2: AI Integration
 **Goal:** Connect Vercel AI SDK with configurable provider.
-**Status:** ✓ Complete
+**Status:** Complete
 
 ### Phase 3: BOM Core Flow
 **Goal:** Build 4-step wizard with AI-powered BOM generation.
-**Status:** ✓ Complete
+**Status:** Complete
 
 ### Phase 4: BOM Editing
 **Goal:** Enable inline editing, custom items, visibility toggle.
-**Status:** ✓ Complete
+**Status:** Complete
 
 ### Phase 5: Export
 **Goal:** CSV export with RFC 4180 compliance.
-**Status:** ✓ Complete
+**Status:** Complete
 
 ### Phase 6: Polish & Integration
 **Goal:** Error handling, retry, responsive design.
-**Status:** ✓ Complete
+**Status:** Complete
 
 ### Phase 7: Tech Debt Cleanup
 **Goal:** Remove unused dependencies, clean up code.
-**Status:** ✓ Complete
+**Status:** Complete
 
 </details>
 
@@ -78,6 +78,14 @@
 - AUTH-04: User can log out
 
 **Dependencies:** None (foundation phase)
+
+**Plans:** 4 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Database schema and auth dependencies
+- [ ] 08-02-PLAN.md — Session middleware and TypeScript types
+- [ ] 08-03-PLAN.md — Signup and login routes
+- [ ] 08-04-PLAN.md — Logout and layout integration
 
 **Success Criteria:**
 1. User can fill signup form with email/password and create account
@@ -226,10 +234,10 @@
 
 ```
 Phase 8: Authentication Foundation
-    ├── Phase 9: Project Management
-    │       └── Phase 10: BOM Persistence
-    │               └── Phase 12: CSV Import (also depends on Phase 8)
-    └── Phase 11: Template Management
+    |-- Phase 9: Project Management
+    |       +-- Phase 10: BOM Persistence
+    |               +-- Phase 12: CSV Import (also depends on Phase 8)
+    +-- Phase 11: Template Management
 ```
 
 **Parallel Opportunities:**
@@ -239,4 +247,4 @@ Phase 8: Authentication Foundation
 ---
 
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-26 after v2.0 milestone definition*
+*Last updated: 2026-01-26 after Phase 8 planning*
