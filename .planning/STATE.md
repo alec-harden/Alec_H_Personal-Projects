@@ -2,28 +2,37 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-16)
+See: .planning/PROJECT.md (updated 2026-01-23)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v1 Milestone complete — ready for audit
+**Current focus:** v1.0 complete — ready for next milestone planning
 
 ## Current Position
 
-Phase: 7 of 7 (Tech Debt Cleanup) ✓
-Plan: 1 of 1 complete
-Status: Milestone complete — all 7 phases executed
-Last activity: 2026-01-23 — Phase 7 verified and complete
+Phase: v1.0 complete (7 phases shipped)
+Milestone: v1.0 MVP shipped 2026-01-23
+Status: Ready to plan next milestone
+Last activity: 2026-01-23 — v1.0 milestone archived
 
-Progress: [████████████████████████████████████████████████████████████████████████████████████████] 15/15 plans complete
+Progress: [████████████████████████████████████████] v1.0 SHIPPED
+
+## Milestone History
+
+| Milestone | Phases | Status | Shipped |
+|-----------|--------|--------|---------|
+| v1.0 MVP | 1-7 | SHIPPED | 2026-01-23 |
+
+See `.planning/MILESTONES.md` for full milestone details.
 
 ## Performance Metrics
 
-**Velocity:**
+**v1.0 Execution:**
 - Total plans completed: 15
 - Average duration: 5.3m
 - Total execution time: 1.3 hours
+- Timeline: 4 days (2026-01-20 → 2026-01-23)
 
-**By Phase:**
+**By Phase (v1.0):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
@@ -31,68 +40,43 @@ Progress: [███████████████████████
 | 2. AI Integration | 2 | 9m | 4.5m |
 | 3. BOM Core Flow | 4 | 24m | 6m |
 | 4. BOM Editing | 3 | 15m | 5m |
-| 5. Export & Print | 1 | 5m | 5m |
+| 5. Export | 1 | 5m | 5m |
 | 6. Polish & Integration | 2 | 10m | 5m |
 | 7. Tech Debt Cleanup | 1 | 5m | 5m |
-
-**Recent Trend:**
-- Last 5 plans: 05-01 (5m), 06-01 (5m), 06-02 (5m), 07-01 (5m)
-- Trend: Stable (consistent 5m execution)
 
 ## Accumulated Context
 
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
 
-- Tech stack confirmed: SvelteKit + Drizzle + Turso + Lucia + Vercel AI SDK
-- Tailwind v4 with @tailwindcss/vite plugin (CSS-first approach)
-- Local SQLite (file:local.db) for development, Turso for production
-- Amber color scheme for header (woodworking theme)
-- HTML entities for emoji icons (encoding reliability)
-- Dynamic env import ($env/dynamic/private) for optional AI_PROVIDER config
-- Woodworking system prompt embedded in chat endpoint
-- System messages filtered from UI (set server-side)
-- Message parts extraction for Vercel AI SDK v4 compatibility
-- Dimension ranges use min/max/default structure for UI validation
-- Three-tier joinery difficulty (beginner/intermediate/advanced)
-- Template helper functions (getTemplateById, createDefaultDetails)
-- Zod schema with .describe() annotations for AI context in structured generation
-- Template-aware prompt construction (resolve joinery names, include typicalHardware)
-- Wizard step pattern: capture initial values at mount time (acceptable for parent-managed state)
-- AI SDK provider factory pattern: use createAnthropic/createOpenAI with explicit apiKey for SvelteKit dynamic env
-- Category display order: Lumber, Hardware, Finishes, Consumables
-- View state machine pattern for multi-step flows (wizard/loading/result)
-- Click-to-edit pattern: button displays value, input appears on click, Enter/blur commits, Escape cancels
-- Callback prop drilling for edit operations (page -> display -> category -> item)
-- Visibility toggle: checkbox checked = visible (intuitive 'include' semantics)
-- AddItemForm inline in category (not modal) for quick add workflow
-- Unique ID generation: custom-{timestamp}-{random} pattern
-- Category-specific unit defaults (bf for lumber, pcs for hardware, etc.)
-- Immutable state updates for Svelte reactivity
-- RFC 4180 CSV escaping for export (handles commas, quotes, newlines)
-- Blob-based file download for cross-browser CSV export
-- Sanitized filename format: {name}-bom-{YYYY-MM-DD}.csv
-- Mobile-first responsive design: w-full base with sm: breakpoint overrides
-- sm: breakpoint (640px) as mobile/desktop transition point
-- Responsive padding: smaller on mobile (px-4 py-6), larger on desktop (sm:px-6 sm:py-8)
-- Error classification: timeout (504), rate-limit (429), auth (503), network (503), unknown (500)
-- 10-second threshold for extended loading feedback
-- Store lastProjectDetails for one-click retry without re-entering data
-- Confirmed active wizard at /bom/new is the correct implementation
-- Removed orphaned chat interface from Phase 2->3 architecture pivot
+Tech stack and patterns established in v1.0:
+- SvelteKit + Drizzle + Turso + Vercel AI SDK
+- Tailwind v4 with @tailwindcss/vite plugin
+- Provider factory pattern for AI (createAnthropic/createOpenAI)
+- Amber color scheme (woodworking theme)
+- Click-to-edit inline editing
+- RFC 4180 CSV escaping
 
 ### Pending Todos
 
-None yet.
+None — milestone complete.
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Session Continuity
 
-Last session: 2026-01-23T20:52:29Z
-Stopped at: Completed 07-01-PLAN.md (Tech Debt Cleanup) - Phase 7 complete
+Last session: 2026-01-23
+Stopped at: v1.0 milestone archived
 Resume file: None
+
+## Next Steps
+
+Start next milestone with `/gsd:new-milestone`:
+1. Define v1.1/v2.0 scope (questioning)
+2. Research new requirements
+3. Create REQUIREMENTS.md
+4. Create ROADMAP.md
+5. Begin execution
