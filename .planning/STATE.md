@@ -2,53 +2,42 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-23)
+See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v1.0 complete — ready for next milestone planning
+**Current focus:** v2.0 Persistence & Project Management
 
 ## Current Position
 
-Phase: v1.0 complete (7 phases shipped)
-Milestone: v1.0 MVP shipped 2026-01-23
-Status: Ready to plan next milestone
-Last activity: 2026-01-23 — v1.0 milestone archived
+Phase: 8 (Authentication Foundation)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-01-26 — v2.0 milestone defined
 
-Progress: [████████████████████████████████████████] v1.0 SHIPPED
+Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%
 
 ## Milestone History
 
 | Milestone | Phases | Status | Shipped |
 |-----------|--------|--------|---------|
 | v1.0 MVP | 1-7 | SHIPPED | 2026-01-23 |
+| v2.0 Persistence | 8-12 | IN PROGRESS | — |
 
 See `.planning/MILESTONES.md` for full milestone details.
 
-## Performance Metrics
+## v2.0 Phase Status
 
-**v1.0 Execution:**
-- Total plans completed: 15
-- Average duration: 5.3m
-- Total execution time: 1.3 hours
-- Timeline: 4 days (2026-01-20 → 2026-01-23)
-
-**By Phase (v1.0):**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 1. Foundation | 2 | 16m | 8m |
-| 2. AI Integration | 2 | 9m | 4.5m |
-| 3. BOM Core Flow | 4 | 24m | 6m |
-| 4. BOM Editing | 3 | 15m | 5m |
-| 5. Export | 1 | 5m | 5m |
-| 6. Polish & Integration | 2 | 10m | 5m |
-| 7. Tech Debt Cleanup | 1 | 5m | 5m |
+| Phase | Name | Plans | Status |
+|-------|------|-------|--------|
+| 8 | Authentication Foundation | 0/? | ○ Not started |
+| 9 | Project Management | 0/? | ○ Not started |
+| 10 | BOM Persistence | 0/? | ○ Not started |
+| 11 | Template Management | 0/? | ○ Not started |
+| 12 | CSV Import | 0/? | ○ Not started |
 
 ## Accumulated Context
 
 ### Decisions
-
-Decisions are logged in PROJECT.md Key Decisions table.
 
 Tech stack and patterns established in v1.0:
 - SvelteKit + Drizzle + Turso + Vercel AI SDK
@@ -58,25 +47,45 @@ Tech stack and patterns established in v1.0:
 - Click-to-edit inline editing
 - RFC 4180 CSV escaping
 
+v2.0 decisions:
+- Custom auth with oslo utilities + Argon2 (Lucia deprecated)
+- Sessions stored in Turso database (no Redis/external cache)
+- Single user focus with multi-user ready design
+- Self-registration (signup form)
+- No password reset/email verification in v2.0
+
 ### Pending Todos
 
-None — milestone complete.
+None — ready to start Phase 8.
 
 ### Blockers/Concerns
 
 None.
 
+## Research Reference
+
+v2.0 research completed 2026-01-26:
+- `.planning/research/STACK.md` — Auth libraries, session storage, password hashing
+- `.planning/research/FEATURES.md` — UX patterns, table stakes
+- `.planning/research/ARCHITECTURE.md` — Middleware, schema, route structure
+- `.planning/research/PITFALLS.md` — Common mistakes to avoid
+- `.planning/research/SUMMARY.md` — Synthesized findings
+
+Key findings:
+- Use oslo + @node-rs/argon2 for auth
+- hooks.server.ts for session middleware
+- 6-table schema: users, sessions, projects, boms, bomItems, templates
+
 ## Session Continuity
 
-Last session: 2026-01-23
-Stopped at: v1.0 milestone archived
+Last session: 2026-01-26
+Stopped at: v2.0 milestone definition complete
 Resume file: None
 
 ## Next Steps
 
-Start next milestone with `/gsd:new-milestone`:
-1. Define v1.1/v2.0 scope (questioning)
-2. Research new requirements
-3. Create REQUIREMENTS.md
-4. Create ROADMAP.md
-5. Begin execution
+Start Phase 8 with `/gsd:plan-phase 8`:
+1. Create PLAN.md for Authentication Foundation
+2. Execute auth implementation
+3. Verify AUTH-01 through AUTH-04
+
