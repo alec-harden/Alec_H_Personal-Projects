@@ -1,12 +1,20 @@
 <script lang="ts">
 	// Header component for WoodShop Toolbox
 	// Modern Artisan aesthetic - clean top bar for mobile/tablet
+	import UserMenu from './UserMenu.svelte';
+
+	interface User {
+		id: string;
+		email: string;
+		createdAt: Date;
+	}
 
 	interface Props {
 		onMenuClick?: () => void;
+		user?: User | null;
 	}
 
-	let { onMenuClick }: Props = $props();
+	let { onMenuClick, user = null }: Props = $props();
 </script>
 
 <header class="app-header">
@@ -35,9 +43,13 @@
 			<span class="brand-name">WoodShop Toolbox</span>
 		</div>
 
-		<!-- Page Actions (placeholder for future use) -->
+		<!-- User Authentication Actions -->
 		<div class="header-actions">
-			<!-- Can add notification bell, user menu, etc. here -->
+			{#if user}
+				<UserMenu email={user.email} />
+			{:else}
+				<a href="/auth/login" class="login-link">Log in</a>
+			{/if}
 		</div>
 	</div>
 </header>
@@ -137,9 +149,18 @@
 		gap: var(--space-sm);
 	}
 
-	@media (min-width: 1024px) {
-		.header-actions {
-			/* On desktop, this can show user avatar, notifications, etc. */
-		}
+	/* Login Link */
+	.login-link {
+		font-size: 0.875rem;
+		color: var(--color-ink-muted);
+		text-decoration: none;
+		padding: 0.375rem 0.75rem;
+		border-radius: var(--radius-md);
+		transition: all var(--transition-fast);
+	}
+
+	.login-link:hover {
+		color: var(--color-walnut);
+		background: var(--color-paper);
 	}
 </style>

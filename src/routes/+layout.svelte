@@ -4,7 +4,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 
-	let { children } = $props();
+	let { children, data } = $props();
 
 	// Mobile sidebar state
 	let sidebarOpen = $state(false);
@@ -30,7 +30,7 @@
 
 	<!-- Main Content Area -->
 	<div class="main-wrapper">
-		<Header onMenuClick={() => (sidebarOpen = true)} />
+		<Header onMenuClick={() => (sidebarOpen = true)} user={data.user} />
 
 		<main class="main-content">
 			<div class="content-container">
