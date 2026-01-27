@@ -9,10 +9,10 @@ Requirements for v2.0 milestone. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign up with email and password
-- [ ] **AUTH-02**: User can log in with email and password
-- [ ] **AUTH-03**: User session persists across browser refresh
-- [ ] **AUTH-04**: User can log out
+- [x] **AUTH-01**: User can sign up with email and password
+- [x] **AUTH-02**: User can log in with email and password
+- [x] **AUTH-03**: User session persists across browser refresh
+- [x] **AUTH-04**: User can log out
 
 ### Project Management
 
@@ -81,10 +81,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 8 | Pending |
-| AUTH-02 | Phase 8 | Pending |
-| AUTH-03 | Phase 8 | Pending |
-| AUTH-04 | Phase 8 | Pending |
+| AUTH-01 | Phase 8 | Complete |
+| AUTH-02 | Phase 8 | Complete |
+| AUTH-03 | Phase 8 | Complete |
+| AUTH-04 | Phase 8 | Complete |
 | PROJ-01 | Phase 9 | Pending |
 | PROJ-02 | Phase 9 | Pending |
 | PROJ-03 | Phase 9 | Pending |

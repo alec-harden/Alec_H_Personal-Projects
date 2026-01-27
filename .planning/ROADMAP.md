@@ -14,7 +14,7 @@
 | 5 | Export | Complete | v1.0 |
 | 6 | Polish & Integration | Complete | v1.0 |
 | 7 | Tech Debt Cleanup | Complete | v1.0 |
-| 8 | Authentication Foundation | Planned | AUTH-01 to AUTH-04 |
+| 8 | Authentication Foundation | Complete | AUTH-01 to AUTH-04 |
 | 9 | Project Management | Pending | PROJ-01 to PROJ-04 |
 | 10 | BOM Persistence | Pending | BOM-01 to BOM-04 |
 | 11 | Template Management | Pending | TMPL-01 to TMPL-05 |
