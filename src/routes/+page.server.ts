@@ -1,13 +1,26 @@
+import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { projects } from '$lib/server/schema';
+import { eq, desc } from 'drizzle-orm';
 
-export async function load() {
-	// Query projects table to verify database connection
-	const allProjects = await db.select().from(projects);
+export const load: PageServerLoad = async ({ locals }) => {
+	// If user is authenticated, load their projects
+	if (locals.user) {
+		const userProjects = await db.query.projects.findMany({
+			where: eq(projects.userId, locals.user.id),
+			orderBy: [desc(projects.updatedAt)],
+			limit: 6 // Limit to recent projects for dashboard
+		});
 
-	console.log('[DB] Connection successful - projects query returned', allProjects.length, 'rows');
+		return {
+			projects: userProjects,
+			isAuthenticated: true
+		};
+	}
 
+	// Not authenticated - return empty (page will show sample projects)
 	return {
-		projects: allProjects
+		projects: [],
+		isAuthenticated: false
 	};
-}
+};
