@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 8 (Authentication Foundation)
-Plan: 1 of 4 complete
+Plan: 2 of 4 complete
 Status: In progress
-Last activity: 2026-01-26 — Completed 08-01-PLAN.md
+Last activity: 2026-01-26 — Completed 08-02-PLAN.md
 
-Progress: [██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 25%
+Progress: [████████████████████░░░░░░░░░░░░░░░░░░░░] 50%
 
 ## Milestone History
 
@@ -29,7 +29,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 
 | Phase | Name | Plans | Status |
 |-------|------|-------|--------|
-| 8 | Authentication Foundation | 1/4 | ◐ In progress |
+| 8 | Authentication Foundation | 2/4 | ◐ In progress |
 | 9 | Project Management | 0/? | ○ Not started |
 | 10 | BOM Persistence | 0/? | ○ Not started |
 | 11 | Template Management | 0/? | ○ Not started |
@@ -55,6 +55,9 @@ v2.0 decisions:
 - No password reset/email verification in v2.0
 - Used oslo@1.2.1 despite deprecation (oslojs successor available for future migration)
 - Database columns use snake_case (password_hash) while TypeScript uses camelCase (passwordHash)
+- App.Locals.user is optional (undefined when not authenticated)
+- sessionId exposed in Locals for logout functionality
+- Lazy session cleanup (expired sessions deleted on next request)
 
 ### Pending Todos
 
@@ -81,14 +84,13 @@ Key findings:
 ## Session Continuity
 
 Last session: 2026-01-26
-Stopped at: Completed 08-01-PLAN.md (Auth Schema)
+Stopped at: Completed 08-02-PLAN.md (Session Middleware)
 Resume file: None
 
 ## Next Steps
 
 Continue Phase 8:
-1. Execute 08-02-PLAN.md (Password Utilities)
-2. Execute 08-03-PLAN.md (Auth Routes)
-3. Execute 08-04-PLAN.md (Session Middleware)
-4. Verify AUTH-01 through AUTH-04
+1. Execute 08-03-PLAN.md (Auth Routes)
+2. Execute 08-04-PLAN.md (Route Protection)
+3. Verify AUTH-01 through AUTH-04
 
