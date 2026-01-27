@@ -1,7 +1,7 @@
 # Roadmap: WoodShop Toolbox
 
 **Created:** 2026-01-20
-**Updated:** 2026-01-26 (v2.0 milestone added)
+**Updated:** 2026-01-27 (Phase 9 complete)
 
 ## Progress
 
@@ -15,7 +15,7 @@
 | 6 | Polish & Integration | Complete | v1.0 |
 | 7 | Tech Debt Cleanup | Complete | v1.0 |
 | 8 | Authentication Foundation | Complete | AUTH-01 to AUTH-04 |
-| 9 | Project Management | Pending | PROJ-01 to PROJ-04 |
+| 9 | Project Management | Complete | PROJ-01 to PROJ-04 |
 | 10 | BOM Persistence | Pending | BOM-01 to BOM-04 |
 | 11 | Template Management | Pending | TMPL-01 to TMPL-05 |
 | 12 | CSV Import | Pending | CSV-01 to CSV-04 |
@@ -247,4 +247,4 @@ Phase 8: Authentication Foundation
 ---
 
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-26 after Phase 8 planning*
+*Last updated: 2026-01-27 after Phase 9 completion*

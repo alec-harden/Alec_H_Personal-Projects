@@ -16,10 +16,10 @@ Requirements for v2.0 milestone. Each maps to roadmap phases.
 
 ### Project Management
 
-- [ ] **PROJ-01**: User can create a named project with description
-- [ ] **PROJ-02**: User can view list of their projects
-- [ ] **PROJ-03**: User can edit project metadata (name, description, notes)
-- [ ] **PROJ-04**: User can delete a project
+- [x] **PROJ-01**: User can create a named project with description
+- [x] **PROJ-02**: User can view list of their projects
+- [x] **PROJ-03**: User can edit project metadata (name, description, notes)
+- [x] **PROJ-04**: User can delete a project
 
 ### BOM Persistence
 
@@ -85,10 +85,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-02 | Phase 8 | Complete |
 | AUTH-03 | Phase 8 | Complete |
 | AUTH-04 | Phase 8 | Complete |
-| PROJ-01 | Phase 9 | Pending |
-| PROJ-02 | Phase 9 | Pending |
-| PROJ-03 | Phase 9 | Pending |
-| PROJ-04 | Phase 9 | Pending |
+| PROJ-01 | Phase 9 | Complete |
+| PROJ-02 | Phase 9 | Complete |
+| PROJ-03 | Phase 9 | Complete |
+| PROJ-04 | Phase 9 | Complete |
 | BOM-01 | Phase 10 | Pending |
 | BOM-02 | Phase 10 | Pending |
 | BOM-03 | Phase 10 | Pending |
@@ -110,4 +110,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-26*
-*Last updated: 2026-01-26 after initial definition*
+*Last updated: 2026-01-27 after Phase 9 completion*
