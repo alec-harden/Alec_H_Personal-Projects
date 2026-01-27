@@ -22,7 +22,8 @@ export const sessions = sqliteTable('sessions', {
 
 // Drizzle relations for query API
 export const usersRelations = relations(users, ({ many }) => ({
-	sessions: many(sessions)
+	sessions: many(sessions),
+	projects: many(projects)
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -32,10 +33,23 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 	})
 }));
 
-// Existing projects table (userId will be added in Phase 9)
+// Projects table with user ownership
 export const projects = sqliteTable('projects', {
 	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
 	name: text('name').notNull(),
+	description: text('description'),
+	notes: text('notes'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
+
+// Projects relations
+export const projectsRelations = relations(projects, ({ one }) => ({
+	user: one(users, {
+		fields: [projects.userId],
+		references: [users.id]
+	})
+}));
