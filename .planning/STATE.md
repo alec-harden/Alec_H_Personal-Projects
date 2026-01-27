@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 8 (Authentication Foundation)
-Plan: 2 of 4 complete
+Plan: 3 of 4 complete
 Status: In progress
-Last activity: 2026-01-26 — Completed 08-02-PLAN.md
+Last activity: 2026-01-27 — Completed 08-03-PLAN.md
 
-Progress: [████████████████████░░░░░░░░░░░░░░░░░░░░] 50%
+Progress: [█████████████████████████████░░░░░░░░░░░] 75%
 
 ## Milestone History
 
@@ -29,7 +29,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 
 | Phase | Name | Plans | Status |
 |-------|------|-------|--------|
-| 8 | Authentication Foundation | 2/4 | ◐ In progress |
+| 8 | Authentication Foundation | 3/4 | ◐ In progress |
 | 9 | Project Management | 0/? | ○ Not started |
 | 10 | BOM Persistence | 0/? | ○ Not started |
 | 11 | Template Management | 0/? | ○ Not started |
@@ -58,10 +58,13 @@ v2.0 decisions:
 - App.Locals.user is optional (undefined when not authenticated)
 - sessionId exposed in Locals for logout functionality
 - Lazy session cleanup (expired sessions deleted on next request)
+- Generic login error prevents email enumeration attacks
+- Email normalized to lowercase for case-insensitive lookup
+- Login supports ?redirect param for post-auth destination
 
 ### Pending Todos
 
-None — ready to start Phase 8.
+None.
 
 ### Blockers/Concerns
 
@@ -83,14 +86,12 @@ Key findings:
 
 ## Session Continuity
 
-Last session: 2026-01-26
-Stopped at: Completed 08-02-PLAN.md (Session Middleware)
+Last session: 2026-01-27
+Stopped at: Completed 08-03-PLAN.md (Auth Routes)
 Resume file: None
 
 ## Next Steps
 
 Continue Phase 8:
-1. Execute 08-03-PLAN.md (Auth Routes)
-2. Execute 08-04-PLAN.md (Route Protection)
-3. Verify AUTH-01 through AUTH-04
-
+1. Execute 08-04-PLAN.md (Route Protection)
+2. Verify AUTH-01 through AUTH-04
