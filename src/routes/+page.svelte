@@ -2,7 +2,9 @@
 	import ToolCard from '$lib/components/ToolCard.svelte';
 	import ProjectCard from '$lib/components/ProjectCard.svelte';
 
-	// Sample projects for demonstration
+	let { data } = $props();
+
+	// Sample projects for demonstration (shown when not authenticated)
 	const sampleProjects = [
 		{
 			name: 'Farmhouse Dining Table',
@@ -26,6 +28,11 @@
 			thumbnailIcon: 'bookshelf'
 		}
 	];
+
+	// Format date for display
+	function formatDate(date: Date): string {
+		return date.toISOString().split('T')[0];
+	}
 </script>
 
 <svelte:head>
@@ -81,28 +88,58 @@
 		<!-- Active Projects Section -->
 		<section class="projects-section span-7">
 			<div class="section-header">
-				<h2 class="section-title">Active Builds</h2>
-				<a href="/bom/new" class="section-action btn-ghost">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="action-icon">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-					</svg>
-					New Project
-				</a>
+				<h2 class="section-title">{data.isAuthenticated ? 'My Projects' : 'Active Builds'}</h2>
+				{#if data.isAuthenticated}
+					<a href="/projects" class="section-action btn-ghost">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="action-icon">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+						</svg>
+						New Project
+					</a>
+				{:else}
+					<a href="/bom/new" class="section-action btn-ghost">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="action-icon">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+						</svg>
+						New Project
+					</a>
+				{/if}
 			</div>
 
 			<div class="projects-grid stagger-children">
-				{#each sampleProjects as project}
-					<ProjectCard
-						name={project.name}
-						type={project.type}
-						progress={project.progress}
-						lastUpdated={project.lastUpdated}
-						thumbnailIcon={project.thumbnailIcon}
-					/>
-				{/each}
+				{#if data.isAuthenticated}
+					{#if data.projects.length > 0}
+						{#each data.projects as project}
+							<ProjectCard
+								name={project.name}
+								type="Project"
+								progress={0}
+								lastUpdated={formatDate(project.updatedAt)}
+								thumbnailIcon="project"
+								href="/projects/{project.id}"
+							/>
+						{/each}
+					{:else}
+						<!-- Empty state for authenticated users with no projects -->
+						<div class="empty-state sanded-surface">
+							<p>You haven't created any projects yet.</p>
+							<a href="/projects" class="btn-primary">Create Your First Project</a>
+						</div>
+					{/if}
+				{:else}
+					{#each sampleProjects as project}
+						<ProjectCard
+							name={project.name}
+							type={project.type}
+							progress={project.progress}
+							lastUpdated={project.lastUpdated}
+							thumbnailIcon={project.thumbnailIcon}
+						/>
+					{/each}
+				{/if}
 
-				<!-- Empty State / New Project Card -->
-				<a href="/bom/new" class="new-project-card sanded-surface">
+				<!-- Start New Build Card -->
+				<a href={data.isAuthenticated ? '/projects' : '/bom/new'} class="new-project-card sanded-surface">
 					<div class="new-project-icon">
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -453,5 +490,41 @@
 		font-size: 0.8125rem;
 		font-weight: 500;
 		color: var(--color-ink-soft);
+	}
+
+	/* Empty State */
+	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-md);
+		padding: var(--space-2xl);
+		text-align: center;
+		grid-column: span 2;
+	}
+
+	.empty-state p {
+		margin: 0;
+		color: var(--color-ink-muted);
+		font-size: 1rem;
+	}
+
+	.empty-state .btn-primary {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--space-sm) var(--space-lg);
+		background: var(--color-walnut);
+		color: white;
+		border-radius: var(--radius-md);
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.9375rem;
+		transition: background var(--transition-base);
+	}
+
+	.empty-state .btn-primary:hover {
+		background: var(--color-walnut-dark);
 	}
 </style>
