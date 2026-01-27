@@ -1,7 +1,7 @@
 # Roadmap: WoodShop Toolbox
 
 **Created:** 2026-01-20
-**Updated:** 2026-01-27 (Phase 9 complete)
+**Updated:** 2026-01-27 (Phase 10 planned)
 
 ## Progress
 
@@ -16,7 +16,7 @@
 | 7 | Tech Debt Cleanup | Complete | v1.0 |
 | 8 | Authentication Foundation | Complete | AUTH-01 to AUTH-04 |
 | 9 | Project Management | Complete | PROJ-01 to PROJ-04 |
-| 10 | BOM Persistence | Pending | BOM-01 to BOM-04 |
+| 10 | BOM Persistence | Planned | BOM-01 to BOM-04 |
 | 11 | Template Management | Pending | TMPL-01 to TMPL-05 |
 | 12 | CSV Import | Pending | CSV-01 to CSV-04 |
 
@@ -82,10 +82,10 @@
 **Plans:** 4 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Database schema and auth dependencies
-- [ ] 08-02-PLAN.md — Session middleware and TypeScript types
-- [ ] 08-03-PLAN.md — Signup and login routes
-- [ ] 08-04-PLAN.md — Logout and layout integration
+- [x] 08-01-PLAN.md — Database schema and auth dependencies
+- [x] 08-02-PLAN.md — Session middleware and TypeScript types
+- [x] 08-03-PLAN.md — Signup and login routes
+- [x] 08-04-PLAN.md — Logout and layout integration
 
 **Success Criteria:**
 1. User can fill signup form with email/password and create account
@@ -115,6 +115,13 @@ Plans:
 
 **Dependencies:** Phase 8 (requires authentication)
 
+**Plans:** 3 plans
+
+Plans:
+- [x] 09-01-PLAN.md — Project schema and database
+- [x] 09-02-PLAN.md — Project CRUD routes
+- [x] 09-03-PLAN.md — Projects UI integration
+
 **Success Criteria:**
 1. User can create new project with name and description
 2. User can view list of their projects on /projects page
@@ -142,6 +149,14 @@ Plans:
 - BOM-04: User can delete a saved BOM
 
 **Dependencies:** Phase 9 (requires projects)
+
+**Plans:** 4 plans
+
+Plans:
+- [ ] 10-01-PLAN.md — BOM schema and database tables
+- [ ] 10-02-PLAN.md — Save BOM to project flow
+- [ ] 10-03-PLAN.md — View saved BOMs in project
+- [ ] 10-04-PLAN.md — Edit and delete saved BOMs
 
 **Success Criteria:**
 1. User can save AI-generated BOM to a selected project
@@ -247,4 +262,4 @@ Phase 8: Authentication Foundation
 ---
 
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-27 after Phase 9 completion*
+*Last updated: 2026-01-27 after Phase 10 planning*
