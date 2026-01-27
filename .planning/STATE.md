@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 ## Current Position
 
-Phase: 8 (Authentication Foundation)
-Plan: 4 of 4 complete
-Status: Phase complete
-Last activity: 2026-01-27 — Completed 08-04-PLAN.md
+Phase: 9 (Project Management)
+Plan: 1 of 3 complete
+Status: In progress
+Last activity: 2026-01-27 — Completed 09-01-PLAN.md
 
-Progress: [████████████████████████████████████████] 100%
+Progress: [████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 30%
 
 ## Milestone History
 
@@ -30,10 +30,10 @@ See `.planning/MILESTONES.md` for full milestone details.
 | Phase | Name | Plans | Status |
 |-------|------|-------|--------|
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
-| 9 | Project Management | 0/? | ○ Not started |
-| 10 | BOM Persistence | 0/? | ○ Not started |
-| 11 | Template Management | 0/? | ○ Not started |
-| 12 | CSV Import | 0/? | ○ Not started |
+| 9 | Project Management | 1/3 | In progress |
+| 10 | BOM Persistence | 0/? | Not started |
+| 11 | Template Management | 0/? | Not started |
+| 12 | CSV Import | 0/? | Not started |
 
 ## Accumulated Context
 
@@ -64,6 +64,11 @@ v2.0 decisions:
 - Root layout server load passes user data to all pages
 - UserMenu shows avatar with first letter of email
 - Logout uses form POST with progressive enhancement
+
+Phase 9 decisions:
+- Cascade delete for projects when user is deleted
+- Nullable description/notes fields for gradual project detail entry
+- Same FK reference pattern as sessions table
 
 ### Pending Todos
 
@@ -104,14 +109,24 @@ Key files:
 - `src/routes/auth/logout/` - session termination
 - `src/lib/components/UserMenu.svelte` - user dropdown
 
+## Phase 9 Progress
+
+### 09-01: Project Schema (COMPLETE)
+Extended projects table with user ownership and metadata:
+- userId FK to users.id with cascade delete
+- description (nullable) for project summary
+- notes (nullable) for additional details
+- projectsRelations for Drizzle query API
+- Database synchronized via db:push
+
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 08-04-PLAN.md (Layout & Logout)
+Stopped at: Completed 09-01-PLAN.md (Project Schema)
 Resume file: None
 
 ## Next Steps
 
-Phase 8 complete. Continue v2.0:
-1. Create phase plan for Phase 9 (Project Management)
-2. Implement project CRUD with user ownership
+Continue Phase 9:
+1. Execute 09-02-PLAN.md (Project CRUD API)
+2. Execute 09-03-PLAN.md (Projects UI)
