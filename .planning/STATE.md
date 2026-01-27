@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 9 (Project Management)
-Plan: 1 of 3 complete
+Plan: 2 of 3 complete
 Status: In progress
-Last activity: 2026-01-27 — Completed 09-01-PLAN.md
+Last activity: 2026-01-27 — Completed 09-02-PLAN.md
 
-Progress: [████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 30%
+Progress: [██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░] 35%
 
 ## Milestone History
 
@@ -30,7 +30,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | Phase | Name | Plans | Status |
 |-------|------|-------|--------|
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
-| 9 | Project Management | 1/3 | In progress |
+| 9 | Project Management | 2/3 | In progress |
 | 10 | BOM Persistence | 0/? | Not started |
 | 11 | Template Management | 0/? | Not started |
 | 12 | CSV Import | 0/? | Not started |
@@ -69,6 +69,9 @@ Phase 9 decisions:
 - Cascade delete for projects when user is deleted
 - Nullable description/notes fields for gradual project detail entry
 - Same FK reference pattern as sessions table
+- PRG pattern for mutations (create redirects to detail, delete to list)
+- Client-side confirm() dialog for delete action
+- CRUD route pattern: list+create at /resource, detail+edit+delete at /resource/[id]
 
 ### Pending Todos
 
@@ -119,14 +122,20 @@ Extended projects table with user ownership and metadata:
 - projectsRelations for Drizzle query API
 - Database synchronized via db:push
 
+### 09-02: Project CRUD Routes (COMPLETE)
+Full project CRUD with SvelteKit form actions:
+- /projects route with list and create functionality
+- /projects/[id] route with view, edit, delete functionality
+- All queries filter by userId for data isolation
+- Progressive enhancement with use:enhance
+
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 09-01-PLAN.md (Project Schema)
+Stopped at: Completed 09-02-PLAN.md (Project CRUD Routes)
 Resume file: None
 
 ## Next Steps
 
 Continue Phase 9:
-1. Execute 09-02-PLAN.md (Project CRUD API)
-2. Execute 09-03-PLAN.md (Projects UI)
+1. Execute 09-03-PLAN.md (Projects UI integration)
