@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 11 (Template Management)
-Plan: 3 of 4 complete
-Status: In progress
-Last activity: 2026-01-28 — Completed 11-03-PLAN.md (Admin Templates List & Create)
+Plan: 4 of 4 complete
+Status: Phase complete
+Last activity: 2026-01-28 — Completed 11-04-PLAN.md (Template Edit & Delete)
 
-Progress: [█████████████████████████████████████░░░░░░░░░░░░░░] 75.0%
+Progress: [████████████████████████████████████████░░░░░░░░░░] 80.0%
 
 ## Milestone History
 
@@ -32,7 +32,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
 | 9 | Project Management | 3/3 | COMPLETE |
 | 10 | BOM Persistence | 4/4 | COMPLETE |
-| 11 | Template Management | 3/4 | In progress |
+| 11 | Template Management | 4/4 | COMPLETE |
 | 12 | CSV Import | 0/? | Not started |
 
 ## Accumulated Context
@@ -108,6 +108,10 @@ Phase 11 decisions:
 - 11-03: Indexed form fields (joinery_0_id, joinery_1_id) for dynamic array submission
 - 11-03: Comma-separated text inputs for simple string arrays (woods, finishes, hardware)
 - 11-03: Server file created by parallel 11-02 execution (identical content, no duplication needed)
+- 11-04: Update action returns { success: true } for in-place feedback (no redirect)
+- 11-04: Delete action uses PRG pattern (redirect to list after deletion)
+- 11-04: Joinery options initialized as reactive copy from data.template for editing
+- 11-04: Height fields use nullish coalescing for optional dimension display
 
 ### Pending Todos
 
@@ -271,13 +275,41 @@ Key files:
 - `src/routes/admin/templates/+page.server.ts` - Load + create action (created by 11-02)
 - `src/routes/admin/templates/+page.svelte` - List and create form UI
 
+### 11-04: Template Edit & Delete (COMPLETE)
+Admin template detail page with edit and delete:
+- /admin/templates/[id] route with auth protection (load + actions)
+- Edit form pre-populates all fields from loaded template
+- Update action modifies all fields and sets updatedAt timestamp
+- Delete action removes template with confirmation dialog and redirects to list
+- Dynamic joinery options with add/remove
+- Success toast auto-dismisses after 3 seconds
+
+Key files:
+- `src/routes/admin/templates/[id]/+page.server.ts` - Load, update, and delete actions
+- `src/routes/admin/templates/[id]/+page.svelte` - Edit form and delete button UI
+
+## Phase 11 Completion Summary
+
+Template Management complete with all requirements satisfied:
+- **TMPL-01:** Templates table with typed JSON columns (11-01)
+- **TMPL-02:** Template API endpoint for BOM wizard (11-02)
+- **TMPL-03:** Admin template list and create (11-03)
+- **TMPL-04:** Admin template edit (11-04)
+- **TMPL-05:** Admin template delete (11-04)
+
+Key files:
+- `src/lib/server/schema.ts` - templates table and interfaces
+- `scripts/seed-templates.ts` - seed script
+- `src/routes/api/templates/+server.ts` - GET endpoint
+- `src/routes/admin/templates/` - Admin list and create
+- `src/routes/admin/templates/[id]/` - Admin edit and delete
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 11-03-PLAN.md (Admin Templates List & Create)
+Stopped at: Completed 11-04-PLAN.md (Template Edit & Delete) - Phase 11 complete
 Resume file: None
 
 ## Next Steps
 
-Continue Phase 11 Template Management:
-- Plan 11-04: BOM Wizard Integration
+Phase 11 (Template Management) complete. Continue to Phase 12 (CSV Import).
