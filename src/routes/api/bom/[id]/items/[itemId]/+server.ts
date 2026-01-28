@@ -1,0 +1,43 @@
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import { bomItems, boms } from '$lib/server/schema';
+import { eq } from 'drizzle-orm';
+
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
+	if (!locals.user) {
+		throw error(401, 'Unauthorized');
+	}
+
+	// Fetch item with bom -> project relation to verify ownership chain
+	const item = await db.query.bomItems.findFirst({
+		where: eq(bomItems.id, params.itemId),
+		with: { bom: { with: { project: { columns: { userId: true } } } } }
+	});
+
+	// Verify item exists and user owns the parent project
+	if (!item || item.bom.project.userId !== locals.user.id) {
+		throw error(403, 'Forbidden');
+	}
+
+	// Parse request body
+	const body = await request.json();
+	const updates: Partial<typeof bomItems.$inferInsert> = {};
+
+	// Validate and collect updates
+	if (typeof body.quantity === 'number' && body.quantity >= 0) {
+		updates.quantity = body.quantity;
+	}
+	if (typeof body.hidden === 'boolean') {
+		updates.hidden = body.hidden;
+	}
+
+	// Apply updates if any
+	if (Object.keys(updates).length > 0) {
+		await db.update(bomItems).set(updates).where(eq(bomItems.id, params.itemId));
+		// Update BOM's updatedAt timestamp
+		await db.update(boms).set({ updatedAt: new Date() }).where(eq(boms.id, params.id));
+	}
+
+	return json({ success: true });
+};
