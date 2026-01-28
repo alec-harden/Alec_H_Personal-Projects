@@ -4,7 +4,15 @@
 
 	import BOMWizard from '$lib/components/bom/BOMWizard.svelte';
 	import BOMDisplay from '$lib/components/bom/BOMDisplay.svelte';
+	import SaveToProjectModal from '$lib/components/bom/SaveToProjectModal.svelte';
 	import type { BOM, ProjectDetails, BOMItem } from '$lib/types/bom';
+	import type { PageData } from './$types';
+
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	// View state
 	type ViewState = 'wizard' | 'loading' | 'result';
@@ -18,6 +26,12 @@
 	// Extended loading feedback
 	let showExtendedWait = $state(false);
 	let loadingTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	// Save modal state
+	let showSaveModal = $state(false);
+	let saving = $state(false);
+	let saveError = $state<string | null>(null);
+	let saveSuccess = $state(false);
 
 	// Handle wizard completion - trigger BOM generation
 	async function handleWizardComplete(details: ProjectDetails) {
@@ -101,6 +115,60 @@
 			items: [...generatedBOM.items, item]
 		};
 	}
+
+	// Handle save button click - open modal
+	function handleSaveClick() {
+		saveError = null;
+		saveSuccess = false;
+		showSaveModal = true;
+	}
+
+	// Handle save confirmation from modal
+	async function handleSaveConfirm(projectId: string) {
+		if (!generatedBOM) return;
+
+		saving = true;
+		saveError = null;
+
+		try {
+			const response = await fetch('/api/bom/save', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					projectId,
+					bom: generatedBOM
+				})
+			});
+
+			if (!response.ok) {
+				const data = await response.json();
+				throw new Error(data.error || 'Failed to save BOM');
+			}
+
+			const result = await response.json();
+
+			// Success! Close modal and show success state
+			showSaveModal = false;
+			saveSuccess = true;
+			saving = false;
+
+			// Optional: Navigate to the saved BOM or project
+			// For now, just show success feedback
+			console.log('BOM saved successfully:', result.bomId);
+		} catch (e) {
+			console.error('Failed to save BOM:', e);
+			saveError = e instanceof Error ? e.message : 'An unexpected error occurred';
+			saving = false;
+		}
+	}
+
+	// Close save modal
+	function handleCloseSaveModal() {
+		if (!saving) {
+			showSaveModal = false;
+			saveError = null;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -176,12 +244,39 @@
 			</a>
 		</header>
 
+		{#if saveSuccess}
+			<div class="success-banner">
+				<div class="success-icon">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</div>
+				<div class="success-content">
+					<p class="success-title">BOM Saved!</p>
+					<p class="success-detail">Your bill of materials has been saved to the project.</p>
+				</div>
+				<button type="button" onclick={() => (saveSuccess = false)} class="btn-ghost btn-sm">
+					Dismiss
+				</button>
+			</div>
+		{/if}
+
 		<BOMDisplay
 			bom={generatedBOM}
 			onStartOver={handleStartOver}
 			onQuantityChange={handleQuantityChange}
 			onToggleVisibility={handleToggleVisibility}
 			onAddItem={handleAddItem}
+			onSave={handleSaveClick}
+			showSaveButton={data.projects.length > 0}
+		/>
+
+		<SaveToProjectModal
+			open={showSaveModal}
+			projects={data.projects}
+			onSave={handleSaveConfirm}
+			onClose={handleCloseSaveModal}
+			saving={saving}
 		/>
 	{/if}
 </div>
@@ -359,5 +454,47 @@
 		margin-top: var(--space-lg);
 		font-size: 0.875rem;
 		color: var(--color-walnut);
+	}
+
+	/* Success Banner */
+	.success-banner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: var(--space-md);
+		padding: var(--space-lg);
+		background: #f0fdf4;
+		border: 1px solid #86efac;
+		border-radius: var(--radius-lg);
+		margin-bottom: var(--space-xl);
+	}
+
+	.success-icon {
+		flex-shrink: 0;
+		width: 24px;
+		height: 24px;
+		color: #16a34a;
+	}
+
+	.success-icon svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.success-content {
+		flex: 1;
+		min-width: 200px;
+	}
+
+	.success-title {
+		font-weight: 600;
+		color: #16a34a;
+		margin: 0 0 var(--space-xs) 0;
+	}
+
+	.success-detail {
+		font-size: 0.875rem;
+		color: var(--color-ink-soft);
+		margin: 0;
 	}
 </style>

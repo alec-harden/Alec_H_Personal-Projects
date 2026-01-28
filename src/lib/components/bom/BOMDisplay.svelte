@@ -12,9 +12,11 @@
 		onQuantityChange?: (id: string, quantity: number) => void;
 		onToggleVisibility?: (id: string) => void;
 		onAddItem?: (item: BOMItem) => void;
+		onSave?: () => void;
+		showSaveButton?: boolean;
 	}
 
-	let { bom, onStartOver, onQuantityChange, onToggleVisibility, onAddItem }: Props = $props();
+	let { bom, onStartOver, onQuantityChange, onToggleVisibility, onAddItem, onSave, showSaveButton }: Props = $props();
 
 	// Category order for consistent display
 	const categoryOrder: BOMCategoryType[] = ['lumber', 'hardware', 'finishes', 'consumables'];
@@ -76,6 +78,14 @@
 			</p>
 		</div>
 		<div class="header-actions">
+			{#if showSaveButton && onSave}
+				<button type="button" onclick={onSave} class="btn-primary">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M17 3v10M21 7l-4-4-4 4M5 12v9a2 2 0 002 2h10a2 2 0 002-2v-2" />
+					</svg>
+					Save to Project
+				</button>
+			{/if}
 			<button type="button" onclick={handleExport} class="btn-primary">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-icon">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
