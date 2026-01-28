@@ -1,6 +1,39 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { relations } from 'drizzle-orm';
 
+// =============================================================================
+// Template Types (exported for use in other files)
+// =============================================================================
+
+/**
+ * Joinery method option with skill level indicator
+ */
+export interface JoineryOption {
+	id: string;
+	name: string;
+	description: string;
+	difficulty: 'beginner' | 'intermediate' | 'advanced';
+}
+
+/**
+ * Dimension range with min/max/default values
+ */
+export interface DimensionRange {
+	min: number;
+	max: number;
+	default: number;
+}
+
+/**
+ * Template dimensions with ranges for length, width, optional height
+ */
+export interface TemplateDimensions {
+	length: DimensionRange;
+	width: DimensionRange;
+	height?: DimensionRange;
+	unit: 'inches';
+}
+
 // Users table for authentication
 export const users = sqliteTable('users', {
 	id: text('id').primaryKey(),
@@ -100,3 +133,29 @@ export const bomItemsRelations = relations(bomItems, ({ one }) => ({
 		references: [boms.id]
 	})
 }));
+
+// =============================================================================
+// Templates Table
+// =============================================================================
+
+// Templates table - project templates for BOM generation
+export const templates = sqliteTable('templates', {
+	id: text('id').primaryKey(),
+	name: text('name').notNull(),
+	icon: text('icon').notNull(),
+	description: text('description').notNull(),
+	defaultDimensions: text('default_dimensions', { mode: 'json' })
+		.$type<TemplateDimensions>()
+		.notNull(),
+	joineryOptions: text('joinery_options', { mode: 'json' })
+		.$type<JoineryOption[]>()
+		.notNull(),
+	suggestedWoods: text('suggested_woods', { mode: 'json' }).$type<string[]>().notNull(),
+	suggestedFinishes: text('suggested_finishes', { mode: 'json' }).$type<string[]>().notNull(),
+	typicalHardware: text('typical_hardware', { mode: 'json' }).$type<string[]>().notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// Templates relations (standalone - no foreign keys)
+export const templatesRelations = relations(templates, () => ({}));
