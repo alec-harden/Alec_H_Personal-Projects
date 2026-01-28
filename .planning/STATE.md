@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 ## Current Position
 
-Phase: 10 (BOM Persistence)
-Plan: 4 of 4 complete
-Status: COMPLETE
-Last activity: 2026-01-28 — Completed 10-04-PLAN.md (BOM Editing and Deletion)
+Phase: 11 (Template Management)
+Plan: 1 of 4 complete
+Status: In progress
+Last activity: 2026-01-28 — Completed 11-01-PLAN.md (Database Schema)
 
-Progress: [█████████████████████████████████████████████████] 100.0%
+Progress: [████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 25.0%
 
 ## Milestone History
 
@@ -32,7 +32,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
 | 9 | Project Management | 3/3 | COMPLETE |
 | 10 | BOM Persistence | 4/4 | COMPLETE |
-| 11 | Template Management | 0/? | Not started |
+| 11 | Template Management | 1/4 | In progress |
 | 12 | CSV Import | 0/? | Not started |
 
 ## Accumulated Context
@@ -92,6 +92,12 @@ Phase 10 decisions:
 - 10-04: PATCH endpoint validates ownership through nested relations (item -> bom -> project)
 - 10-04: BOM.updatedAt timestamp updates on any item change
 - 10-04: Danger zone pattern for BOM deletion with confirmation dialog
+
+Phase 11 decisions:
+- 11-01: Use text mode for JSON columns (not blob) - SQLite JSON functions require text
+- 11-01: Export interfaces from schema.ts for reuse across codebase
+- 11-01: Standalone DB connection in seed script using dotenv (not $env)
+- 11-01: Idempotent seed script checks for existing templates before insert
 
 ### Pending Todos
 
@@ -215,18 +221,28 @@ Key files:
 - `src/routes/projects/[id]/+page.svelte` - BOM list in project detail
 - `src/routes/projects/[id]/bom/[bomId]/` - Saved BOM view with editing
 
+## Phase 11 Progress
+
+### 11-01: Database Schema (COMPLETE)
+Templates table added with typed JSON columns:
+- JoineryOption, DimensionRange, TemplateDimensions interfaces exported
+- templates table with defaultDimensions, joineryOptions, suggestedWoods, suggestedFinishes, typicalHardware
+- scripts/seed-templates.ts migrates hardcoded templates
+- 5 templates seeded: Table, Cabinet, Shelf/Bookcase, Workbench, Box/Chest
+
+Key files:
+- `src/lib/server/schema.ts` - templates table and interfaces
+- `scripts/seed-templates.ts` - seed script with standalone DB connection
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 10-04-PLAN.md (BOM Editing and Deletion)
+Stopped at: Completed 11-01-PLAN.md (Database Schema)
 Resume file: None
 
 ## Next Steps
 
-**v2.0 Persistence Phase 10 Complete!**
-
-Optional future work:
-- Phase 11: Template Management (save/reuse BOM templates)
-- Phase 12: CSV Import (import BOMs from spreadsheets)
-
-v2.0 core functionality complete - ready for production use.
+Continue Phase 11 Template Management:
+- Plan 11-02: Template API (read operations)
+- Plan 11-03: Admin UI (template CRUD)
+- Plan 11-04: BOM Wizard Integration
