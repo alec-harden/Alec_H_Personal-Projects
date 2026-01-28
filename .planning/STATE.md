@@ -81,6 +81,11 @@ Phase 10 decisions:
 - 10-01: Position field in bomItems to preserve AI-generated order
 - 10-01: Hidden flag as integer boolean with default false (SQLite pattern)
 - 10-01: Cascade delete chain: projects -> boms -> bomItems
+- 10-02: Show save button only when user has projects (data.projects.length > 0)
+- 10-02: Use Drizzle transaction for atomic BOM + items insert
+- 10-02: Parse generatedAt from ISO string to timestamp for DB
+- 10-02: Return empty projects array from server load if not authenticated
+- 10-02: Success banner dismissible by user, appears above BOM display
 - 10-03: Nested route structure /projects/[id]/bom/[bomId] maintains hierarchical context
 - 10-03: Reuse BOMDisplay component for saved BOMs (DRY principle)
 
