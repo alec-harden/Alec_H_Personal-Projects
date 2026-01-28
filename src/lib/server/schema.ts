@@ -47,9 +47,56 @@ export const projects = sqliteTable('projects', {
 });
 
 // Projects relations
-export const projectsRelations = relations(projects, ({ one }) => ({
+export const projectsRelations = relations(projects, ({ one, many }) => ({
 	user: one(users, {
 		fields: [projects.userId],
 		references: [users.id]
+	}),
+	boms: many(boms)
+}));
+
+// BOMs table - bill of materials linked to projects
+export const boms = sqliteTable('boms', {
+	id: text('id').primaryKey(),
+	projectId: text('project_id')
+		.notNull()
+		.references(() => projects.id, { onDelete: 'cascade' }),
+	name: text('name').notNull(),
+	projectType: text('project_type').notNull(),
+	generatedAt: integer('generated_at', { mode: 'timestamp' }).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// BOM items table - individual line items in a BOM
+export const bomItems = sqliteTable('bom_items', {
+	id: text('id').primaryKey(),
+	bomId: text('bom_id')
+		.notNull()
+		.references(() => boms.id, { onDelete: 'cascade' }),
+	name: text('name').notNull(),
+	description: text('description'),
+	quantity: integer('quantity').notNull(),
+	unit: text('unit').notNull(),
+	category: text('category').notNull(),
+	notes: text('notes'),
+	hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
+	position: integer('position').notNull()
+});
+
+// BOMs relations
+export const bomsRelations = relations(boms, ({ one, many }) => ({
+	project: one(projects, {
+		fields: [boms.projectId],
+		references: [projects.id]
+	}),
+	items: many(bomItems)
+}));
+
+// BOM items relations
+export const bomItemsRelations = relations(bomItems, ({ one }) => ({
+	bom: one(boms, {
+		fields: [bomItems.bomId],
+		references: [boms.id]
 	})
 }));
