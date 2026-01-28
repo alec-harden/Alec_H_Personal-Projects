@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 10 (BOM Persistence)
-Plan: 3 of 4 complete
-Status: IN PROGRESS
-Last activity: 2026-01-28 — Completed 10-03-PLAN.md (Saved BOM Viewing)
+Plan: 4 of 4 complete
+Status: COMPLETE
+Last activity: 2026-01-28 — Completed 10-04-PLAN.md (BOM Editing and Deletion)
 
-Progress: [████████████████████████████████████████████████░] 96.2%
+Progress: [█████████████████████████████████████████████████] 100.0%
 
 ## Milestone History
 
@@ -31,7 +31,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 |-------|------|-------|--------|
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
 | 9 | Project Management | 3/3 | COMPLETE |
-| 10 | BOM Persistence | 3/4 | IN PROGRESS |
+| 10 | BOM Persistence | 4/4 | COMPLETE |
 | 11 | Template Management | 0/? | Not started |
 | 12 | CSV Import | 0/? | Not started |
 
@@ -88,6 +88,10 @@ Phase 10 decisions:
 - 10-02: Success banner dismissible by user, appears above BOM display
 - 10-03: Nested route structure /projects/[id]/bom/[bomId] maintains hierarchical context
 - 10-03: Reuse BOMDisplay component for saved BOMs (DRY principle)
+- 10-04: Optimistic UI updates for quantity and visibility changes (instant feedback)
+- 10-04: PATCH endpoint validates ownership through nested relations (item -> bom -> project)
+- 10-04: BOM.updatedAt timestamp updates on any item change
+- 10-04: Danger zone pattern for BOM deletion with confirmation dialog
 
 ### Pending Todos
 
@@ -187,13 +191,42 @@ Display saved BOMs within project context:
 - Security: ownership verification via project.userId
 - Reuses BOMDisplay component (DRY principle)
 
+### 10-04: BOM Editing and Deletion (COMPLETE)
+Complete BOM CRUD with editing and deletion:
+- DELETE /api/bom/[id] endpoint with cascade deletion
+- PATCH /api/bom/[id]/items/[itemId] for quantity/visibility updates
+- Optimistic UI updates for instant feedback
+- Danger zone section for BOM deletion
+- All BOM persistence requirements satisfied (BOM-01 through BOM-04)
+
+## Phase 10 Completion Summary
+
+BOM Persistence complete with all requirements satisfied:
+- **BOM-01:** Save generated BOMs to projects (10-02)
+- **BOM-02:** View saved BOMs within project context (10-03)
+- **BOM-03:** Edit saved BOM quantities and visibility (10-04)
+- **BOM-04:** Delete saved BOMs (10-04)
+
+Key files:
+- `src/lib/server/schema.ts` - boms and bomItems tables
+- `src/routes/api/bom/save/+server.ts` - BOM save endpoint
+- `src/routes/api/bom/[id]/+server.ts` - BOM deletion endpoint
+- `src/routes/api/bom/[id]/items/[itemId]/+server.ts` - Item update endpoint
+- `src/routes/projects/[id]/+page.svelte` - BOM list in project detail
+- `src/routes/projects/[id]/bom/[bomId]/` - Saved BOM view with editing
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 10-03-PLAN.md (Saved BOM Viewing)
+Stopped at: Completed 10-04-PLAN.md (BOM Editing and Deletion)
 Resume file: None
 
 ## Next Steps
 
-Complete Phase 10 (BOM Persistence):
-1. Plan 10-04: Edit/Delete saved BOMs (final Phase 10 plan)
+**v2.0 Persistence Phase 10 Complete!**
+
+Optional future work:
+- Phase 11: Template Management (save/reuse BOM templates)
+- Phase 12: CSV Import (import BOMs from spreadsheets)
+
+v2.0 core functionality complete - ready for production use.
