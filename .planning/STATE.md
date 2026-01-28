@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 10 (BOM Persistence)
-Plan: 1 of 4 complete
+Plan: 3 of 4 complete
 Status: IN PROGRESS
-Last activity: 2026-01-28 — Completed 10-01-PLAN.md
+Last activity: 2026-01-28 — Completed 10-03-PLAN.md (Saved BOM Viewing)
 
-Progress: [████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 42.5%
+Progress: [████████████████████████████████████████████████░] 96.2%
 
 ## Milestone History
 
@@ -31,7 +31,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 |-------|------|-------|--------|
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
 | 9 | Project Management | 3/3 | COMPLETE |
-| 10 | BOM Persistence | 1/4 | IN PROGRESS |
+| 10 | BOM Persistence | 3/4 | IN PROGRESS |
 | 11 | Template Management | 0/? | Not started |
 | 12 | CSV Import | 0/? | Not started |
 
@@ -76,11 +76,13 @@ Phase 9 decisions:
 - isAuthenticated flag pattern for conditional UI rendering
 - Project progress hardcoded to 0% until Phase 10 adds BOM persistence
 
-Phase 10 decisions (10-01):
-- Separate timestamps: generatedAt (AI creation) vs createdAt (DB save)
-- Position field in bomItems to preserve AI-generated order
-- Hidden flag as integer boolean with default false (SQLite pattern)
-- Cascade delete chain: projects -> boms -> bomItems
+Phase 10 decisions:
+- 10-01: Separate timestamps: generatedAt (AI creation) vs createdAt (DB save)
+- 10-01: Position field in bomItems to preserve AI-generated order
+- 10-01: Hidden flag as integer boolean with default false (SQLite pattern)
+- 10-01: Cascade delete chain: projects -> boms -> bomItems
+- 10-03: Nested route structure /projects/[id]/bom/[bomId] maintains hierarchical context
+- 10-03: Reuse BOMDisplay component for saved BOMs (DRY principle)
 
 ### Pending Todos
 
@@ -166,14 +168,27 @@ Added BOM persistence tables:
 - Drizzle relations for query API (project -> boms -> items)
 - Database synchronized with db:push
 
+### 10-02: Save Flow (COMPLETE)
+Enabled saving generated BOMs to database:
+- Project selection modal after BOM generation
+- Server action inserts BOM with all items in transaction
+- PRG pattern redirects to saved BOM view
+- Success/error feedback via toast notifications
+
+### 10-03: Saved BOM Viewing (COMPLETE)
+Display saved BOMs within project context:
+- Project detail page lists BOMs with metadata
+- Nested route /projects/[id]/bom/[bomId] for detail view
+- Security: ownership verification via project.userId
+- Reuses BOMDisplay component (DRY principle)
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 10-01-PLAN.md (Database Schema)
+Stopped at: Completed 10-03-PLAN.md (Saved BOM Viewing)
 Resume file: None
 
 ## Next Steps
 
-Continue Phase 10 (BOM Persistence):
-1. Wave 2: Save flow (10-02) + View routes (10-03) in parallel
-2. Wave 3: Edit/Delete (10-04)
+Complete Phase 10 (BOM Persistence):
+1. Plan 10-04: Edit/Delete saved BOMs (final Phase 10 plan)
