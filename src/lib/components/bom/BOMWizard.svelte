@@ -1,10 +1,11 @@
 <script lang="ts">
 	// BOM Wizard container component
 	// Orchestrates the 4-step wizard flow and manages accumulated state
+	// Templates are fetched from database via /api/templates
 
+	import { onMount } from 'svelte';
 	import type { ProjectDetails } from '$lib/types/bom';
 	import type { ProjectTemplate } from '$lib/data/templates';
-	import { templates } from '$lib/data/templates';
 
 	import WizardProgress from './WizardProgress.svelte';
 	import ProjectTypeStep from './ProjectTypeStep.svelte';
@@ -17,6 +18,26 @@
 	}
 
 	let { onComplete }: Props = $props();
+
+	// Templates loaded from database
+	let templates = $state<ProjectTemplate[]>([]);
+	let templatesLoading = $state(true);
+	let templatesError = $state('');
+
+	onMount(async () => {
+		try {
+			const response = await fetch('/api/templates');
+			if (!response.ok) {
+				throw new Error('Failed to load templates');
+			}
+			templates = await response.json();
+		} catch (err) {
+			templatesError = err instanceof Error ? err.message : 'Failed to load templates';
+			console.error('Error loading templates:', err);
+		} finally {
+			templatesLoading = false;
+		}
+	});
 
 	// Wizard state
 	let currentStep = $state(1);
@@ -86,6 +107,16 @@
 </script>
 
 <div class="mx-auto max-w-3xl">
+	{#if templatesLoading}
+		<div class="loading-container">
+			<p class="loading-text">Loading templates...</p>
+		</div>
+	{:else if templatesError}
+		<div class="error-container">
+			<p class="error-text">{templatesError}</p>
+			<button onclick={() => location.reload()} class="btn-secondary">Try Again</button>
+		</div>
+	{:else}
 	<WizardProgress {currentStep} />
 
 	{#if currentStep === 1}
@@ -122,4 +153,34 @@
 			onBack={goBack}
 		/>
 	{/if}
+	{/if}
 </div>
+
+<style>
+	.loading-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: var(--space-2xl);
+	}
+
+	.loading-text {
+		font-size: 1rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	.error-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-md);
+		padding: var(--space-2xl);
+	}
+
+	.error-text {
+		font-size: 1rem;
+		color: var(--color-error);
+		margin: 0;
+	}
+</style>

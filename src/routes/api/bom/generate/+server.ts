@@ -10,16 +10,18 @@
 import { generateObject } from 'ai';
 import { getModel } from '$lib/server/ai';
 import { bomSchema } from '$lib/server/schemas/bom-schema';
-import { getTemplateById } from '$lib/data/templates';
+import { db } from '$lib/server/db';
+import { templates } from '$lib/server/schema';
+import { eq } from 'drizzle-orm';
 import type { ProjectDetails } from '$lib/types/bom';
+import type { ProjectTemplate } from '$lib/data/templates';
 import type { RequestHandler } from './$types';
 
 /**
  * Build a detailed prompt for BOM generation
  * Includes project context, dimensions, materials, and woodworking-specific guidance
  */
-function buildBOMPrompt(details: ProjectDetails): string {
-	const template = getTemplateById(details.templateId);
+function buildBOMPrompt(details: ProjectDetails, template: ProjectTemplate | null): string {
 	const templateName = template?.name ?? details.templateId;
 	const templateHardware = template?.typicalHardware ?? [];
 
@@ -98,8 +100,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			);
 		}
 
+		// Look up template from database for prompt context
+		const template = await db.query.templates.findFirst({
+			where: eq(templates.id, projectDetails.templateId)
+		});
+
 		// Build the prompt with template context
-		const prompt = buildBOMPrompt(projectDetails);
+		const prompt = buildBOMPrompt(projectDetails, template as ProjectTemplate | null);
 
 		// Generate structured BOM using AI
 		const result = await generateObject({
