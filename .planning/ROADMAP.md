@@ -1,7 +1,7 @@
 # Roadmap: WoodShop Toolbox
 
 **Created:** 2026-01-20
-**Updated:** 2026-01-28 (Phase 11 complete)
+**Updated:** 2026-01-28 (Phase 12 planned)
 
 ## Progress
 
@@ -18,7 +18,7 @@
 | 9 | Project Management | Complete | PROJ-01 to PROJ-04 |
 | 10 | BOM Persistence | Complete | BOM-01 to BOM-04 |
 | 11 | Template Management | Complete | TMPL-01 to TMPL-05 |
-| 12 | CSV Import | Pending | CSV-01 to CSV-04 |
+| 12 | CSV Import | Planned | CSV-01 to CSV-04 |
 
 ---
 
@@ -223,6 +223,12 @@ Plans:
 
 **Dependencies:** Phase 8 (auth), Phase 10 (BOM persistence)
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 12-01-PLAN.md — CSV parsing utilities and upload component
+- [ ] 12-02-PLAN.md — Page integration and round-trip verification
+
 **Success Criteria:**
 1. User can upload CSV file on BOM creation page
 2. Invalid CSV shows clear validation errors (missing columns, bad data)
@@ -270,4 +276,4 @@ Phase 8: Authentication Foundation
 ---
 
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-28 after Phase 11 execution*
+*Last updated: 2026-01-28 after Phase 12 planning*
