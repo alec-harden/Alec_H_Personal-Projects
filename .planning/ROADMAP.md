@@ -1,7 +1,7 @@
 # Roadmap: WoodShop Toolbox
 
 **Created:** 2026-01-20
-**Updated:** 2026-01-28 (Phase 11 planned)
+**Updated:** 2026-01-28 (Phase 11 complete)
 
 ## Progress
 
@@ -17,7 +17,7 @@
 | 8 | Authentication Foundation | Complete | AUTH-01 to AUTH-04 |
 | 9 | Project Management | Complete | PROJ-01 to PROJ-04 |
 | 10 | BOM Persistence | Complete | BOM-01 to BOM-04 |
-| 11 | Template Management | Planned | TMPL-01 to TMPL-05 |
+| 11 | Template Management | Complete | TMPL-01 to TMPL-05 |
 | 12 | CSV Import | Pending | CSV-01 to CSV-04 |
 
 ---
@@ -190,10 +190,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 11-01-PLAN.md — Database schema and seed migration
-- [ ] 11-02-PLAN.md — BOM wizard database integration
-- [ ] 11-03-PLAN.md — Admin templates list and create
-- [ ] 11-04-PLAN.md — Admin template edit and delete
+- [x] 11-01-PLAN.md — Database schema and seed migration
+- [x] 11-02-PLAN.md — BOM wizard database integration
+- [x] 11-03-PLAN.md — Admin templates list and create
+- [x] 11-04-PLAN.md — Admin template edit and delete
 
 **Success Criteria:**
 1. Templates load from database instead of hardcoded file
@@ -270,4 +270,4 @@ Phase 8: Authentication Foundation
 ---
 
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-28 after Phase 11 planning*
+*Last updated: 2026-01-28 after Phase 11 execution*

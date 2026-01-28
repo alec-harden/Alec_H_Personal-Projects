@@ -30,11 +30,11 @@ Requirements for v2.0 milestone. Each maps to roadmap phases.
 
 ### Template Management
 
-- [ ] **TMPL-01**: Templates stored in database (migrated from code)
-- [ ] **TMPL-02**: User can view all templates in admin panel
-- [ ] **TMPL-03**: User can add a new template
-- [ ] **TMPL-04**: User can edit an existing template
-- [ ] **TMPL-05**: User can delete a template
+- [x] **TMPL-01**: Templates stored in database (migrated from code)
+- [x] **TMPL-02**: User can view all templates in admin panel
+- [x] **TMPL-03**: User can add a new template
+- [x] **TMPL-04**: User can edit an existing template
+- [x] **TMPL-05**: User can delete a template
 
 ### CSV Import
 
@@ -93,11 +93,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BOM-02 | Phase 10 | Complete |
 | BOM-03 | Phase 10 | Complete |
 | BOM-04 | Phase 10 | Complete |
-| TMPL-01 | Phase 11 | Pending |
-| TMPL-02 | Phase 11 | Pending |
-| TMPL-03 | Phase 11 | Pending |
-| TMPL-04 | Phase 11 | Pending |
-| TMPL-05 | Phase 11 | Pending |
+| TMPL-01 | Phase 11 | Complete |
+| TMPL-02 | Phase 11 | Complete |
+| TMPL-03 | Phase 11 | Complete |
+| TMPL-04 | Phase 11 | Complete |
+| TMPL-05 | Phase 11 | Complete |
 | CSV-01 | Phase 12 | Pending |
 | CSV-02 | Phase 12 | Pending |
 | CSV-03 | Phase 12 | Pending |
@@ -110,4 +110,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-26*
-*Last updated: 2026-01-28 after Phase 10 completion*
+*Last updated: 2026-01-28 after Phase 11 completion*
