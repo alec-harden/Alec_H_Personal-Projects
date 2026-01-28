@@ -1,8 +1,8 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
-import { projects } from '$lib/server/schema';
-import { eq, and } from 'drizzle-orm';
+import { projects, boms } from '$lib/server/schema';
+import { eq, and, desc } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) {
@@ -18,7 +18,20 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		throw error(404, 'Project not found');
 	}
 
-	return { project };
+	// Fetch BOMs for this project
+	const projectBoms = await db.query.boms.findMany({
+		where: eq(boms.projectId, params.id),
+		orderBy: desc(boms.updatedAt),
+		columns: {
+			id: true,
+			name: true,
+			projectType: true,
+			generatedAt: true,
+			updatedAt: true
+		}
+	});
+
+	return { project, boms: projectBoms };
 };
 
 export const actions: Actions = {

@@ -10,8 +10,16 @@
 		updatedAt: Date;
 	}
 
+	interface BOMSummary {
+		id: string;
+		name: string;
+		projectType: string;
+		generatedAt: Date;
+		updatedAt: Date;
+	}
+
 	interface Props {
-		data: { project: Project };
+		data: { project: Project; boms: BOMSummary[] };
 		form: { error?: string; success?: boolean } | null;
 	}
 
@@ -140,6 +148,51 @@
 					{loading ? 'Saving...' : 'Save Changes'}
 				</button>
 			</form>
+		</div>
+
+		<!-- Bills of Materials Section -->
+		<div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+			<div class="flex items-center justify-between mb-4">
+				<h2 class="text-lg font-semibold text-stone-800">Bills of Materials</h2>
+				<a
+					href="/bom/new"
+					class="px-3 py-1.5 text-sm bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-md transition-colors"
+				>
+					Create BOM
+				</a>
+			</div>
+
+			{#if data.boms.length === 0}
+				<div class="text-center py-8 text-stone-500">
+					<p class="mb-3">No BOMs saved yet.</p>
+					<a
+						href="/bom/new"
+						class="text-amber-600 hover:text-amber-700 font-medium underline"
+					>
+						Create your first BOM
+					</a>
+				</div>
+			{:else}
+				<div class="grid gap-4">
+					{#each data.boms as bom}
+						<a
+							href="/projects/{data.project.id}/bom/{bom.id}"
+							class="block p-4 border border-stone-200 rounded-lg hover:border-amber-500 hover:shadow-md transition-all"
+						>
+							<div class="flex items-start justify-between">
+								<div class="flex-1">
+									<h3 class="font-semibold text-stone-800 mb-1">{bom.name}</h3>
+									<p class="text-sm text-stone-500 capitalize">{bom.projectType}</p>
+								</div>
+								<div class="text-right text-sm text-stone-500">
+									<p>Generated {formatDate(bom.generatedAt)}</p>
+									<p class="text-xs">Updated {formatDate(bom.updatedAt)}</p>
+								</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<!-- Delete Section -->
