@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 11 (Template Management)
-Plan: 1 of 4 complete
+Plan: 2 of 4 complete
 Status: In progress
-Last activity: 2026-01-28 — Completed 11-01-PLAN.md (Database Schema)
+Last activity: 2026-01-28 — Completed 11-02-PLAN.md (Template API)
 
-Progress: [████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 25.0%
+Progress: [█████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░] 50.0%
 
 ## Milestone History
 
@@ -32,7 +32,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
 | 9 | Project Management | 3/3 | COMPLETE |
 | 10 | BOM Persistence | 4/4 | COMPLETE |
-| 11 | Template Management | 1/4 | In progress |
+| 11 | Template Management | 2/4 | In progress |
 | 12 | CSV Import | 0/? | Not started |
 
 ## Accumulated Context
@@ -98,6 +98,11 @@ Phase 11 decisions:
 - 11-01: Export interfaces from schema.ts for reuse across codebase
 - 11-01: Standalone DB connection in seed script using dotenv (not $env)
 - 11-01: Idempotent seed script checks for existing templates before insert
+- 11-02: Templates API is public (no auth) - shared data for BOM generation
+- 11-02: templates.ts retains type definitions only - data comes from database
+- 11-02: BOMWizard uses onMount fetch with loading/error states
+- 11-02: BOM generate endpoint queries database directly for template context
+- 11-02: Child wizard steps unchanged - already receive templates via props
 
 ### Pending Todos
 
@@ -234,15 +239,28 @@ Key files:
 - `src/lib/server/schema.ts` - templates table and interfaces
 - `scripts/seed-templates.ts` - seed script with standalone DB connection
 
+### 11-02: Template API (COMPLETE)
+BOM wizard and generation wired to database-backed templates:
+- GET /api/templates endpoint returning all templates ordered by name
+- templates.ts reduced to type definitions only (data removed)
+- BOMWizard fetches templates on mount with loading/error states
+- BOM generate endpoint queries database for template context
+- Child wizard steps unchanged (already prop-driven)
+
+Key files:
+- `src/routes/api/templates/+server.ts` - GET endpoint for templates
+- `src/lib/data/templates.ts` - Type definitions only
+- `src/lib/components/bom/BOMWizard.svelte` - Dynamic template fetch
+- `src/routes/api/bom/generate/+server.ts` - Database template lookup
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 11-01-PLAN.md (Database Schema)
+Stopped at: Completed 11-02-PLAN.md (Template API)
 Resume file: None
 
 ## Next Steps
 
 Continue Phase 11 Template Management:
-- Plan 11-02: Template API (read operations)
 - Plan 11-03: Admin UI (template CRUD)
 - Plan 11-04: BOM Wizard Integration
