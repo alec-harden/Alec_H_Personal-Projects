@@ -1,7 +1,7 @@
 # Roadmap: WoodShop Toolbox
 
 **Created:** 2026-01-20
-**Updated:** 2026-01-27 (Phase 10 planned)
+**Updated:** 2026-01-28 (Phase 10 complete)
 
 ## Progress
 
@@ -16,7 +16,7 @@
 | 7 | Tech Debt Cleanup | Complete | v1.0 |
 | 8 | Authentication Foundation | Complete | AUTH-01 to AUTH-04 |
 | 9 | Project Management | Complete | PROJ-01 to PROJ-04 |
-| 10 | BOM Persistence | Planned | BOM-01 to BOM-04 |
+| 10 | BOM Persistence | Complete | BOM-01 to BOM-04 |
 | 11 | Template Management | Pending | TMPL-01 to TMPL-05 |
 | 12 | CSV Import | Pending | CSV-01 to CSV-04 |
 
@@ -153,10 +153,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 10-01-PLAN.md — BOM schema and database tables
-- [ ] 10-02-PLAN.md — Save BOM to project flow
-- [ ] 10-03-PLAN.md — View saved BOMs in project
-- [ ] 10-04-PLAN.md — Edit and delete saved BOMs
+- [x] 10-01-PLAN.md — BOM schema and database tables
+- [x] 10-02-PLAN.md — Save BOM to project flow
+- [x] 10-03-PLAN.md — View saved BOMs in project
+- [x] 10-04-PLAN.md — Edit and delete saved BOMs
 
 **Success Criteria:**
 1. User can save AI-generated BOM to a selected project
@@ -262,4 +262,4 @@ Phase 8: Authentication Foundation
 ---
 
 *Roadmap created: 2026-01-20*
-*Last updated: 2026-01-27 after Phase 10 planning*
+*Last updated: 2026-01-28 after Phase 10 execution*

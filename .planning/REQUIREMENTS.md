@@ -23,10 +23,10 @@ Requirements for v2.0 milestone. Each maps to roadmap phases.
 
 ### BOM Persistence
 
-- [ ] **BOM-01**: User can save generated BOM to a project
-- [ ] **BOM-02**: User can view saved BOMs in a project
-- [ ] **BOM-03**: User can edit a saved BOM (quantities, items, visibility)
-- [ ] **BOM-04**: User can delete a saved BOM
+- [x] **BOM-01**: User can save generated BOM to a project
+- [x] **BOM-02**: User can view saved BOMs in a project
+- [x] **BOM-03**: User can edit a saved BOM (quantities, items, visibility)
+- [x] **BOM-04**: User can delete a saved BOM
 
 ### Template Management
 
@@ -89,10 +89,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROJ-02 | Phase 9 | Complete |
 | PROJ-03 | Phase 9 | Complete |
 | PROJ-04 | Phase 9 | Complete |
-| BOM-01 | Phase 10 | Pending |
-| BOM-02 | Phase 10 | Pending |
-| BOM-03 | Phase 10 | Pending |
-| BOM-04 | Phase 10 | Pending |
+| BOM-01 | Phase 10 | Complete |
+| BOM-02 | Phase 10 | Complete |
+| BOM-03 | Phase 10 | Complete |
+| BOM-04 | Phase 10 | Complete |
 | TMPL-01 | Phase 11 | Pending |
 | TMPL-02 | Phase 11 | Pending |
 | TMPL-03 | Phase 11 | Pending |
@@ -110,4 +110,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-26*
-*Last updated: 2026-01-27 after Phase 9 completion*
+*Last updated: 2026-01-28 after Phase 10 completion*
