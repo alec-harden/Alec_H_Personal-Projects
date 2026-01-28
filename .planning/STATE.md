@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 ## Current Position
 
-Phase: 9 (Project Management)
-Plan: 3 of 3 complete
-Status: PHASE COMPLETE
-Last activity: 2026-01-27 — Completed 09-03-PLAN.md
+Phase: 10 (BOM Persistence)
+Plan: 1 of 4 complete
+Status: IN PROGRESS
+Last activity: 2026-01-28 — Completed 10-01-PLAN.md
 
-Progress: [████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 40%
+Progress: [████████████████░░░░░░░░░░░░░░░░░░░░░░░░] 42.5%
 
 ## Milestone History
 
@@ -31,7 +31,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 |-------|------|-------|--------|
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
 | 9 | Project Management | 3/3 | COMPLETE |
-| 10 | BOM Persistence | 0/? | Not started |
+| 10 | BOM Persistence | 1/4 | IN PROGRESS |
 | 11 | Template Management | 0/? | Not started |
 | 12 | CSV Import | 0/? | Not started |
 
@@ -75,6 +75,12 @@ Phase 9 decisions:
 - Dashboard shows 6 most recent projects (limit for visual balance)
 - isAuthenticated flag pattern for conditional UI rendering
 - Project progress hardcoded to 0% until Phase 10 adds BOM persistence
+
+Phase 10 decisions (10-01):
+- Separate timestamps: generatedAt (AI creation) vs createdAt (DB save)
+- Position field in bomItems to preserve AI-generated order
+- Hidden flag as integer boolean with default false (SQLite pattern)
+- Cascade delete chain: projects -> boms -> bomItems
 
 ### Pending Todos
 
@@ -151,14 +157,23 @@ Dashboard displays real user projects:
 - Empty state with CTA for users with no projects
 - Navigation flows between dashboard and /projects routes
 
+## Phase 10 Progress
+
+### 10-01: Database Schema (COMPLETE)
+Added BOM persistence tables:
+- boms table with projectId FK and cascade delete
+- bomItems table with bomId FK and cascade delete
+- Drizzle relations for query API (project -> boms -> items)
+- Database synchronized with db:push
+
 ## Session Continuity
 
-Last session: 2026-01-27
-Stopped at: Completed Phase 9 (Project Management)
+Last session: 2026-01-28
+Stopped at: Completed 10-01-PLAN.md (Database Schema)
 Resume file: None
 
 ## Next Steps
 
-Begin Phase 10 (BOM Persistence):
-1. Research BOM persistence requirements
-2. Plan BOM schema and routes
+Continue Phase 10 (BOM Persistence):
+1. Wave 2: Save flow (10-02) + View routes (10-03) in parallel
+2. Wave 3: Edit/Delete (10-04)
