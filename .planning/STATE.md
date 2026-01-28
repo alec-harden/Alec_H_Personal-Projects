@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 11 (Template Management)
-Plan: 2 of 4 complete
+Plan: 3 of 4 complete
 Status: In progress
-Last activity: 2026-01-28 — Completed 11-02-PLAN.md (Template API)
+Last activity: 2026-01-28 — Completed 11-03-PLAN.md (Admin Templates List & Create)
 
-Progress: [█████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░] 50.0%
+Progress: [█████████████████████████████████████░░░░░░░░░░░░░░] 75.0%
 
 ## Milestone History
 
@@ -32,7 +32,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 8 | Authentication Foundation | 4/4 | COMPLETE |
 | 9 | Project Management | 3/3 | COMPLETE |
 | 10 | BOM Persistence | 4/4 | COMPLETE |
-| 11 | Template Management | 2/4 | In progress |
+| 11 | Template Management | 3/4 | In progress |
 | 12 | CSV Import | 0/? | Not started |
 
 ## Accumulated Context
@@ -103,6 +103,11 @@ Phase 11 decisions:
 - 11-02: BOMWizard uses onMount fetch with loading/error states
 - 11-02: BOM generate endpoint queries database directly for template context
 - 11-02: Child wizard steps unchanged - already receive templates via props
+- 11-03: Admin route pattern at /admin/{resource} for management pages
+- 11-03: Toggle-able create form hidden by default for clean list view
+- 11-03: Indexed form fields (joinery_0_id, joinery_1_id) for dynamic array submission
+- 11-03: Comma-separated text inputs for simple string arrays (woods, finishes, hardware)
+- 11-03: Server file created by parallel 11-02 execution (identical content, no duplication needed)
 
 ### Pending Todos
 
@@ -253,14 +258,26 @@ Key files:
 - `src/lib/components/bom/BOMWizard.svelte` - Dynamic template fetch
 - `src/routes/api/bom/generate/+server.ts` - Database template lookup
 
+### 11-03: Admin Templates List & Create (COMPLETE)
+Admin UI for template management:
+- /admin/templates route with auth protection (load + actions)
+- Template list with icons, descriptions, and metadata counts
+- Create form with all fields: name, icon, description, dimensions, joinery, suggestions
+- Dynamic joinery options array with add/remove
+- Progressive enhancement with use:enhance and loading state
+- PRG pattern redirects to template detail after creation
+
+Key files:
+- `src/routes/admin/templates/+page.server.ts` - Load + create action (created by 11-02)
+- `src/routes/admin/templates/+page.svelte` - List and create form UI
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 11-02-PLAN.md (Template API)
+Stopped at: Completed 11-03-PLAN.md (Admin Templates List & Create)
 Resume file: None
 
 ## Next Steps
 
 Continue Phase 11 Template Management:
-- Plan 11-03: Admin UI (template CRUD)
 - Plan 11-04: BOM Wizard Integration
