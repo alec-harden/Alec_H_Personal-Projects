@@ -38,10 +38,10 @@ Requirements for v2.0 milestone. Each maps to roadmap phases.
 
 ### CSV Import
 
-- [ ] **CSV-01**: User can upload CSV file to create BOM
-- [ ] **CSV-02**: CSV import validates format and shows errors
-- [ ] **CSV-03**: Imported BOM can be edited like AI-generated BOM
-- [ ] **CSV-04**: Imported BOM can be saved to a project
+- [x] **CSV-01**: User can upload CSV file to create BOM
+- [x] **CSV-02**: CSV import validates format and shows errors
+- [x] **CSV-03**: Imported BOM can be edited like AI-generated BOM
+- [x] **CSV-04**: Imported BOM can be saved to a project
 
 ## Future Requirements
 
@@ -98,10 +98,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TMPL-03 | Phase 11 | Complete |
 | TMPL-04 | Phase 11 | Complete |
 | TMPL-05 | Phase 11 | Complete |
-| CSV-01 | Phase 12 | Pending |
-| CSV-02 | Phase 12 | Pending |
-| CSV-03 | Phase 12 | Pending |
-| CSV-04 | Phase 12 | Pending |
+| CSV-01 | Phase 12 | Complete |
+| CSV-02 | Phase 12 | Complete |
+| CSV-03 | Phase 12 | Complete |
+| CSV-04 | Phase 12 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 17 total
@@ -110,4 +110,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-26*
-*Last updated: 2026-01-28 after Phase 11 completion*
+*Last updated: 2026-01-28 after Phase 12 completion*

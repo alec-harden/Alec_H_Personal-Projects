@@ -11,7 +11,7 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 Phase: 12 (CSV Import)
 Plan: 2 of 2 complete
-Status: Phase complete
+Status: Phase complete — Milestone complete
 Last activity: 2026-01-28 — Completed 12-02-PLAN.md (CSV Import Integration)
 
 Progress: [██████████████████████████████████████████████████] 100.0%
@@ -21,7 +21,7 @@ Progress: [███████████████████████
 | Milestone | Phases | Status | Shipped |
 |-----------|--------|--------|---------|
 | v1.0 MVP | 1-7 | SHIPPED | 2026-01-23 |
-| v2.0 Persistence | 8-12 | IN PROGRESS | — |
+| v2.0 Persistence | 8-12 | COMPLETE | 2026-01-28 |
 
 See `.planning/MILESTONES.md` for full milestone details.
 
