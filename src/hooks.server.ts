@@ -22,6 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 				event.locals.user = {
 					id: session.user.id,
 					email: session.user.email,
+					role: session.user.role,
 					createdAt: session.user.createdAt
 				};
 				event.locals.sessionId = session.id;
