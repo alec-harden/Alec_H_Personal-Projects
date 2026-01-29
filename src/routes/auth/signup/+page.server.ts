@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { hashPassword, createSession } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -60,7 +60,15 @@ export const actions: Actions = {
 			});
 		}
 
-		// Create user
+		// Determine role - first user becomes admin (RBAC-06)
+		const userCount = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(users)
+			.then((result) => result[0].count);
+
+		const role = userCount === 0 ? 'admin' : 'user';
+
+		// Create user with role
 		const id = crypto.randomUUID();
 		const passwordHash = await hashPassword(password);
 
@@ -68,6 +76,7 @@ export const actions: Actions = {
 			id,
 			email,
 			passwordHash,
+			role,
 			createdAt: new Date()
 		});
 
