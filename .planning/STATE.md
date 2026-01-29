@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 13 complete, ready for Phase 14
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 14 in progress
 
 ## Current Position
 
 Phase: 14 - User Management (Admin)
-Plan: Not started
-Status: Ready for discussion/planning
-Last activity: 2026-01-29 — Completed quick task 001: Add admin route in user dropdown
+Plan: 01 of 2 complete
+Status: In progress
+Last activity: 2026-01-29 — Completed 14-01-PLAN.md (Account Disable Infrastructure)
 
-Progress: [====================----------] Phase 14 of 21
+Progress: [=====================---------] Phase 14 of 21
 
 ## Milestone History
 
@@ -31,7 +31,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
-| 14 | User Management (Admin) | USER-01 to USER-06 | Ready |
+| 14 | User Management (Admin) | USER-01 to USER-06 | In Progress (1/2 plans) |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | Pending |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | Pending |
@@ -71,6 +71,12 @@ v3.0 stack additions (from research):
 - First-admin via count=0 check before insert (acceptable race condition for hobby app)
 - Data isolation enforced at route level with userId ownership chains
 
+**Phase 14-01 decisions:**
+- Disabled message shown after password verified (user needs to know why they cannot log in)
+- Session deletion on disabled check in hooks (immediate logout effect)
+- Check order: password first, then account status (prevents user enumeration)
+- Account state validation in hooks middleware for real-time enforcement
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -102,14 +108,14 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 13-02-PLAN.md (Phase 13 complete)
+Stopped at: Completed 14-01-PLAN.md (Account Disable Infrastructure)
 Resume file: None
 
 ## Next Steps
 
-1. Plan Phase 14: User Management (Admin)
-2. Execute Phase 14 plans
+1. Execute Phase 14-02: User List Page with disable toggle
+2. Complete Phase 14 (User Management)
 3. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-29 after quick task 001 completion*
+*Last updated: 2026-01-29 after 14-01-PLAN.md completion*
