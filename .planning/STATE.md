@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 12 (CSV Import)
-Plan: 1 of ? complete
-Status: In progress
-Last activity: 2026-01-28 — Completed 12-01-PLAN.md (CSV Import Foundation)
+Plan: 2 of 2 complete
+Status: Phase complete
+Last activity: 2026-01-28 — Completed 12-02-PLAN.md (CSV Import Integration)
 
-Progress: [█████████████████████████████████████████░░░░░░░░░] 82.0%
+Progress: [██████████████████████████████████████████████████] 100.0%
 
 ## Milestone History
 
@@ -33,7 +33,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 9 | Project Management | 3/3 | COMPLETE |
 | 10 | BOM Persistence | 4/4 | COMPLETE |
 | 11 | Template Management | 4/4 | COMPLETE |
-| 12 | CSV Import | 1/? | In progress |
+| 12 | CSV Import | 2/2 | COMPLETE |
 
 ## Accumulated Context
 
@@ -120,6 +120,10 @@ Phase 12 decisions:
 - 12-01: 10MB file size limit - balance usability with performance
 - 12-01: Drag-and-drop + button upload - dual interaction patterns for accessibility
 - 12-01: ID generation pattern for CSV items: csv-${Date.now()}-${Math.random().toString(36).slice(2, 7)}
+- 12-02: Creation method selection before wizard/CSV - clear user choice instead of hidden tab
+- 12-02: CSV imports use projectType 'csv-import' - distinguishes from AI-generated BOMs
+- 12-02: Imported BOMs use same BOMDisplay - full parity with AI-generated BOMs (edit, save, export)
+- 12-02: Back navigation returns to method selection - allows switching creation method
 
 ### Pending Todos
 
@@ -326,12 +330,37 @@ Key files:
 - `src/lib/utils/csv-import.ts` - CSV parsing and validation utilities
 - `src/lib/components/bom/CSVUpload.svelte` - Drag-and-drop upload UI
 
+### 12-02: CSV Import Integration (COMPLETE)
+Integrated CSV import into BOM creation page:
+- Creation method selection view (AI wizard vs CSV import)
+- CSV import flow with CSVUpload component
+- Imported BOMs use BOMDisplay with full editing (quantity, visibility, add items)
+- Save to project works for CSV imports via existing flow
+- Round-trip CSV compatibility verified (export → re-import)
+
+Key files:
+- `src/routes/bom/new/+page.svelte` - Updated with creation method selection and CSV flow
+
+## Phase 12 Completion Summary
+
+CSV Import complete with all requirements satisfied:
+- **CSV-01:** Upload CSV file via drag-and-drop or button click (12-01)
+- **CSV-02:** Validation errors with row-level detail (12-01)
+- **CSV-03:** Full editing in BOMDisplay (12-02)
+- **CSV-04:** Save to project via existing flow (12-02)
+
+Key files:
+- `src/lib/utils/csv-import.ts` - CSV parsing and validation
+- `src/lib/components/bom/CSVUpload.svelte` - Upload UI
+- `src/routes/bom/new/+page.svelte` - Unified creation page
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 12-01-PLAN.md (CSV Import Foundation)
+Stopped at: Completed 12-02-PLAN.md (CSV Import Integration)
 Resume file: None
 
 ## Next Steps
 
-Continue Phase 12 (CSV Import) - integrate CSVUpload component into /bom/new page.
+v2.0 Persistence & Project Management COMPLETE (Phases 8-12 all shipped).
+All planned requirements delivered. Awaiting next milestone planning.
