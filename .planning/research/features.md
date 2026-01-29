@@ -1,339 +1,468 @@
-# Feature Landscape: v2.0
+# Feature Landscape: v3.0 Multi-User & Cut Optimizer
 
-**Domain:** Document persistence, user authentication, and content management for BOM generator
-**Researched:** 2026-01-26
-**Confidence:** MEDIUM (based on established UX patterns, not v2.0-specific research)
+**Domain:** Cut list optimization, multi-user admin, woodworking planning enhancements
+**Researched:** 2026-01-29
+**Confidence:** MEDIUM (domain knowledge + established UX patterns, WebSearch unavailable)
 
 ## Context
 
-This research covers NEW features being added to an existing BOM generator application. The app already has:
+This research covers NEW features for v3.0 of WoodShop Toolbox. The app already has:
 - Dashboard with tool cards
-- AI-powered 4-step wizard for BOM creation
-- 6 project templates (table, cabinet, shelf, workbench, box, chair)
-- Inline editing, visibility toggles, CSV export
+- AI-powered 4-step BOM wizard with 6 templates
+- Full BOM editing (quantities, visibility toggle, custom items)
+- CSV import/export with round-trip compatibility
+- Email/password auth with sessions
+- Project management (CRUD)
+- BOM persistence (save/load/edit/delete)
+- Admin template management
 
-**Single-user context:** This is a personal tool with only one user. Authentication is about session persistence and protecting data, not multi-user collaboration.
-
-**Dependency note:** All persistence features require authentication to be in place first.
-
----
-
-## Authentication
-
-### Table Stakes
-
-Features users expect in any authentication system. Missing these = product feels incomplete or insecure.
-
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Email + password signup | Standard auth method for personal apps | Low | Single-user, so no email verification needed initially |
-| Login with session persistence | Users expect to stay logged in | Low | Cookie-based session, 30-day default |
-| Logout | Clear way to end session | Low | Single button, clears session |
-| Password requirements display | Security guidance during signup | Low | Show min length, character requirements inline |
-| "Remember me" checkbox | Convenience for personal device | Low | Extends session to 30 days vs 1 day |
-| Password visibility toggle | Reduce typos during input | Low | Eye icon to show/hide password field |
-| Invalid credentials error | Clear feedback on login failure | Low | Generic message (don't reveal if email exists) |
-| Redirect to intended page | After login, go where user wanted | Medium | Store original destination, redirect post-auth |
-
-### Differentiators
-
-Features that enhance UX but aren't expected. Nice to have.
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Password reset flow | Users forget passwords | Medium | Email magic link or temp password |
-| Password strength indicator | Visual feedback during signup | Low | Color-coded bar (weak/medium/strong) |
-| Automatic logout warning | Warn before session expires | Medium | Toast notification 5min before expiry |
-| Login activity log | See recent sessions for security | Medium | Store login timestamps, IP, device |
-| Change password (while logged in) | Update credentials without reset flow | Low | Requires current password confirmation |
-
-### Anti-Features
-
-Features to explicitly NOT build for single-user personal app.
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Email verification on signup | Unnecessary for single user | Skip verification, allow immediate login |
-| Multi-factor authentication | Overkill for personal tool | Single password sufficient |
-| Social OAuth (Google, GitHub) | Adds complexity, single user doesn't need it | Email/password only |
-| Account recovery questions | Poor security practice | Password reset via email only |
-| Password complexity enforcement | Annoying for personal use | Suggest strength, don't enforce |
-| CAPTCHA on login/signup | No bot problem for single user | Skip entirely |
+**v3.0 Focus Areas:**
+1. Cut List Optimizer - New tool for material efficiency
+2. Multi-User Security - RBAC, user management, email flows
+3. BOM Refinements - Dimensions, board feet, improved visibility toggle
 
 ---
 
-## Project Management
+## Cut List Optimizer
 
-### Table Stakes
+### How Cut List Optimizers Typically Work
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| List all saved projects | Users need to find their work | Low | Sorted by last modified (most recent first) |
-| Create new project | Entry point to workflow | Low | Launches existing 4-step wizard |
-| Open/load saved project | Access past work for viewing/editing | Low | Click to load BOM into editor |
-| Delete project | Remove unwanted projects | Low | Confirm dialog before deletion |
-| Project name display | Identify projects at a glance | Low | Show name + timestamp in list |
-| Empty state message | First-time users see helpful prompt | Low | "No projects yet. Create your first BOM!" |
-| Last modified timestamp | Know which projects are recent | Low | "Last edited 2 hours ago" style |
+Cut list optimizers solve a classic combinatorial problem: given required cuts and available stock, minimize waste. Two distinct modes exist:
 
-### Differentiators
+**1D Linear Optimization (Boards/Trim):**
+- Used for: dimensional lumber, molding, trim, dowels
+- Problem: Pack cuts of varying lengths into stock pieces of fixed length
+- Algorithm: 1D bin packing (First Fit Decreasing, Best Fit, or branch-and-bound)
+- Input: List of cuts (lengths), stock lengths available
+- Output: Which cuts come from which stock piece, cut positions
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Search/filter projects | Find specific project quickly | Medium | Search by name, filter by template type |
-| Duplicate project | Start new project from existing BOM | Low | "Save as copy" function |
-| Archive vs delete | Non-destructive organization | Medium | Archived projects hidden from main list |
-| Sort options | View by date, name, or template type | Low | Dropdown or column headers |
-| Project count display | See total projects at a glance | Low | "15 saved projects" header |
-| Bulk operations | Select multiple for delete/archive | Medium | Checkboxes + action bar |
-| Grid vs list view toggle | User preference for density | Low | Icons to switch layout |
-| Project thumbnail/preview | Visual identification | High | Generated from BOM summary (defer to later) |
+**2D Sheet Optimization (Plywood/MDF):**
+- Used for: plywood, MDF, sheet goods, panel products
+- Problem: Nest rectangles onto rectangular sheets with minimal waste
+- Algorithm: 2D nesting (guillotine cuts constraint typical for woodworking)
+- Input: List of rectangles (L x W), sheet dimensions
+- Output: Cut diagrams showing placement of each piece
 
-### Anti-Features
+**Kerf Consideration:**
+Both modes must account for blade kerf (material lost to the saw cut). Typical values:
+- Table saw: 1/8" (3mm)
+- Circular saw: 1/8" (3mm)
+- Miter saw: 1/8" to 3/16"
+- Track saw: 3/32" to 1/8"
+
+### Table Stakes - Cut List Optimizer
+
+Features users expect from any cut list optimizer. Missing these = tool feels incomplete.
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Mode selection (Linear vs Sheet) | Different optimization for different materials | Low | None |
+| Input cuts with dimensions | Core input for optimization | Low | None |
+| Input stock dimensions | Define available material | Low | None |
+| Kerf/blade width setting | Critical for accurate optimization | Low | None |
+| Run optimization | Execute the algorithm | High | Algorithm implementation |
+| Waste percentage display | Key metric for success | Low | Optimization output |
+| Cut list output | Show which cuts from which stock | Medium | Optimization output |
+| Clear all / reset | Start over easily | Low | None |
+| Save results | Persist optimization to project | Medium | Project integration |
+
+### Table Stakes - Linear Optimizer (1D)
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Cut length input | Primary dimension for boards | Low | None |
+| Stock length input | Standard lumber lengths (8', 10', 12') | Low | None |
+| Multiple stock length options | Real world has mixed stock | Medium | None |
+| Cut list summary | Total linear feet needed | Low | Optimization output |
+| Waste visualization (linear) | Show unused portions | Medium | Optimization output |
+
+### Table Stakes - Sheet Optimizer (2D)
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Cut dimensions (L x W) | Both dimensions required | Low | None |
+| Sheet dimensions | Standard sheets (4x8, 5x5, etc.) | Low | None |
+| Grain direction toggle | Wood grain matters for appearance | Medium | UI per cut |
+| Cut diagram visualization | Visual layout of cuts on sheet | High | Optimization output |
+| Number of sheets needed | Key output metric | Low | Optimization output |
+
+### Table Stakes - BOM Integration
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Select project | Choose which project to optimize | Low | Projects exist |
+| Select BOMs from project | Projects can have multiple BOMs | Low | BOMs exist |
+| Auto-filter lumber items | Only lumber is cuttable | Medium | BOM category field |
+| Pre-populate cuts from BOM | One-click import from BOM | Medium | BOM items with dimensions |
+
+### Table Stakes - Shop Checklist
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Checklist view of cuts | Print-friendly task list | Medium | Optimization output |
+| Mark cut as complete | Physical tracking in shop | Low | Checklist UI |
+| Progress indicator | See completion percentage | Low | Completion state |
+| Save checklist state | Persist completion to project | Medium | Project integration |
+
+### Differentiators - Cut List Optimizer
+
+Features that elevate the tool above basic optimizers. Not expected, but create delight.
+
+| Feature | Value Proposition | Complexity | Dependencies |
+|---------|-------------------|------------|--------------|
+| Drag-drop material assignment | Intuitive UX for assigning cuts to stock | High | Drag-drop library |
+| Manual cut placement override | Expert users can improve on algorithm | High | Interactive diagram |
+| Multiple optimization strategies | Compare First Fit vs Best Fit results | Medium | Multiple algorithms |
+| Board feet calculation | Woodworker-friendly measurement | Low | Dimension inputs |
+| Cost estimation | Dollar value of waste | Medium | Price per unit input |
+| Export cut list to PDF | Take to shop without device | Medium | PDF generation |
+| Label generation | Print labels for each cut | Medium | PDF generation |
+| Stock inventory tracking | Remember what stock you have | High | New data model |
+| Optimization history | Compare different runs | Medium | History storage |
+| Grain direction matching | Group cuts with same grain | High | Visual matching |
+
+### Anti-Features - Cut List Optimizer
+
+Features to explicitly NOT build. Common mistakes or over-engineering.
 
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
-| Folders/nested organization | Overkill for single user, adds complexity | Tags or filters instead (if needed) |
-| Project sharing | No multi-user support | N/A |
-| Project templates (UX) | Already have BOM templates, not project templates | Use existing BOM templates |
-| Commenting on projects | Single user doesn't need comments | Personal notes field instead (optional) |
-| Project permissions | Single user, no access control needed | Skip entirely |
+| 3D visualization | Extreme complexity, low value for cutting | 2D diagrams are standard and sufficient |
+| Optimal stock purchasing | Too many variables (availability, price changes) | Show what stock is needed, let user decide |
+| CNC machine integration | Niche feature, adds complexity | Export to standard formats (CSV, PDF) |
+| Real-time optimization | Unnecessary complexity | Optimize on button click |
+| Cloud sync with other apps | Integration complexity | Self-contained tool |
+| AI-powered optimization | Algorithms are deterministic, AI adds nothing | Use proven bin-packing algorithms |
+| Multi-material optimization | Mixing wood species/thicknesses | Optimize one material type at a time |
+| Curved cuts / irregular shapes | 2D nesting for rectangles only | Out of scope - different problem domain |
+| Joinery cut integration | Adds complexity, separate concern | BOM handles joinery, optimizer handles stock |
 
 ---
 
-## BOM Persistence
+## Multi-User Admin Features
 
-### Table Stakes
+### How Admin Features Typically Work
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Save BOM during creation | Don't lose work in wizard | Medium | Auto-save after each step |
-| Save edited BOM | Persist manual changes | Low | Save button after editing |
-| Load BOM with full state | Restore all materials, quantities, visibility | Medium | Deserialize from database |
-| Update existing BOM | Overwrite previously saved BOM | Low | UPDATE query with new data |
-| Associate BOM with project | 1 project = 1 BOM (for now) | Low | Foreign key relationship |
-| Preserve material categories | Lumber, Hardware, Finishes, Consumables | Low | Store category with each item |
-| Preserve visibility state | Remember which items user hid | Low | Store 'hidden' boolean per item |
+Multi-user SaaS apps follow established patterns:
 
-### Differentiators
+**RBAC (Role-Based Access Control):**
+- Roles: Admin, User (minimal hierarchy)
+- Admin: Full access + user management
+- User: Own data only
+- Implementation: Role field on user, middleware checks
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Auto-save indicator | Visual feedback that work is saved | Low | "Saving..." → "Saved 2 seconds ago" |
-| Unsaved changes warning | Prevent accidental data loss | Medium | Prompt before navigating away |
-| Version history | See past revisions of BOM | High | Store snapshots on each save |
-| Restore previous version | Undo major changes | High | Requires version history |
-| Save-as-new from existing | Fork a BOM into new project | Low | Duplicate with new project ID |
-| Export history | Track which BOMs were exported when | Medium | Log export events with timestamp |
+**User Management:**
+- Admin can: Create users, reset passwords, disable accounts
+- Self-service: Registration, password reset via email
+- Data isolation: Users only see own projects/BOMs
 
-### Anti-Features
+**Email Flows:**
+- Password reset: Magic link with expiring token
+- Email verification: Confirm ownership, prevent spam
+- Implementation: Transactional email service (SendGrid, Resend, Postmark)
+
+### Table Stakes - RBAC & Security
+
+Features required for proper multi-user operation. Missing = security vulnerability.
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Admin role flag | Distinguish admin from regular users | Low | Schema change |
+| User role (default) | Standard access level | Low | Schema change |
+| Admin route protection | Only admins access /admin/* | Low | Middleware |
+| User data isolation | Users only see own projects/BOMs | Medium | Query filtering |
+| Session user context | Know who is logged in | Low | Already implemented |
+
+### Table Stakes - User Management (Admin)
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| List all users | See who has accounts | Low | Admin route |
+| Create user account | Onboard new users | Medium | Admin route |
+| Reset user password | Help locked-out users | Medium | Password hashing |
+| Disable user account | Revoke access without delete | Low | Disabled flag |
+| View user details | See email, created date, last login | Low | Admin route |
+
+### Table Stakes - Email Flows
+
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Password reset request | "Forgot password" link | Medium | Email service |
+| Password reset link (email) | Magic link with expiring token | Medium | Email service, token table |
+| Set new password | Form after clicking link | Low | Token validation |
+| Email verification request | After signup | Medium | Email service |
+| Email verification link | Confirm ownership | Medium | Email service, token table |
+| Verified status display | Show if email is verified | Low | Schema change |
+
+### Differentiators - Admin Features
+
+| Feature | Value Proposition | Complexity | Dependencies |
+|---------|-------------------|------------|--------------|
+| Admin invite flow | Send invite instead of creating password | Medium | Email service |
+| Bulk user operations | Enable/disable multiple users | Low | UI pattern |
+| User activity log | Audit trail for security | Medium | Logging table |
+| Last login display | See active vs inactive users | Low | Track on login |
+| User project count | Quick view of user activity | Low | Aggregate query |
+| Export user list | Download for records | Low | CSV generation |
+| Search/filter users | Find specific users | Low | Query params |
+
+### Anti-Features - Admin Features
 
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
-| Real-time sync across devices | Single user, unnecessary complexity | Standard save/load on page refresh |
-| Offline support | Web-first, requires complex sync logic | Online-only acceptable |
-| Collaborative editing | Single user app | N/A |
-| Manual version creation | Too much overhead for personal use | Auto-snapshot on major edits only (if versioning) |
-| Conflict resolution | No multi-device concurrent editing | Last-write-wins acceptable |
+| Granular permissions | Over-engineering for 2 roles | Admin/User binary is sufficient |
+| Permission editor UI | YAGNI for small user base | Hardcode role capabilities |
+| User self-delete | Risky, requires data cleanup | Admin deletes users if needed |
+| Multiple admin levels | Complexity without value | Single admin role |
+| User groups/teams | Multi-tenant complexity | Flat user list |
+| Admin approval workflow | Unnecessary friction | Direct admin actions |
+| Two-factor authentication | Over-engineering for woodworking tool | Defer to v4.0+ if demand |
+| OAuth providers | Complexity for small benefit | Email/password sufficient |
 
 ---
 
-## Template Admin
+## BOM Refinements
 
-### Table Stakes
+### How BOM Dimension Tracking Typically Works
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| List all templates | See what templates exist | Low | Display 6 current templates |
-| Create new template | Add more project types | Medium | Form for name, category, system prompt |
-| Edit template | Fix mistakes, improve prompts | Medium | Load into form, save changes |
-| Delete template | Remove unwanted templates | Low | Confirm dialog (check if projects use it) |
-| Template name + description | Identify template purpose | Low | Display in list view |
-| System prompt editing | Core template behavior | Medium | Textarea for prompt text |
-| Active/inactive toggle | Disable without deleting | Low | Boolean flag, hide from user-facing picker |
+**Lumber Dimensions:**
+- Standard format: Length x Width x Thickness (or L x W x H)
+- Units: Inches (US) or mm (metric)
+- Board feet formula: (L x W x T) / 144 (when all in inches)
 
-### Differentiators
+**Board Feet:**
+- Standard lumber measurement for pricing
+- 1 board foot = 1" x 12" x 12" (or 144 cubic inches)
+- Displayed per item and as total for lumber category
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Duplicate template | Start new template from existing | Low | Copy all fields to new template |
-| Preview template | Test before activating | Medium | Run sample BOM generation |
-| Template usage count | See which templates are popular | Low | Count projects using each template |
-| Template categories | Organize templates (furniture, storage, etc.) | Medium | Tag-based categorization |
-| Rich text prompt editor | Formatted prompts easier to read | Medium | Markdown editor for system prompts |
-| Template reordering | Control display order in picker | Medium | Drag-and-drop or numeric sort order |
-| Import/export templates | Share templates across instances | Medium | JSON export/import (for backup) |
+**Visibility Toggle UX:**
+- Eye icon is standard (open eye = visible, closed = hidden)
+- Click to toggle state
+- Hidden items greyed out but still visible
+- Hidden items excluded from exports and totals
 
-### Anti-Features
+### Table Stakes - BOM Refinements
 
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Template marketplace | Single user, no sharing | N/A |
-| Template versioning | Templates change infrequently | Simple edit overwrites |
-| Template permissions | Single admin user | All templates editable |
-| Template preview thumbnails | Unnecessary complexity | Text name + description sufficient |
-| Template analytics | Overkill for personal use | Basic usage count sufficient |
+| Feature | Why Expected | Complexity | Dependencies |
+|---------|--------------|------------|--------------|
+| Eye icon visibility toggle | Standard UX pattern (replaces checkbox) | Low | Component update |
+| Lumber dimension fields (L/W/H) | Required for cut optimization | Medium | Schema change |
+| Dimension input UI | Per-item fields for lumber | Medium | Form updates |
+| Board feet display (per item) | Standard lumber measurement | Low | Calculation |
+| Board feet total (lumber category) | Summary metric | Low | Aggregation |
+| Dimension import from CSV | Round-trip compatibility | Low | CSV parser update |
+| Dimension export to CSV | Complete data export | Low | CSV generator update |
 
----
+### Differentiators - BOM Refinements
 
-## CSV Import
+| Feature | Value Proposition | Complexity | Dependencies |
+|---------|-------------------|------------|--------------|
+| Standard dimension presets | Common lumber sizes (2x4, 2x6, 4/4, 8/4) | Medium | Preset library |
+| Dimension calculator | Convert between units | Low | Calculation |
+| Rough vs finished dimensions | Track both for planning | Medium | Additional fields |
+| Waste factor input | Account for material loss | Low | Calculation modifier |
+| Running total while editing | Live board feet calculation | Low | Reactive state |
 
-### Table Stakes
-
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| File upload interface | Standard way to import | Low | File input or drag-and-drop |
-| CSV parsing | Handle RFC 4180 format | Medium | Use library (Papa Parse or csv-parse) |
-| Column mapping | Map CSV columns to BOM fields | Medium | Dropdown to match "Item" → Material, "Qty" → Quantity |
-| Validation errors display | Show what's wrong with data | Medium | List errors by row number |
-| Import preview | See data before committing | Medium | Table showing parsed rows |
-| Required field validation | Ensure material name, quantity exist | Low | Flag missing required fields |
-| Data type validation | Quantity must be numeric | Low | Check types, flag invalid rows |
-| Success confirmation | Feedback after import | Low | "15 items imported successfully" |
-
-### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Auto-detect columns | Smart mapping based on headers | Medium | Match common names (Item/Material, Qty/Quantity) |
-| Duplicate detection | Warn if material already exists | Medium | Compare material names, offer merge/skip |
-| Category auto-assignment | Infer category from material type | Medium | Pattern matching ("Oak board" → Lumber) |
-| Invalid row handling | Choose to skip or fix | Medium | Allow import with errors skipped |
-| Import to existing BOM | Add items vs replace all | Medium | Radio button: "Replace" or "Append" |
-| Sample CSV download | Help users format correctly | Low | Provide template CSV file |
-| Bulk edit after import | Fix multiple rows at once | Medium | Table editor before finalizing |
-
-### Anti-Features
+### Anti-Features - BOM Refinements
 
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
-| Excel/XLSX import | CSV is standard, Excel adds complexity | Export Excel to CSV first |
-| Import from URL | Unnecessary for personal use | Local file upload only |
-| Scheduled imports | No automation needed | Manual import sufficient |
-| Import history | Overkill for infrequent use | Skip tracking import events |
-| Advanced mapping rules | Too complex for simple BOMs | Basic column mapping sufficient |
-| Import validation rules editor | User doesn't need to customize | Hardcode sensible validations |
+| 3D preview of materials | High complexity, low value | Text dimensions sufficient |
+| Price per board foot | Prices change, data maintenance | User tracks externally |
+| Lumber grade tracking | Too detailed for BOM tool | Use notes field |
+| Species-specific shrinkage | Specialized calculator territory | Out of scope |
+| Metric/Imperial toggle | Pick one, avoid complexity | Inches (target audience) |
 
 ---
 
 ## Feature Dependencies
 
 ```
-Authentication (FOUNDATION)
-    ↓
-Project Management (requires user context)
-    ↓
-BOM Persistence (requires project container)
-    ↓
-Template Admin (independent, but requires auth)
-    ↓
-CSV Import (enhances BOM editing, requires persistence)
+v3.0 Dependency Graph:
+
+RBAC Foundation
+    |
+    +---> Admin User Management
+    |         |
+    |         +---> Admin route protection
+    |
+    +---> User Data Isolation (audit existing queries)
+
+Email Infrastructure (Resend/SendGrid)
+    |
+    +---> Password Reset Flow
+    |
+    +---> Email Verification Flow
+
+BOM Dimension Fields (schema)
+    |
+    +---> Board Feet Calculation
+    |
+    +---> Cut List Optimizer Integration
+
+Cut List Optimizer (new route)
+    |
+    +---> Linear Optimizer (1D algorithm)
+    |
+    +---> Sheet Optimizer (2D algorithm)
+    |
+    +---> Drag-Drop Material Assignment
+    |
+    +---> Cut Diagram Visualization
+    |
+    +---> Shop Checklist
 ```
 
-**Critical path:** Auth → Projects → Persistence
-**Parallel tracks:** Template Admin can be built alongside Projects
-**Enhancement:** CSV Import builds on existing BOM editing
+**Critical paths:**
+1. RBAC must be first (security foundation)
+2. Email infrastructure before password reset/verification
+3. BOM dimensions before cut optimizer (or parallel with integration deferred)
+4. Optimizer algorithm before visualization
+
+**Parallel opportunities:**
+- Eye icon toggle (isolated UI change)
+- Admin user management (after RBAC)
+- Linear and Sheet optimizers can be developed in parallel
 
 ---
 
 ## MVP Recommendation
 
-For v2.0 MVP, prioritize table stakes features only:
+### Phase 1: RBAC Foundation (Security First)
 
-### Phase 1: Authentication Foundation
-1. Email/password signup
-2. Login with session persistence
-3. Logout
-4. Password visibility toggle
-5. Redirect to intended page
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| Admin role flag on users | Low | Schema foundation |
+| Admin middleware (route protection) | Low | Security gate |
+| User data isolation audit | Medium | Must verify existing queries filter by userId |
 
-**Defer:** Password reset (add in v2.1), password strength indicator
+**Defer:** Granular permissions, permission UI
 
-### Phase 2: Project Management
-1. List all saved projects
-2. Create new project (existing wizard)
-3. Open/load saved project
-4. Delete project with confirmation
-5. Project name + timestamp display
-6. Empty state message
+### Phase 2: Admin User Management
 
-**Defer:** Search/filter, duplicate, archive, sorting
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| Admin user list | Low | Core admin function |
+| Create user (admin) | Medium | Onboarding |
+| Reset user password (admin) | Medium | Support function |
+| Disable user account | Low | Security control |
 
-### Phase 3: BOM Persistence
-1. Save BOM during creation (auto-save each step)
-2. Save edited BOM (explicit save button)
-3. Load BOM with full state
-4. Associate BOM with project (1:1)
-5. Preserve categories + visibility state
+**Defer:** Bulk operations, activity log, export
 
-**Defer:** Version history, auto-save indicator, unsaved changes warning
+### Phase 3: Email Infrastructure
 
-### Phase 4: Template Admin
-1. List all templates
-2. Create new template
-3. Edit template (name, description, system prompt)
-4. Delete template (with usage check)
-5. Active/inactive toggle
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| Email service integration (Resend) | Medium | Foundation for flows |
+| Password reset request | Medium | Self-service |
+| Password reset via email link | Medium | Complete flow |
 
-**Defer:** Duplicate, preview, usage stats, categories
+**Defer:** Email verification (can add after core flow works)
 
-### Phase 5: CSV Import (Enhancement)
-1. File upload interface
-2. CSV parsing (RFC 4180)
-3. Column mapping UI
-4. Validation + error display
-5. Import preview table
-6. Import to new BOM
+### Phase 4: BOM Refinements
 
-**Defer:** Auto-detect columns, duplicate detection, category inference, import to existing
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| Eye icon visibility toggle | Low | Quick UX win |
+| Lumber dimension fields (schema) | Medium | Required for optimizer |
+| Board feet calculation | Low | Derived from dimensions |
+
+**Defer:** Dimension presets, waste factor
+
+### Phase 5: Cut List Optimizer Foundation
+
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| New tool route (/cut-optimizer) | Low | Page shell |
+| Mode selector (Linear vs Sheet) | Low | UI foundation |
+| Project/BOM selection | Medium | Integration |
+| Cut definition UI | Medium | Input form |
+| Kerf configuration | Low | Input field |
+
+**Defer:** Drag-drop (use simpler assignment first)
+
+### Phase 6: Linear Optimizer (1D)
+
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| 1D bin packing algorithm | High | Core functionality |
+| Linear cut list output | Medium | Results display |
+| Waste percentage | Low | Key metric |
+| Save to project | Medium | Persistence |
+
+### Phase 7: Sheet Optimizer (2D)
+
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| 2D nesting algorithm (guillotine) | High | Core functionality |
+| Cut diagram visualization | High | Visual output |
+| Grain direction toggle | Medium | Woodworking requirement |
+| Sheet count output | Low | Key metric |
+
+### Phase 8: Shop Checklist
+
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| Checklist view | Medium | Shop-friendly format |
+| Completion tracking | Low | Physical workflow |
+| Progress indicator | Low | Visual feedback |
+| Save checklist state | Medium | Persistence |
+
+### Phase 9: Polish & Integration
+
+| Feature | Complexity | Rationale |
+|---------|------------|-----------|
+| Drag-drop material assignment | High | Improved UX |
+| Email verification | Medium | Spam prevention |
+| Manual cut placement override | High | Expert feature |
 
 ---
 
-## Complexity Assessment
+## Complexity Assessment Summary
 
 | Feature Area | Overall Complexity | Riskiest Part | Mitigation |
 |--------------|-------------------|---------------|------------|
-| Authentication | Low-Medium | Session management, security | Use proven library (Lucia, Auth.js) |
-| Project Management | Low | Mostly CRUD operations | Straightforward database queries |
-| BOM Persistence | Medium | Serializing/deserializing complex BOM state | Schema design for materials table |
-| Template Admin | Low-Medium | System prompt editing, validation | JSON schema for template structure |
-| CSV Import | Medium | Parsing edge cases, validation UX | Use battle-tested CSV library |
+| RBAC | Low | Data isolation audit | Review all queries for userId filtering |
+| User Management | Low-Medium | Password reset flow | Use proven token pattern |
+| Email Flows | Medium | Email deliverability | Use established service (Resend/SendGrid) |
+| BOM Dimensions | Low-Medium | Schema migration | Careful migration with default values |
+| Linear Optimizer | High | Algorithm correctness | Use proven FFD algorithm, extensive testing |
+| Sheet Optimizer | High | 2D visualization | Canvas/SVG library, guillotine constraint |
+| Drag-Drop | High | Cross-browser, mobile | Use established library (dnd-kit, Sortable) |
+| Shop Checklist | Medium | State persistence | Follow existing BOM patterns |
 
-**Highest complexity:** BOM Persistence (data model for materials, categories, relationships)
-**Lowest complexity:** Project Management (standard CRUD)
-**Most unknown:** Authentication library integration with SvelteKit
+**Highest risk:** 2D sheet optimizer visualization (algorithm + rendering)
+**Lowest risk:** Eye icon toggle (isolated UI change)
+**Most unknown:** Drag-drop UX for material assignment
 
 ---
 
-## Implementation Notes
+## Algorithm Notes
 
-### Authentication
-- **Library recommendation:** Lucia (SvelteKit-native) or Auth.js/SvelteKit
-- **Session storage:** Database table (sessions) vs cookie-only
-- **Password hashing:** bcrypt or argon2
+### 1D Bin Packing (Linear Optimizer)
 
-### Project Management
-- **Data model:** `projects` table already exists in schema.ts
-- **UI pattern:** Card grid (dashboard) + table view (list)
-- **Sorting:** Default to `updatedAt DESC`
+**First Fit Decreasing (FFD):**
+1. Sort cuts by length (descending)
+2. For each cut, place in first bin that fits
+3. If no bin fits, open new bin
 
-### BOM Persistence
-- **Data model:**
-  - `projects` (existing) → `boms` (1:1 for now) → `bom_items` (many)
-  - Store wizard state (template, dimensions, joinery, materials) separately
-- **Serialization:** JSON column for wizard state vs normalized tables
-- **Categories:** Enum or string field on bom_items
+**Performance:** FFD is not optimal but runs fast and gives good results. Optimal solutions require branch-and-bound (exponential time).
 
-### Template Admin
-- **Data model:** `templates` table (id, name, description, systemPrompt, active, createdAt)
-- **Seeding:** Migrate existing 6 hardcoded templates to database
-- **Validation:** Ensure systemPrompt is valid text, name is unique
+**Implementation consideration:** Client-side JavaScript is sufficient. Even 1000 cuts computes in milliseconds.
 
-### CSV Import
-- **Library:** Papa Parse (client-side) or csv-parse (server-side)
-- **Validation:** Required fields (material name, quantity), optional (category, unit, notes)
-- **Error handling:** Collect all errors, display with row numbers, allow partial import
-- **Column mapping:** Persist user's mapping preferences (localStorage) for convenience
+### 2D Nesting (Sheet Optimizer)
+
+**Guillotine constraint:** All cuts must be achievable with straight cuts across the full width/length (like a table saw). No nested pockets.
+
+**Algorithm approaches:**
+- Bottom-left heuristic (fast, decent results)
+- Skyline algorithm (good for rectangles)
+- Genetic algorithms (slow, better results)
+- Maximal rectangles (good balance)
+
+**Recommendation:** Maximal rectangles algorithm with guillotine constraint. Good results, reasonable implementation complexity.
+
+**Implementation consideration:** Client-side viable but may need Web Worker for large inputs to avoid UI blocking.
 
 ---
 
@@ -341,19 +470,18 @@ For v2.0 MVP, prioritize table stakes features only:
 
 **Confidence: MEDIUM**
 
-This research is based on established UX patterns and industry-standard practices for authentication, CRUD interfaces, and data import workflows. No external sources were consulted due to tool restrictions. Recommendations are informed by:
+This research is based on:
+- Domain knowledge of woodworking cut optimization software (CutList Plus, SketchUp CutList, Optimalon)
+- Standard UX patterns for admin interfaces
+- Established algorithms for bin packing and 2D nesting
+- Training data through May 2025
 
-- Common patterns in SaaS applications (project management tools, document editors)
-- Authentication best practices (OWASP guidelines, accessibility standards)
-- CSV import patterns (Google Sheets, Airtable, Notion)
-- Admin panel conventions (WordPress, Strapi, Payload CMS)
+**WebSearch unavailable** - claims are based on training data and should be verified against:
+- Current cut list optimizer feature comparisons
+- Latest drag-drop library recommendations (dnd-kit, Sortable, react-beautiful-dnd)
+- 2D nesting algorithm implementations and libraries
 
-**Verification needed:**
-- SvelteKit-specific authentication library comparison (Lucia vs Auth.js vs custom)
-- CSV parsing library performance with large files (10K+ rows)
-- Database schema design for BOM relationships (1:1 vs 1:many for future expansion)
-
-**Next steps:**
-- Research authentication libraries specifically for SvelteKit (Context7 or official docs)
-- Validate CSV import UX with user testing
-- Confirm database schema supports future multi-BOM-per-project expansion
+**Verification needed for:**
+- Current state of JavaScript 2D nesting libraries
+- Email service pricing and feature comparison (Resend vs SendGrid vs Postmark)
+- Drag-drop library compatibility with Svelte 5
