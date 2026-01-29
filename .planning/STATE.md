@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 14 - User Management (Admin)
-Plan: 02 of 2 complete
+Plan: 03 of 3 complete
 Status: COMPLETE
-Last activity: 2026-01-29 — Completed 14-02-PLAN.md (User List Page)
+Last activity: 2026-01-29 — Completed 14-03-PLAN.md (User Detail Page)
 
 Progress: [======================--------] Phase 14 of 21 COMPLETE
 
@@ -31,7 +31,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
-| 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (2/2 plans) |
+| 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (3/3 plans) |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | Pending |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | Pending |
@@ -83,6 +83,11 @@ v3.0 stack additions (from research):
 - Redirect to /admin/users/{id} after creation (PRG pattern)
 - Passwords excluded from query results using Drizzle columns option
 
+**Phase 14-03 decisions:**
+- Self-disable prevention via adminUser.id comparison
+- Confirmation checkbox required for toggle disabled action
+- isOwnAccount derived from $page.data.user?.id for UI disable
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -114,7 +119,7 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 14-02-PLAN.md (User List Page)
+Stopped at: Completed 14-03-PLAN.md (User Detail Page)
 Resume file: None
 
 ## Next Steps
@@ -123,4 +128,4 @@ Resume file: None
 2. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-29 after 14-02-PLAN.md completion*
+*Last updated: 2026-01-29 after 14-03-PLAN.md completion*
