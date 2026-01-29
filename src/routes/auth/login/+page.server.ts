@@ -54,6 +54,14 @@ export const actions: Actions = {
 			});
 		}
 
+		// Check if account is disabled
+		if (user.disabled) {
+			return fail(400, {
+				error: 'This account has been disabled',
+				email
+			});
+		}
+
 		// Create session and set cookie
 		await createSession(user.id, cookies);
 
