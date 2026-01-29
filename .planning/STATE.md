@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 14 - User Management (Admin)
-Plan: 01 of 2 complete
-Status: In progress
-Last activity: 2026-01-29 — Completed 14-01-PLAN.md (Account Disable Infrastructure)
+Plan: 02 of 2 complete
+Status: COMPLETE
+Last activity: 2026-01-29 — Completed 14-02-PLAN.md (User List Page)
 
-Progress: [=====================---------] Phase 14 of 21
+Progress: [======================--------] Phase 14 of 21 COMPLETE
 
 ## Milestone History
 
@@ -31,7 +31,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
-| 14 | User Management (Admin) | USER-01 to USER-06 | In Progress (1/2 plans) |
+| 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (2/2 plans) |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | Pending |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | Pending |
@@ -77,6 +77,12 @@ v3.0 stack additions (from research):
 - Check order: password first, then account status (prevents user enumeration)
 - Account state validation in hooks middleware for real-time enforcement
 
+**Phase 14-02 decisions:**
+- Email normalized to lowercase before storage for consistent duplicate checking
+- Role defaults to 'user' when not specified in create form
+- Redirect to /admin/users/{id} after creation (PRG pattern)
+- Passwords excluded from query results using Drizzle columns option
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -108,14 +114,13 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 14-01-PLAN.md (Account Disable Infrastructure)
+Stopped at: Completed 14-02-PLAN.md (User List Page)
 Resume file: None
 
 ## Next Steps
 
-1. Execute Phase 14-02: User List Page with disable toggle
-2. Complete Phase 14 (User Management)
-3. Continue through v3.0 phases
+1. Begin Phase 15: Email Infrastructure & Password Reset
+2. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-29 after 14-01-PLAN.md completion*
+*Last updated: 2026-01-29 after 14-02-PLAN.md completion*
