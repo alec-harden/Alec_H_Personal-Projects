@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 13 in progress
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 13 complete, ready for Phase 14
 
 ## Current Position
 
-Phase: 13 - RBAC Foundation
-Plan: 01 of 3 complete
-Status: In progress
-Last activity: 2026-01-29 — Completed 13-01-PLAN.md
+Phase: 13 - RBAC Foundation (COMPLETE)
+Plan: 02 of 2 complete
+Status: Phase complete
+Last activity: 2026-01-29 — Completed 13-02-PLAN.md
 
 Progress: [==========----------] Phase 13 of 21
 
@@ -30,7 +30,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 13 | RBAC Foundation | RBAC-01 to RBAC-06 | In Progress (1/3 plans) |
+| 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
 | 14 | User Management (Admin) | USER-01 to USER-06 | Pending |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | Pending |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
@@ -66,6 +66,11 @@ v3.0 stack additions (from research):
 - Authorization guard pattern: requireAuth/requireAdmin return user object
 - requireAdmin() composes with requireAuth() internally
 
+**Phase 13-02 decisions:**
+- requireAdmin() called in both load() and all form actions (actions bypass load guards)
+- First-admin via count=0 check before insert (acceptable race condition for hobby app)
+- Data isolation enforced at route level with userId ownership chains
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -91,14 +96,14 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 13-01-PLAN.md
+Stopped at: Completed 13-02-PLAN.md (Phase 13 complete)
 Resume file: None
 
 ## Next Steps
 
-1. Execute 13-02-PLAN.md (First Admin Assignment)
-2. Execute 13-03-PLAN.md (Admin Route Protection)
-3. Continue to Phase 14 (User Management)
+1. Plan Phase 14: User Management (Admin)
+2. Execute Phase 14 plans
+3. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-29 after 13-01 plan completion*
+*Last updated: 2026-01-29 after 13-02 plan completion (Phase 13 RBAC Foundation complete)*
