@@ -5,6 +5,33 @@ import { eq } from 'drizzle-orm';
 import { error, redirect } from '@sveltejs/kit';
 import type { Cookies, RequestEvent } from '@sveltejs/kit';
 
+/**
+ * DATA ISOLATION PATTERN (RBAC-05)
+ *
+ * All user data (projects, BOMs, items) uses userId ownership:
+ * - Queries filter by userId: eq(table.userId, locals.user.id)
+ * - Relations verify ownership: record.project.userId !== locals.user.id
+ *
+ * This is enforced at the route level, not middleware level,
+ * because each route knows its specific ownership chain.
+ *
+ * Ownership chains:
+ * - projects.userId -> direct ownership
+ * - boms.projectId -> project.userId -> indirect via project
+ * - bomItems.bomId -> bom.projectId -> project.userId -> indirect via BOM
+ *
+ * Verified routes (as of Phase 13-02):
+ * - src/routes/+page.server.ts (project list)
+ * - src/routes/projects/+page.server.ts (project list with create)
+ * - src/routes/projects/[id]/+page.server.ts (project CRUD)
+ * - src/routes/api/bom/[id]/+server.ts (BOM delete)
+ * - src/routes/api/bom/[id]/items/[itemId]/+server.ts (item PATCH)
+ * - src/routes/api/bom/save/+server.ts (BOM save)
+ * - src/routes/projects/[id]/bom/[bomId]/+page.server.ts (BOM view)
+ *
+ * Future: cutLists will follow same pattern via projectId.
+ */
+
 // Argon2id settings (OWASP recommended for password hashing)
 const ARGON2_OPTIONS = {
 	memoryCost: 19456, // 19 MiB
