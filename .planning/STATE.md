@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 ## Current Position
 
-Phase: 11 (Template Management)
-Plan: 4 of 4 complete
-Status: Phase complete
-Last activity: 2026-01-28 — Completed 11-04-PLAN.md (Template Edit & Delete)
+Phase: 12 (CSV Import)
+Plan: 1 of ? complete
+Status: In progress
+Last activity: 2026-01-28 — Completed 12-01-PLAN.md (CSV Import Foundation)
 
-Progress: [████████████████████████████████████████░░░░░░░░░░] 80.0%
+Progress: [█████████████████████████████████████████░░░░░░░░░] 82.0%
 
 ## Milestone History
 
@@ -33,7 +33,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 9 | Project Management | 3/3 | COMPLETE |
 | 10 | BOM Persistence | 4/4 | COMPLETE |
 | 11 | Template Management | 4/4 | COMPLETE |
-| 12 | CSV Import | 0/? | Not started |
+| 12 | CSV Import | 1/? | In progress |
 
 ## Accumulated Context
 
@@ -112,6 +112,14 @@ Phase 11 decisions:
 - 11-04: Delete action uses PRG pattern (redirect to list after deletion)
 - 11-04: Joinery options initialized as reactive copy from data.template for editing
 - 11-04: Height fields use nullish coalescing for optional dimension display
+
+Phase 12 decisions:
+- 12-01: PapaParse library for CSV parsing - robust RFC 4180 compliance and UTF-8 BOM handling
+- 12-01: parseFloat for quantities - supports fractional lumber quantities (board feet)
+- 12-01: Case-insensitive category validation - accept 'Lumber', 'LUMBER', 'lumber' variations
+- 12-01: 10MB file size limit - balance usability with performance
+- 12-01: Drag-and-drop + button upload - dual interaction patterns for accessibility
+- 12-01: ID generation pattern for CSV items: csv-${Date.now()}-${Math.random().toString(36).slice(2, 7)}
 
 ### Pending Todos
 
@@ -304,12 +312,26 @@ Key files:
 - `src/routes/admin/templates/` - Admin list and create
 - `src/routes/admin/templates/[id]/` - Admin edit and delete
 
+## Phase 12 Progress
+
+### 12-01: CSV Import Foundation (COMPLETE)
+Created CSV parsing utilities and upload component:
+- csv-import.ts with file validation, header validation, row validation
+- parseCSVFile entry point with PapaParse integration
+- CSVUpload.svelte component with drag-and-drop and error display
+- Support for fractional quantities and case-insensitive categories
+- UTF-8 BOM stripping for Excel compatibility
+
+Key files:
+- `src/lib/utils/csv-import.ts` - CSV parsing and validation utilities
+- `src/lib/components/bom/CSVUpload.svelte` - Drag-and-drop upload UI
+
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 11-04-PLAN.md (Template Edit & Delete) - Phase 11 complete
+Stopped at: Completed 12-01-PLAN.md (CSV Import Foundation)
 Resume file: None
 
 ## Next Steps
 
-Phase 11 (Template Management) complete. Continue to Phase 12 (CSV Import).
+Continue Phase 12 (CSV Import) - integrate CSVUpload component into /bom/new page.
