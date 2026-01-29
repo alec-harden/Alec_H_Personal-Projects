@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 Phase: 14 - User Management (Admin)
 Plan: Not started
 Status: Ready for discussion/planning
-Last activity: 2026-01-29 — Phase 13 complete
+Last activity: 2026-01-29 — Completed quick task 001: Add admin route in user dropdown
 
 Progress: [====================----------] Phase 14 of 21
 
@@ -81,6 +81,12 @@ None.
 
 None.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 001 | Add admin route in user dropdown for admin privileges | 2026-01-29 | bf34fb2 | [001-add-admin-route-in-user-dropdown-for-adm](./quick/001-add-admin-route-in-user-dropdown-for-adm/) |
+
 ## Research Reference
 
 v3.0 research completed — see `.planning/research/v3-SUMMARY.md`:
@@ -106,4 +112,4 @@ Resume file: None
 3. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-29 after 13-02 plan completion (Phase 13 RBAC Foundation complete)*
+*Last updated: 2026-01-29 after quick task 001 completion*
