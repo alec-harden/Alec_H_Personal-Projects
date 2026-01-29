@@ -5,6 +5,7 @@
 	import BOMWizard from '$lib/components/bom/BOMWizard.svelte';
 	import BOMDisplay from '$lib/components/bom/BOMDisplay.svelte';
 	import SaveToProjectModal from '$lib/components/bom/SaveToProjectModal.svelte';
+	import CSVUpload from '$lib/components/bom/CSVUpload.svelte';
 	import type { BOM, ProjectDetails, BOMItem } from '$lib/types/bom';
 	import type { PageData } from './$types';
 
@@ -15,10 +16,14 @@
 	let { data }: Props = $props();
 
 	// View state
-	type ViewState = 'wizard' | 'loading' | 'result';
-	let currentView = $state<ViewState>('wizard');
+	type ViewState = 'choose' | 'wizard' | 'csv-upload' | 'loading' | 'result';
+	let currentView = $state<ViewState>('choose');
 	let generatedBOM = $state<BOM | null>(null);
 	let error = $state<string | null>(null);
+
+	// Track creation source for BOM metadata
+	type CreationMethod = 'wizard' | 'csv';
+	let creationMethod = $state<CreationMethod>('wizard');
 
 	// Retry capability
 	let lastProjectDetails = $state<ProjectDetails | null>(null);
@@ -77,7 +82,21 @@
 	function handleStartOver() {
 		generatedBOM = null;
 		error = null;
-		currentView = 'wizard';
+		creationMethod = 'wizard';
+		currentView = 'choose';
+	}
+
+	// Handle CSV import
+	function handleCSVImport(items: BOMItem[]) {
+		// Create a BOM object from imported items (same shape as AI-generated BOM)
+		generatedBOM = {
+			projectName: 'CSV Import',
+			projectType: 'csv-import',
+			generatedAt: new Date().toISOString(),
+			items: items
+		};
+		creationMethod = 'csv';
+		currentView = 'result';
 	}
 
 	// Retry generation with last project details
@@ -176,7 +195,7 @@
 </svelte:head>
 
 <div class="bom-new-page animate-fade-in">
-	{#if currentView === 'wizard'}
+	{#if currentView === 'choose'}
 		<header class="page-header">
 			<a href="/" class="back-link">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="back-icon">
@@ -185,6 +204,65 @@
 				Back to Dashboard
 			</a>
 			<h1 class="page-title">Create New BOM</h1>
+			<p class="page-description">
+				Choose how you'd like to create your bill of materials.
+			</p>
+		</header>
+
+		<div class="method-cards">
+			<!-- AI Wizard Card -->
+			<div
+				class="method-card"
+				role="button"
+				tabindex="0"
+				onclick={() => { currentView = 'wizard'; creationMethod = 'wizard'; }}
+				onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); currentView = 'wizard'; creationMethod = 'wizard'; } }}
+			>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="method-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 22l-.394-1.433a2.25 2.25 0 00-1.423-1.423L13.25 18.75l1.433-.394a2.25 2.25 0 001.423-1.423l.394-1.433.394 1.433a2.25 2.25 0 001.423 1.423l1.433.394-1.433.394a2.25 2.25 0 00-1.423 1.423z" />
+				</svg>
+				<h3 class="method-title">AI-Powered Generation</h3>
+				<p class="method-description">
+					Answer guided questions and let AI generate your complete bill of materials.
+				</p>
+				<button type="button" class="btn-primary method-btn">
+					Start Wizard
+				</button>
+			</div>
+
+			<!-- CSV Import Card -->
+			<div
+				class="method-card"
+				role="button"
+				tabindex="0"
+				onclick={() => currentView = 'csv-upload'}
+				onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); currentView = 'csv-upload'; } }}
+			>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="method-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+				</svg>
+				<h3 class="method-title">Import from CSV</h3>
+				<p class="method-description">
+					Upload an existing CSV file to create a bill of materials.
+				</p>
+				<p class="method-subtext">
+					Supports the standard BOM export format.
+				</p>
+				<button type="button" class="btn-secondary method-btn">
+					Upload CSV
+				</button>
+			</div>
+		</div>
+
+	{:else if currentView === 'wizard'}
+		<header class="page-header">
+			<button type="button" onclick={() => currentView = 'choose'} class="back-link">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="back-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+				</svg>
+				Back
+			</button>
+			<h1 class="page-title">AI-Powered BOM Generation</h1>
 			<p class="page-description">
 				Follow the guided steps to generate your bill of materials.
 			</p>
@@ -218,6 +296,22 @@
 		{/if}
 
 		<BOMWizard onComplete={handleWizardComplete} />
+
+	{:else if currentView === 'csv-upload'}
+		<header class="page-header">
+			<button type="button" onclick={() => currentView = 'choose'} class="back-link">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="back-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+				</svg>
+				Back
+			</button>
+			<h1 class="page-title">Import BOM from CSV</h1>
+			<p class="page-description">
+				Upload a CSV file with your bill of materials.
+			</p>
+		</header>
+
+		<CSVUpload onImport={handleCSVImport} onCancel={() => currentView = 'choose'} />
 
 	{:else if currentView === 'loading'}
 		<div class="loading-state">
@@ -299,7 +393,11 @@
 		font-size: 0.875rem;
 		color: var(--color-walnut);
 		text-decoration: none;
+		background: none;
+		border: none;
+		padding: 0;
 		margin-bottom: var(--space-sm);
+		cursor: pointer;
 		transition: color var(--transition-fast);
 	}
 
@@ -496,5 +594,76 @@
 		font-size: 0.875rem;
 		color: var(--color-ink-soft);
 		margin: 0;
+	}
+
+	/* Method Selection Cards */
+	.method-cards {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-lg);
+		margin-top: var(--space-xl);
+	}
+
+	@media (max-width: 640px) {
+		.method-cards {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.method-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-md);
+		padding: var(--space-2xl);
+		background: var(--color-white);
+		border: 1px solid rgba(17, 17, 17, 0.08);
+		border-radius: var(--radius-lg);
+		cursor: pointer;
+		transition: all var(--transition-base);
+		text-align: center;
+	}
+
+	.method-card:hover {
+		border-color: var(--color-walnut);
+		box-shadow: var(--shadow-medium);
+		transform: translateY(-2px);
+	}
+
+	.method-card:focus {
+		outline: 2px solid var(--color-walnut);
+		outline-offset: 2px;
+	}
+
+	.method-icon {
+		width: 48px;
+		height: 48px;
+		color: var(--color-walnut);
+		margin-bottom: var(--space-sm);
+	}
+
+	.method-title {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.method-description {
+		font-size: 0.9375rem;
+		color: var(--color-ink-soft);
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	.method-subtext {
+		font-size: 0.8125rem;
+		color: var(--color-ink-muted);
+		margin: 0;
+	}
+
+	.method-btn {
+		margin-top: var(--space-sm);
+		pointer-events: none;
 	}
 </style>
