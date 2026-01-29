@@ -18,14 +18,23 @@ export const handle: Handle = async ({ event, resolve }) => {
 		if (session) {
 			const now = new Date();
 			if (session.expiresAt > now) {
-				// Valid session - attach user to locals
-				event.locals.user = {
-					id: session.user.id,
-					email: session.user.email,
-					role: session.user.role,
-					createdAt: session.user.createdAt
-				};
-				event.locals.sessionId = session.id;
+				// Check if user account has been disabled
+				if (session.user.disabled) {
+					// Invalidate session for disabled user
+					await db.delete(sessions).where(eq(sessions.id, session.id));
+					event.cookies.delete('session_token', { path: '/' });
+					// Don't set event.locals.user - treat as logged out
+				} else {
+					// Valid session - attach user to locals
+					event.locals.user = {
+						id: session.user.id,
+						email: session.user.email,
+						role: session.user.role,
+						disabled: session.user.disabled,
+						createdAt: session.user.createdAt
+					};
+					event.locals.sessionId = session.id;
+				}
 			} else {
 				// Expired session - clean up
 				await db.delete(sessions).where(eq(sessions.id, session.id));
