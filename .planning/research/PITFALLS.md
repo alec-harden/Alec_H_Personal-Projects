@@ -1,982 +1,986 @@
-# Pitfalls Research: v2.0 Features
+# Domain Pitfalls: v3.0 Multi-User & Cut Optimizer
 
-**Project:** WoodShop Toolbox v2.0
-**Researched:** 2026-01-26
-**Context:** Adding auth, persistence, and admin to EXISTING working MVP
-**Confidence:** MEDIUM (based on training knowledge, SvelteKit patterns, and codebase analysis)
+**Project:** WoodShop Toolbox v3.0
+**Researched:** 2026-01-29
+**Context:** Adding RBAC, email flows, BOM refinements, and Cut List Optimizer to EXISTING v2.0 application
+**Confidence:** HIGH (based on existing codebase analysis, established security patterns, and algorithmic knowledge)
 
 ## Critical Integration Warning
 
-This research focuses on pitfalls when **adding** auth and persistence to an **existing** SvelteKit application. The challenges are different from greenfield projects because:
+This research focuses on pitfalls when **adding** multi-user RBAC, email-based flows, and a new optimization tool to an **existing** SvelteKit application. The challenges are different from greenfield because:
 
-- Existing routes must continue working during migration
-- Current BOM wizard flow (4 steps) cannot break
-- Database already exists with minimal schema (projects table only)
-- No auth currently means all routes are public
-- Templates hardcoded in code need migration to database without data loss
+- Existing admin routes (`/admin/templates`) currently only check authentication, not role
+- Auth system exists (Argon2 + sessions in Turso) but has no role concept
+- BOM items exist without dimension fields (need migration)
+- Adding new tables (cut_lists) must integrate with cascade delete patterns
+- Users table needs `role` column added with migration strategy
 
 ---
 
-## Authentication Pitfalls
+## Critical Pitfalls
 
-### Pitfall 1: Breaking Existing Routes with Auth Guards
+Mistakes that cause security breaches, data exposure, or major rewrites.
 
-**What goes wrong:** Adding authentication hooks that protect all routes by default breaks the current working BOM wizard. Users suddenly can't access `/bom/new` without logging in, but there's no login page yet.
+---
 
-**Warning signs:**
-- `hooks.server.ts` with blanket redirect logic (`if (!session) redirect('/login')`)
-- All routes require auth by default (opt-out instead of opt-in)
-- Testing only authenticated flows, not unauthenticated fallback
+### Pitfall 1: Admin Route Protection Without Role Check (EXISTING VULNERABILITY)
 
-**Prevention:**
-- **Phase 1 (Auth Infrastructure):** Build auth system but don't enforce it on existing routes yet
-- Use explicit route-level protection via `+page.server.ts` load functions, not global hooks
-- Create allowlist of public routes: `/`, `/bom/*` (wizard), `/api/chat` (used by wizard)
-- Add auth gradually: first make login available, then protect new features (history, admin), finally protect BOM creation
-- Test unauthenticated access to existing routes after each auth change
+**What goes wrong:** Current admin routes (`/admin/templates`) only check `locals.user` existence, not role. When RBAC is added, any authenticated user can still access admin functionality if role checks aren't retrofitted.
 
-**Phase to address:** Phase 1 (Auth Infrastructure) - build but don't enforce globally; Phase 3 (Protected Routes) - enforce selectively
-
-**Code pattern to avoid:**
+**Evidence from codebase:**
 ```typescript
-// hooks.server.ts - DON'T DO THIS
-export async function handle({ event, resolve }) {
-  const session = await getSession(event);
-  if (!session) {
-    throw redirect(303, '/login'); // Breaks everything!
-  }
-  return resolve(event);
-}
-```
-
-**Code pattern to use:**
-```typescript
-// routes/admin/+page.server.ts - Explicit protection
-export async function load({ locals }) {
+// Current: src/routes/admin/templates/+page.server.ts line 8-11
+export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
-    throw redirect(303, '/login');
+    throw redirect(302, '/auth/login?redirect=/admin/templates');
   }
-  // Protected content
-}
+  // NO ROLE CHECK - any authenticated user can access
 ```
+
+**Why it happens:** v2.0 was single-user focus with implicit "owner is admin." When adding RBAC, teams often build new role-protected routes but forget to retrofit existing admin routes.
+
+**Consequences:**
+- Any registered user can create/edit/delete templates
+- Privilege escalation from user to admin capabilities
+- Data integrity issues if malicious user modifies templates
+
+**Warning signs:**
+- Admin pages accessible when logged in as non-admin during testing
+- No `role` field check in existing `/admin/**` route guards
+
+**Prevention:**
+1. Create centralized `requireAdmin(locals)` utility that checks both auth AND role
+2. Audit ALL existing `/admin/**` routes before RBAC goes live
+3. Add automated test: "non-admin user gets 403 on admin routes"
+4. Update existing admin routes FIRST, before adding new role-based features
+
+**Detection:** Penetration test: login as regular user, try to access `/admin/templates`
+
+**Which phase should address:** Phase 1 (RBAC) - retrofit existing admin routes FIRST before adding new features
 
 ---
 
-### Pitfall 2: Session Data Not Available in Locals
+### Pitfall 2: Forgetting Authorization in Form Actions
 
-**What goes wrong:** `hooks.server.ts` sets `event.locals.user`, but downstream routes/endpoints don't see it. This happens when hook order is wrong or locals typing is missing.
+**What goes wrong:** SvelteKit `load` function has auth check, but `actions` handlers are accessed directly via POST - missing parallel check.
 
-**Warning signs:**
-- `locals.user` is `undefined` in `+page.server.ts` but session cookie exists
-- TypeScript errors about `locals.user` not existing on type
-- Having to re-fetch session in every route instead of using `locals`
-
-**Prevention:**
-- Define `locals` type in `src/app.d.ts` FIRST, before writing hooks
-- Set `event.locals.user` early in `handle` hook (before any other logic)
-- Use `event.locals.user` consistently (not `event.cookies.get('session')` directly)
-- Test locals availability in both SSR load functions and API routes
-
-**Phase to address:** Phase 1 (Auth Infrastructure) - type definitions and hook setup
-
-**Required setup:**
+**Evidence from codebase:**
 ```typescript
-// src/app.d.ts
-declare global {
-  namespace App {
-    interface Locals {
-      user: { id: string; email: string } | null;
+// Current pattern in src/routes/admin/templates/+page.server.ts
+export const actions: Actions = {
+  create: async ({ request, locals }) => {
+    // Auth check in action too (load check doesn't protect actions)
+    if (!locals.user) {
+      throw redirect(302, '/auth/login');
     }
-  }
-}
+    // But NO ROLE CHECK here either
 ```
+
+**Why it happens:** Developers assume "if load is protected, actions are protected." False. Form actions can be called directly via POST without triggering load.
+
+**Consequences:**
+- Attackers can POST directly to action endpoints bypassing load guards
+- Data modification by unauthorized users
+- Existing pattern shows auth awareness, but role check is missing
+
+**Warning signs:**
+- Action handlers that don't start with auth/role check
+- Different auth logic in load vs actions (inconsistency)
+
+**Prevention:**
+1. Create middleware/helper: `requireRole('admin', locals)` throws redirect/error
+2. Code review checklist item: "Every action has role check matching load"
+3. Grep check: actions without `locals.user?.role === 'admin'` call in admin routes
+
+**Detection:** Review every `actions:` block in `/admin/**` - does it check role?
+
+**Which phase should address:** Phase 1 (RBAC) - establish pattern, then enforce in all subsequent phases
 
 ---
 
-### Pitfall 3: Auth State Not Reactive in Client
+### Pitfall 3: Indirect Object Reference Without Ownership Check
 
-**What goes wrong:** User logs in successfully, but UI still shows "Login" button until page refresh. Client components don't know about server-side session changes.
+**What goes wrong:** Query uses resource ID without filtering by `userId` OR checking `role === 'admin'`. User A accesses User B's project by guessing UUID.
+
+**Evidence from codebase (GOOD pattern to maintain):**
+```typescript
+// Current: src/routes/projects/[id]/+page.server.ts line 13-14
+// IMPORTANT: Filter by BOTH id AND userId for security
+const project = await db.query.projects.findFirst({
+  where: and(eq(projects.id, params.id), eq(projects.userId, locals.user.id))
+});
+```
+
+**Why it happens:** Existing code correctly uses `and(eq(id), eq(userId))` pattern - but new cut_lists routes might forget this pattern.
+
+**Consequences:**
+- Data breach - users see other users' projects/BOMs/cut lists
+- Data modification of other users' resources
+- Trust destruction
 
 **Warning signs:**
-- Login works but navigation bar doesn't update
-- Need to manually refresh page after login/logout
-- Checking `$page.data.user` but it's stale
+- Queries with only `eq(resource.id, params.id)` without user filter
+- No test for "user cannot access another user's resource"
 
 **Prevention:**
-- Use `invalidateAll()` after login/logout actions to trigger fresh load
-- Pass user from root `+layout.server.ts` load function (available to all pages)
-- Client components read from `$page.data.user` (reactive to load data changes)
-- Don't store auth state in client-only `$state()` runes
+1. Create typed helpers: `findOwnedProject(userId, projectId)`, `findOwnedCutList(userId, cutListId)`
+2. Automated test: Create resource as User A, try to access as User B, expect 404
+3. Code review: Any `eq(*.id, params.*)` must be paired with ownership check
 
-**Phase to address:** Phase 1 (Auth Infrastructure) - reactive auth state pattern
+**Detection:** Grep for `eq(cutLists.id` or `eq(cuts.id` without adjacent `userId` filter
 
-**Pattern:**
+**Which phase should address:** Phase 1 (RBAC) - audit existing, establish helpers; Phase 3 (Cut Optimizer) - apply to new tables
+
+---
+
+### Pitfall 4: Password Reset Token Predictability or Reuse
+
+**What goes wrong:** Reset token is predictable (sequential, timestamp-based) or can be reused after password change.
+
+**Why it happens:**
+- Using `Date.now()` or incrementing counter instead of crypto-random
+- Not invalidating token after successful reset
+- Not expiring tokens
+
+**Consequences:**
+- Account takeover via guessed tokens
+- Token interception and delayed use
+- Attacker resets password, user resets it back, attacker uses captured token again
+
+**Warning signs:**
+- Token generation not using `crypto.randomUUID()` or `crypto.getRandomValues()`
+- No `usedAt` or deletion after successful reset
+- No expiry check on token validation
+
+**Prevention:**
+1. Generate 32+ byte random token using existing pattern from `auth.ts`: `crypto.randomUUID()`
+2. Store token HASH in database, not plaintext (if DB is dumped, tokens are useless)
+3. Set short expiry: 1 hour max
+4. Delete or mark token used IMMEDIATELY on successful reset (before password update)
+5. Rate limit reset requests per email (prevent enumeration)
+
+**Token storage pattern:**
 ```typescript
-// routes/+layout.server.ts
-export async function load({ locals }) {
-  return {
-    user: locals.user // Available to all descendant routes
-  };
-}
+// Generate token
+const rawToken = crypto.randomUUID();
+const tokenHash = await hashToken(rawToken); // SHA-256 hash
 
-// routes/login/+page.server.ts (action)
+// Store hash in DB
+await db.insert(passwordResets).values({
+  userId,
+  tokenHash,
+  expiresAt: new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+});
+
+// Send raw token in email link
+// On reset: hash submitted token, compare to stored hash
+```
+
+**Detection:**
+- Review token generation code for entropy
+- Test: use reset link twice - second should fail
+- Test: use reset link after expiry - should fail
+
+**Which phase should address:** Phase 2 (Email Flows) - password reset implementation
+
+---
+
+### Pitfall 5: Email Enumeration via Timing/Response Differences
+
+**What goes wrong:** "Email not found" vs "Reset link sent" responses reveal which emails are registered.
+
+**Why it happens:** Natural impulse to be helpful: "That email isn't in our system."
+
+**Consequences:**
+- Attackers build list of valid accounts
+- Targeted phishing against known users
+- Privacy violation (revealing account existence)
+
+**Warning signs:**
+- Different response text for found vs not-found email
+- Different response time (DB lookup vs immediate response)
+
+**Prevention:**
+1. ALWAYS return same message: "If this email exists, we've sent a reset link"
+2. ALWAYS perform same operations regardless of email existence
+3. Add consistent delay (200-500ms) to mask timing differences
+4. Log whether email was found (for debugging) but don't expose to user
+
+**Code pattern:**
+```typescript
 export const actions = {
-  login: async ({ cookies, request }) => {
-    // ... login logic
-    return { success: true };
+  requestReset: async ({ request }) => {
+    const email = formData.get('email');
+
+    // Always do the lookup (for consistent timing)
+    const user = await db.query.users.findFirst({
+      where: eq(users.email, email)
+    });
+
+    // Always add delay (masks timing differences)
+    await new Promise(r => setTimeout(r, 300));
+
+    if (user) {
+      // Actually send email
+      await sendPasswordResetEmail(user.email, token);
+    }
+
+    // ALWAYS return same message
+    return {
+      message: "If this email exists in our system, we've sent a reset link."
+    };
   }
 };
-
-// routes/login/+page.svelte
-import { invalidateAll } from '$app/navigation';
-import { enhance } from '$app/forms';
-
-// After successful login
-use:enhance={() => {
-  return async ({ result }) => {
-    if (result.type === 'success') {
-      await invalidateAll(); // Triggers all load functions
-      goto('/');
-    }
-  };
-}}
 ```
+
+**Detection:** Test reset flow with valid email, invalid email - responses should be identical
+
+**Which phase should address:** Phase 2 (Email Flows) - password reset AND email verification
 
 ---
 
-## Database Migration Pitfalls
+### Pitfall 6: Transactional Email Landing in Spam
 
-### Pitfall 4: Drizzle Schema Changes Without Migration Files
+**What goes wrong:** Password reset / verification emails go to spam folder. Users never see them, think system is broken.
 
-**What goes wrong:** Changing `schema.ts` (adding columns, tables) and running `drizzle-kit push` directly to production loses data or causes constraint violations. Drizzle push is for development; production needs migrations.
+**Why it happens:**
+- Missing SPF/DKIM/DMARC records for sending domain
+- Using generic "from" address (noreply@gmail.com)
+- No warm-up of sending domain
+- Missing List-Unsubscribe header
+
+**Consequences:**
+- Users can't reset passwords or verify accounts
+- Support burden increases ("I never got the email")
+- Bad first impression, lost users
 
 **Warning signs:**
-- Using `npm run db:push` in production deployments
-- No `drizzle/migrations/` folder in repository
-- Schema changes applied without SQL migration review
-- Adding `NOT NULL` columns to existing tables without defaults
+- Test emails land in spam folder
+- Low email open rates
+- "I never got the email" support tickets
 
 **Prevention:**
-- **Development:** Use `drizzle-kit push` for rapid iteration (local.db only)
-- **Production:** Use `drizzle-kit generate` → review SQL → `drizzle-kit migrate`
-- Never add `NOT NULL` columns without `DEFAULT` or backfill strategy
-- Test migrations on a copy of production data before applying
-- Version control migration files (commit to git)
+1. Use transactional email service (Resend, SendGrid, Postmark) - not raw SMTP
+2. Configure SPF, DKIM, DMARC for sending domain
+3. Use subdomain for transactional email (e.g., mail.woodshoptoolbox.com)
+4. Include List-Unsubscribe header even for transactional
+5. Test with mail-tester.com before launch (aim for 9+/10)
+6. Provide "resend" button with rate limiting
 
-**Phase to address:** Phase 2 (Database Schema) - establish migration workflow before production changes
+**Detection:**
+- Send test email to Gmail, Outlook, Yahoo - check spam folder
+- Use mail-tester.com score
 
-**Migration workflow:**
-```bash
-# Development (local.db) - OK to push
-npm run db:push
+**Which phase should address:** Phase 2 (Email Flows) - setup and verification BEFORE sending user-facing emails
 
-# Production (Turso) - MUST generate migrations
-drizzle-kit generate:sqlite  # Creates SQL in drizzle/migrations/
-# Review SQL file manually
-drizzle-kit migrate          # Applies migration to Turso
+---
+
+### Pitfall 7: Session Not Updated After Role Change
+
+**What goes wrong:** Admin demotes user or changes their role. User's active session still has old role cached in `locals.user`.
+
+**Evidence from codebase (partially good):**
+```typescript
+// Current: src/hooks.server.ts line 15
+const session = await db.query.sessions.findFirst({
+  where: eq(sessions.token, sessionToken),
+  with: { user: true }  // Fetches fresh user data - GOOD
+});
 ```
 
-**Schema change pattern (safe):**
+**Why it happens:** Session lookup fetches from users table (good!), but `role` field doesn't exist yet. When role is added, must ensure it's included in locals.
+
+**Consequences:**
+- Demoted admin retains admin access until session expires (30 days!)
+- Role changes don't take effect immediately
+- Security violation during transition period
+
+**Warning signs:**
+- User role change requires re-login to take effect
+- `locals.user.role` different from database `users.role`
+
+**Prevention:**
+1. Existing `with: { user: true }` is correct - fetches fresh user data
+2. When adding role, ensure `event.locals.user` includes role field
+3. Update `app.d.ts` type: `user: { id, email, role, createdAt }`
+4. Consider: invalidate all user's sessions on role change (stricter but more secure)
+
+**Code update needed:**
 ```typescript
-// Adding column to existing table - provide default
-export const projects = sqliteTable('projects', {
+// hooks.server.ts - add role to locals
+if (session.expiresAt > now) {
+  event.locals.user = {
+    id: session.user.id,
+    email: session.user.email,
+    role: session.user.role,  // ADD THIS
+    createdAt: session.user.createdAt
+  };
+  event.locals.sessionId = session.id;
+}
+```
+
+**Detection:**
+- Change user role in DB while they're logged in
+- Refresh page - should reflect new role immediately
+
+**Which phase should address:** Phase 1 (RBAC) - ensure hooks fetch fresh role on every request
+
+---
+
+## Moderate Pitfalls
+
+Mistakes that cause significant bugs, poor UX, or technical debt.
+
+---
+
+### Pitfall 8: Rate Limiting Gaps in Email Endpoints
+
+**What goes wrong:** No rate limit on password reset or resend verification allows abuse.
+
+**Why it happens:** Focus on "make it work" before "make it secure." Rate limiting feels like polish, not core.
+
+**Consequences:**
+- Attacker floods user's inbox (harassment)
+- Email sending costs spike (Resend/SendGrid charge per email)
+- IP/domain reputation damage from volume
+- Potential DDoS vector
+
+**Warning signs:**
+- Can rapidly click "resend" without throttling
+- No cooldown message
+
+**Prevention:**
+1. Per-email rate limit: 1 reset request per email per 15 minutes
+2. Per-IP rate limit: 10 reset requests per IP per hour
+3. Store last request timestamp in new table or in-memory
+4. Show "Please wait X minutes before requesting again"
+
+**Implementation:**
+```typescript
+// Simple rate limit check
+const lastRequest = await db.query.emailRateLimits.findFirst({
+  where: and(
+    eq(emailRateLimits.email, email),
+    gt(emailRateLimits.lastSentAt, new Date(Date.now() - 15 * 60 * 1000))
+  )
+});
+
+if (lastRequest) {
+  const waitTime = Math.ceil((lastRequest.lastSentAt.getTime() + 15 * 60 * 1000 - Date.now()) / 60000);
+  return fail(429, {
+    error: `Please wait ${waitTime} minute(s) before requesting another email.`
+  });
+}
+```
+
+**Detection:** Script: send 100 reset requests in 1 minute - should fail after first few
+
+**Which phase should address:** Phase 2 (Email Flows) - build rate limiting into email endpoints from start
+
+---
+
+### Pitfall 9: Database Migration Breaking Existing Data
+
+**What goes wrong:** Adding `role` column to `users` table fails because NOT NULL column has no default for existing rows.
+
+**Why it happens:**
+- SQLite limitations: cannot add NOT NULL column without default
+- Turso/LibSQL inherits SQLite behavior
+- Drizzle `db:push` fails or corrupts data
+
+**Consequences:**
+- Migration fails, deployment blocked
+- Or worse: migration "succeeds" but data is inconsistent
+- Rollback complexity
+
+**Warning signs:**
+- `db:push` fails with NOT NULL constraint error
+- Existing users have NULL role after migration
+
+**Prevention:**
+1. Add new column with DEFAULT: `role: text('role').notNull().default('user')`
+2. Test migration on copy of production data before deploying
+3. Plan for first admin: SQL script or environment flag to promote existing user
+
+**Schema pattern:**
+```typescript
+// schema.ts - add role with default
+export const users = sqliteTable('users', {
   id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  userId: text('user_id').default('single-user'), // Safe: has default
+  email: text('email').notNull().unique(),
+  passwordHash: text('password_hash').notNull(),
+  role: text('role').notNull().default('user'), // 'user' | 'admin'
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 });
 ```
 
----
-
-### Pitfall 5: Foreign Key Violations from Template Migration
-
-**What goes wrong:** Migrating templates from hardcoded TypeScript to database, but existing BOMs reference template IDs that don't exist in DB yet. Foreign key constraints fail.
-
-**Warning signs:**
-- `FOREIGN KEY constraint failed` errors when saving BOMs
-- Template IDs in code (e.g., "table", "cabinet") don't match database primary keys
-- No seed script to populate templates table before enabling FK constraints
-
-**Prevention:**
-- Migration order: (1) Create templates table, (2) Seed with hardcoded templates, (3) Add FK constraints, (4) Update code to read from DB
-- Use same IDs in database as in code (text PK: "table", "cabinet" - not auto-increment)
-- Write seed script that's idempotent (can run multiple times safely)
-- Test on empty database AND database with existing projects
-
-**Phase to address:** Phase 2 (Database Schema) - template migration strategy; Phase 4 (Admin Panel) - template seeding
-
-**Safe migration pattern:**
-```typescript
-// schema.ts - Use text IDs matching code
-export const templates = sqliteTable('templates', {
-  id: text('id').primaryKey(), // "table", "cabinet", etc.
-  name: text('name').notNull(),
-  // ... template data
-});
-
-export const boms = sqliteTable('boms', {
-  id: text('id').primaryKey(),
-  templateId: text('template_id').references(() => templates.id),
-  // ... other fields
-});
-
-// seed.ts - Idempotent seeding
-const defaultTemplates = [
-  { id: 'table', name: 'Table', /* ... */ },
-  { id: 'cabinet', name: 'Cabinet', /* ... */ }
-];
-
-for (const template of defaultTemplates) {
-  await db.insert(templates)
-    .values(template)
-    .onConflictDoNothing(); // Idempotent
-}
-```
-
----
-
-### Pitfall 6: SQLite Concurrency Issues with Turso
-
-**What goes wrong:** Multiple requests try to write to SQLite simultaneously. With local `file:local.db`, this can cause `SQLITE_BUSY` errors. Turso handles this, but local dev might not.
-
-**Warning signs:**
-- `database is locked` errors in development
-- Writes fail intermittently under load
-- Different behavior between local dev and Turso production
-
-**Prevention:**
-- Accept that local `file:local.db` has different concurrency than Turso
-- For local dev with heavy writes: use Turso dev database (not file:local.db)
-- Set busy timeout in database connection config
-- Design writes to be retryable (idempotent operations)
-- Avoid long transactions that hold locks
-
-**Phase to address:** Phase 1 (Auth Infrastructure) - database connection config
-
-**Connection config:**
-```typescript
-// lib/server/db.ts
-import { drizzle } from 'drizzle-orm/libsql';
-import { createClient } from '@libsql/client';
-
-const client = createClient({
-  url: env.TURSO_DATABASE_URL || 'file:local.db',
-  authToken: env.TURSO_AUTH_TOKEN,
-  // For local dev only
-  ...(env.TURSO_DATABASE_URL ? {} : {
-    // SQLite busy timeout (milliseconds)
-    // Note: libsql client may not support this directly
-  })
-});
-
-export const db = drizzle(client);
-```
-
----
-
-## Session Management Pitfalls
-
-### Pitfall 7: Session Invalidation Race Condition
-
-**What goes wrong:** User logs out, session is deleted from database, but cookie still exists. A concurrent request uses the stale cookie and fails with "session not found" error.
-
-**Warning signs:**
-- Logout sometimes shows errors instead of redirecting cleanly
-- Race condition between cookie deletion and session DB deletion
-- Client makes request with old session cookie after logout
-
-**Prevention:**
-- Delete session from DB first, then delete cookie (order matters)
-- Set cookie with `maxAge: 0` to ensure browser deletion
-- Use `throw redirect()` in logout action (prevents further processing)
-- Handle "session not found" gracefully in hooks (treat as logged out)
-
-**Phase to address:** Phase 1 (Auth Infrastructure) - logout action implementation
-
-**Safe logout pattern:**
-```typescript
-// routes/logout/+server.ts or action
-export async function POST({ cookies, locals }) {
-  if (locals.user?.sessionId) {
-    // 1. Delete from database first
-    await db.delete(sessions)
-      .where(eq(sessions.id, locals.user.sessionId));
-  }
-
-  // 2. Then delete cookie
-  cookies.delete('session', { path: '/' });
-
-  // 3. Redirect (prevents race with other requests)
-  throw redirect(303, '/');
-}
-
-// hooks.server.ts - handle missing session gracefully
-const sessionId = event.cookies.get('session');
-if (sessionId) {
-  const session = await db.select()
-    .from(sessions)
-    .where(eq(sessions.id, sessionId))
-    .get();
-
-  if (!session) {
-    // Session deleted - clean up cookie
-    event.cookies.delete('session', { path: '/' });
-    event.locals.user = null;
-  }
-}
-```
-
----
-
-### Pitfall 8: Session Expiry Not Enforced
-
-**What goes wrong:** Sessions stored with `expiresAt` timestamp, but hooks don't check it. Users stay logged in forever, even with "expired" sessions in database.
-
-**Warning signs:**
-- Sessions table has `expires_at` column but it's never checked
-- Users logged in for weeks despite 7-day session policy
-- Dead sessions accumulate in database (never cleaned up)
-
-**Prevention:**
-- Check `session.expiresAt` in hooks (before setting `locals.user`)
-- Delete expired cookie if session is expired
-- Run periodic cleanup job to delete old sessions (cron or scheduled function)
-- Consider sliding expiration (extend session on each request)
-
-**Phase to address:** Phase 1 (Auth Infrastructure) - session validation in hooks; Phase 5 (Cleanup Job) - session cleanup
-
-**Expiry check pattern:**
-```typescript
-// hooks.server.ts
-const session = await db.select()
-  .from(sessions)
-  .where(eq(sessions.id, sessionId))
-  .get();
-
-if (!session || session.expiresAt < new Date()) {
-  // Expired or missing - clean up
-  event.cookies.delete('session', { path: '/' });
-  event.locals.user = null;
-
-  if (session) {
-    // Delete expired session from DB
-    await db.delete(sessions)
-      .where(eq(sessions.id, sessionId));
-  }
-} else {
-  event.locals.user = { id: session.userId, sessionId: session.id };
-}
-```
-
----
-
-## File Upload Pitfalls
-
-### Pitfall 9: Unrestricted File Upload Size
-
-**What goes wrong:** User uploads 500MB CSV file, exhausting serverless function memory (256MB default) or hitting request body size limits. App crashes or hangs.
-
-**Warning signs:**
-- No `Content-Length` header check in upload endpoint
-- No file size validation before parsing
-- Memory usage spikes during large file uploads
-- Serverless timeouts (10s limit on some platforms)
-
-**Prevention:**
-- Validate `Content-Length` header BEFORE reading body (reject oversized requests early)
-- Set reasonable limit (CSV templates: 1MB should be plenty)
-- Use streaming parser for CSV (don't load entire file into memory)
-- Return clear error message for oversized files
-
-**Phase to address:** Phase 4 (Admin Panel) - template upload validation
-
-**Size validation pattern:**
-```typescript
-// routes/admin/templates/upload/+server.ts
-export async function POST({ request }) {
-  const contentLength = request.headers.get('content-length');
-  const MAX_SIZE = 1024 * 1024; // 1MB
-
-  if (!contentLength || parseInt(contentLength) > MAX_SIZE) {
-    return json(
-      { error: 'File too large. Maximum size: 1MB' },
-      { status: 413 }
-    );
-  }
-
-  // Use streaming parser (e.g., csv-parse with stream mode)
-  const formData = await request.formData();
-  const file = formData.get('file');
-
-  if (!(file instanceof File)) {
-    return json({ error: 'No file provided' }, { status: 400 });
-  }
-
-  // Further validation...
-}
-```
-
----
-
-### Pitfall 10: CSV Injection via Template Upload
-
-**What goes wrong:** Admin uploads CSV template with formula injection: `=1+1` in a cell. When BOM is exported and opened in Excel, the formula executes (potential security risk).
-
-**Warning signs:**
-- No sanitization of CSV cell values
-- Cells starting with `=`, `+`, `-`, `@`, `\t`, `\r` (formula prefixes)
-- Blindly trusting admin-uploaded content
-
-**Prevention:**
-- Sanitize CSV cells during import: prefix dangerous characters with single quote `'`
-- Validate template structure (expected columns only)
-- Show preview of parsed template before saving to database
-- Admin templates are trusted but still validate format
-
-**Phase to address:** Phase 4 (Admin Panel) - CSV parsing with sanitization
-
-**CSV injection prevention:**
-```typescript
-function sanitizeCSVCell(value: string): string {
-  // Prevent formula injection
-  const dangerousChars = ['=', '+', '-', '@', '\t', '\r'];
-  if (dangerousChars.some(char => value.startsWith(char))) {
-    return `'${value}`; // Prefix with single quote
-  }
-  return value;
-}
-
-// When parsing uploaded CSV
-const rows = parseCSV(fileContent);
-const sanitizedRows = rows.map(row =>
-  row.map(cell => sanitizeCSVCell(cell))
-);
-```
-
----
-
-### Pitfall 11: Missing File Type Validation
-
-**What goes wrong:** Admin uploads a PNG image to CSV template endpoint. Parser tries to read it as CSV, fails with cryptic error, or worse - partially succeeds with garbage data.
-
-**Warning signs:**
-- Only checking file extension (client-provided, easily spoofed)
-- No MIME type validation
-- No content validation (does it actually parse as CSV?)
-- Generic error messages that don't explain file type issue
-
-**Prevention:**
-- Validate MIME type from `File.type` (but don't rely solely on this)
-- Attempt to parse as CSV and catch errors
-- Check for expected column headers (template-specific validation)
-- Return specific error: "Invalid file type. Expected CSV file."
-
-**Phase to address:** Phase 4 (Admin Panel) - upload validation
-
-**File type validation:**
-```typescript
-export async function POST({ request }) {
-  const formData = await request.formData();
-  const file = formData.get('file') as File;
-
-  // 1. Check MIME type (basic check)
-  if (!['text/csv', 'application/csv', 'text/plain'].includes(file.type)) {
-    return json(
-      { error: 'Invalid file type. Expected CSV file.' },
-      { status: 400 }
-    );
-  }
-
-  // 2. Try to parse as CSV
-  const content = await file.text();
-  let rows;
-  try {
-    rows = parseCSV(content);
-  } catch (e) {
-    return json(
-      { error: 'File is not valid CSV format.' },
-      { status: 400 }
-    );
-  }
-
-  // 3. Validate expected structure
-  const expectedHeaders = ['name', 'description', 'defaultMaterials'];
-  if (!headersMatch(rows[0], expectedHeaders)) {
-    return json(
-      { error: 'CSV has incorrect columns. Expected: ' + expectedHeaders.join(', ') },
-      { status: 400 }
-    );
-  }
-
-  // Proceed with import
-}
-```
-
----
-
-## SvelteKit Hooks Pitfalls
-
-### Pitfall 12: Hook Order of Operations
-
-**What goes wrong:** Multiple hooks in `hooks.server.ts` (auth, logging, error handling) execute in wrong order. Auth happens after error handling, so errors don't have user context. Or CSRF check happens before auth, blocking legitimate requests.
-
-**Warning signs:**
-- `locals.user` is undefined in error handler
-- CSRF tokens rejected for authenticated requests
-- Logging shows anonymous user despite session cookie present
-- Hooks that depend on each other fail intermittently
-
-**Prevention:**
-- Understand hook execution order: `handle` runs top-to-bottom, wrapping resolve()
-- Use sequence() helper to compose multiple hooks explicitly
-- Order: (1) Logging/request ID, (2) Auth, (3) CSRF, (4) Business logic, (5) Error handling
-- Document hook dependencies in comments
-
-**Phase to address:** Phase 1 (Auth Infrastructure) - hook composition
-
-**Hook ordering pattern:**
-```typescript
-// hooks.server.ts
-import { sequence } from '@sveltejs/kit/hooks';
-
-// 1. Request logging (first - logs everything)
-async function logRequest({ event, resolve }) {
-  event.locals.requestId = crypto.randomUUID();
-  console.log(`[${event.locals.requestId}] ${event.request.method} ${event.url.pathname}`);
-  return resolve(event);
-}
-
-// 2. Authentication (populates locals.user)
-async function authenticate({ event, resolve }) {
-  const sessionId = event.cookies.get('session');
-  if (sessionId) {
-    // ... fetch user
-    event.locals.user = user;
-  }
-  return resolve(event);
-}
-
-// 3. CSRF protection (needs locals.user for exemptions)
-async function csrfProtection({ event, resolve }) {
-  if (event.request.method !== 'GET' && !event.locals.user) {
-    // CSRF check
-  }
-  return resolve(event);
-}
-
-// Compose in order
-export const handle = sequence(
-  logRequest,
-  authenticate,
-  csrfProtection
-);
-```
-
----
-
-### Pitfall 13: Performance Degradation from Hook DB Queries
-
-**What goes wrong:** Auth hook queries database on EVERY request (including static assets, CSS, images). Database connection pool exhausted, response times degrade.
-
-**Warning signs:**
-- Database query logs show session lookups for `/favicon.ico`, `/styles.css`
-- Slow page loads despite simple pages
-- Connection pool warnings in logs
-- Hook queries run even for 404 errors
-
-**Prevention:**
-- Skip auth for static assets: check `event.url.pathname` starts with `/assets/`, `/favicon.ico`
-- Skip auth for API routes that have their own auth (avoid double-querying)
-- Consider caching session data in-memory (with TTL) for high-traffic scenarios
-- Use database connection pooling (Turso handles this automatically)
-
-**Phase to address:** Phase 1 (Auth Infrastructure) - efficient hook implementation
-
-**Optimized auth hook:**
-```typescript
-async function authenticate({ event, resolve }) {
-  // Skip static assets
-  const path = event.url.pathname;
-  if (path.startsWith('/assets/') ||
-      path === '/favicon.ico' ||
-      path.endsWith('.css') ||
-      path.endsWith('.js')) {
-    return resolve(event);
-  }
-
-  // Only query DB if session cookie exists
-  const sessionId = event.cookies.get('session');
-  if (!sessionId) {
-    event.locals.user = null;
-    return resolve(event);
-  }
-
-  // Query session (consider in-memory cache for production)
-  const session = await db.query.sessions.findFirst({
-    where: eq(sessions.id, sessionId)
-  });
-
-  // ... validation
-}
-```
-
----
-
-## Template Migration Pitfalls
-
-### Pitfall 14: Data Model Mismatch Between Code and Database
-
-**What goes wrong:** Templates in `templates.ts` have complex nested structures (prompts array, materials object). Database schema uses JSON column. JSON serialization/deserialization bugs cause data corruption or type errors.
-
-**Warning signs:**
-- TypeScript types don't match database JSON structure
-- `JSON.parse()` errors when loading templates
-- Nested arrays become strings: `"[object Object]"`
-- Template data works in code but breaks when loaded from DB
-
-**Prevention:**
-- Define TypeScript interface for template structure FIRST
-- Use Drizzle's `.json()` column type with explicit typing: `.json().$type<TemplateData>()`
-- Validate JSON structure on insert (zod schema)
-- Test roundtrip: code → DB → code (ensure data survives serialization)
-- Consider flattening structure if JSON is problematic (normalize to multiple tables)
-
-**Phase to address:** Phase 2 (Database Schema) - template data modeling
-
-**Safe JSON column pattern:**
-```typescript
-// types.ts - Define structure
-export interface TemplateData {
-  prompts: Array<{
-    step: number;
-    question: string;
-    type: 'select' | 'text' | 'number';
-    options?: string[];
-  }>;
-  defaultMaterials: {
-    lumber: string[];
-    hardware: string[];
-  };
-}
-
-// schema.ts - Type the JSON column
-import { TemplateData } from './types';
-
-export const templates = sqliteTable('templates', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  data: text('data', { mode: 'json' }).$type<TemplateData>().notNull()
-});
-
-// Validate on insert
-import { z } from 'zod';
-
-const templateDataSchema = z.object({
-  prompts: z.array(z.object({
-    step: z.number(),
-    question: z.string(),
-    type: z.enum(['select', 'text', 'number']),
-    options: z.array(z.string()).optional()
-  })),
-  defaultMaterials: z.object({
-    lumber: z.array(z.string()),
-    hardware: z.array(z.string())
-  })
-});
-
-// Before insert
-const validated = templateDataSchema.parse(templateData);
-```
-
----
-
-### Pitfall 15: Template ID Coupling Across Codebase
-
-**What goes wrong:** Template IDs ("table", "cabinet") are hardcoded as string literals in multiple files. Changing ID breaks wizard, BOM display, exports. No single source of truth.
-
-**Warning signs:**
-- String literals: `if (templateId === "table")` scattered in code
-- TypeScript doesn't catch typos: `"tabel"` compiles fine
-- Adding new template requires changes in 5+ files
-- Dead code for removed templates still exists
-
-**Prevention:**
-- Define template IDs as const enum or union type
-- Single source of truth: `const TEMPLATE_IDS = ['table', 'cabinet', ...] as const`
-- Use type: `type TemplateId = typeof TEMPLATE_IDS[number]`
-- During migration: keep code templates, add DB templates, then remove code templates
-- Use template slug/ID consistently (URL, database, code)
-
-**Phase to address:** Phase 2 (Database Schema) - template ID management; Phase 4 (Admin Panel) - template CRUD
-
-**Template ID pattern:**
-```typescript
-// lib/templates/constants.ts
-export const TEMPLATE_IDS = [
-  'table',
-  'cabinet',
-  'shelf',
-  'workbench',
-  'box',
-  'chair'
-] as const;
-
-export type TemplateId = typeof TEMPLATE_IDS[number];
-
-// Usage - TypeScript enforces valid IDs
-function getTemplate(id: TemplateId) {
-  // ...
-}
-
-getTemplate('table'); // OK
-getTemplate('tabel'); // TypeScript error
-```
-
----
-
-## Integration Pitfalls
-
-### Pitfall 16: Breaking BOM Wizard State Management
-
-**What goes wrong:** Adding persistence to BOM wizard introduces save/load logic that conflicts with existing client-side state (`$state()` runes). Wizard steps get out of sync with database, duplicate BOMs created.
-
-**Warning signs:**
-- Wizard shows step 3 but database has step 1 data
-- Creating new BOM loads data from previous session
-- Back button doesn't work after saving mid-wizard
-- State lost on page refresh (expected), but also lost on navigation (unexpected)
-
-**Prevention:**
-- Keep wizard state client-side ($state) for new BOMs (no DB writes until final save)
-- Only load from DB when editing existing BOM (explicit intent)
-- Clear wizard state when starting new BOM (`/bom/new` vs `/bom/edit/[id]`)
-- Use URL parameter or route to distinguish new vs edit mode
-- Save drafts as explicit user action (button), not automatic
-
-**Phase to address:** Phase 3 (BOM Persistence) - save/edit flow design
-
-**State management pattern:**
-```typescript
-// routes/bom/new/+page.svelte - New BOM (client state only)
-let wizardState = $state({
-  step: 1,
-  template: null,
-  dimensions: {},
-  joinery: {},
-  materials: []
-});
-
-// routes/bom/edit/[id]/+page.server.ts - Edit existing (load from DB)
-export async function load({ params }) {
-  const bom = await db.query.boms.findFirst({
-    where: eq(boms.id, params.id)
-  });
-  return { bom }; // Client initializes state from this
-}
-
-// routes/bom/edit/[id]/+page.svelte - Edit mode
-let wizardState = $state($page.data.bom); // Initialize from DB
-```
-
----
-
-### Pitfall 17: User Association Retroactive Application
-
-**What goes wrong:** Adding `userId` foreign key to existing `projects` table, but existing rows have NULL userId. Queries with `WHERE user_id = ?` return nothing, user can't see their own projects.
-
-**Warning signs:**
-- Existing projects disappear after auth is added
-- New projects work, old projects don't
-- Migration adds column but doesn't backfill data
-- NULL constraint violation when trying to enforce NOT NULL later
-
-**Prevention:**
-- Add `userId` column as NULLABLE first (migration)
-- Backfill existing rows with single-user ID: `UPDATE projects SET user_id = 'single-user'`
-- Update queries to handle NULL userId (show all if single-user mode)
-- Later: enforce NOT NULL if multi-user is required
-- Document single-user → multi-user migration path
-
-**Phase to address:** Phase 2 (Database Schema) - user_id column addition with backfill
-
-**Migration pattern:**
+**First admin promotion:**
 ```sql
--- Migration: Add user_id column (nullable)
-ALTER TABLE projects ADD COLUMN user_id TEXT;
-
--- Backfill existing rows (single-user mode)
-UPDATE projects SET user_id = 'single-user' WHERE user_id IS NULL;
-
--- Optional: Add foreign key (if users table exists)
--- But don't add NOT NULL yet (allows gradual migration)
+-- Run once after migration to promote yourself
+UPDATE users SET role = 'admin' WHERE email = 'your@email.com';
 ```
 
-```typescript
-// Query pattern - handle both single-user and multi-user
-export async function load({ locals }) {
-  const userId = locals.user?.id || 'single-user';
+**Detection:**
+- Run migration on local with existing user data
+- Check: existing users should have `role = 'user'`
 
-  const userProjects = await db.select()
-    .from(projects)
-    .where(eq(projects.userId, userId));
-
-  return { projects: userProjects };
-}
-```
+**Which phase should address:** Phase 1 (RBAC) - schema migration planning with explicit backfill strategy
 
 ---
 
-### Pitfall 18: CSV Export Breaks with Persisted BOMs
+### Pitfall 10: Cut Optimizer Zero-Length or Negative Dimension Handling
 
-**What goes wrong:** CSV export currently uses client-side BOM state (`materials` array). After persistence, BOM data is in database with different structure (normalized tables). Export code doesn't handle DB-loaded BOMs.
+**What goes wrong:** User enters 0 or negative length for cut, algorithm crashes or produces nonsense output.
+
+**Why it happens:** UI allows any number input, algorithm assumes positive values.
+
+**Consequences:**
+- JavaScript errors or infinite loops
+- Nonsense cut diagrams (negative waste)
+- User confusion
 
 **Warning signs:**
-- Export works for new BOMs, fails for loaded BOMs
-- TypeScript errors about missing properties on BOM items
-- Different data shapes: client state vs DB query results
-- CSV columns missing or in wrong order
+- No input validation on dimension fields
+- Algorithm doesn't check inputs
+- NaN or Infinity in calculations
 
 **Prevention:**
-- Define canonical BOM data interface (used by both client state and DB queries)
-- Transform DB query results to match interface (in load function)
-- CSV export function accepts interface, doesn't care about source
-- Test export with both new (unsaved) and persisted BOMs
+1. UI validation: `min="0.1"` on number inputs
+2. Server validation: reject dimensions <= 0
+3. Algorithm guard: filter out zero/negative cuts before processing
+4. Helpful error: "Cut length must be greater than 0"
 
-**Phase to address:** Phase 3 (BOM Persistence) - ensure consistent data shape; Phase 6 (CSV Export Update) - handle persisted BOMs
-
-**Data shape consistency:**
+**Validation layer:**
 ```typescript
-// types.ts - Canonical interface
-export interface BOMItem {
-  id: string;
-  category: 'Lumber' | 'Hardware' | 'Finishes' | 'Consumables';
-  description: string;
-  quantity: number;
-  unit: string;
-  notes?: string;
-  hidden: boolean;
-}
-
-export interface BOM {
-  id: string;
-  name: string;
-  items: BOMItem[];
-}
-
-// routes/bom/edit/[id]/+page.server.ts - Transform DB to interface
-export async function load({ params }) {
-  const bomRecord = await db.query.boms.findFirst({
-    where: eq(boms.id, params.id),
-    with: { items: true } // Include related items
+// Before running optimizer
+function validateCuts(cuts: Cut[]): { valid: Cut[], errors: string[] } {
+  const errors: string[] = [];
+  const valid = cuts.filter((cut, i) => {
+    if (cut.length <= 0) {
+      errors.push(`Cut ${i + 1}: Length must be greater than 0`);
+      return false;
+    }
+    if (cut.width && cut.width <= 0) {
+      errors.push(`Cut ${i + 1}: Width must be greater than 0`);
+      return false;
+    }
+    return true;
   });
-
-  // Transform to canonical interface
-  const bom: BOM = {
-    id: bomRecord.id,
-    name: bomRecord.name,
-    items: bomRecord.items.map(item => ({
-      id: item.id,
-      category: item.category,
-      description: item.description,
-      quantity: item.quantity,
-      unit: item.unit,
-      notes: item.notes,
-      hidden: item.hidden
-    }))
-  };
-
-  return { bom };
-}
-
-// lib/utils/csv.ts - Works with interface, not DB
-export function exportBOMToCSV(bom: BOM): string {
-  // Uses canonical interface - works for both new and loaded BOMs
+  return { valid, errors };
 }
 ```
 
+**Detection:** Test: enter 0, -5, empty string in dimension fields
+
+**Which phase should address:** Phase 3 (Cut Optimizer) - validation layer before algorithm
+
 ---
 
-## Phase Assignment Summary
+### Pitfall 11: Kerf Width Exceeds Available Material
 
-| Pitfall | Primary Phase | Secondary Phase |
-|---------|---------------|-----------------|
-| Breaking existing routes | Phase 1 (Auth) | Phase 3 (Protected Routes) |
-| Session not in locals | Phase 1 (Auth) | - |
-| Auth state not reactive | Phase 1 (Auth) | - |
-| Schema changes without migrations | Phase 2 (Schema) | - |
-| Foreign key violations (templates) | Phase 2 (Schema) | Phase 4 (Admin) |
-| SQLite concurrency | Phase 1 (Auth) | - |
-| Session invalidation race | Phase 1 (Auth) | - |
-| Session expiry not enforced | Phase 1 (Auth) | Phase 5 (Cleanup) |
-| Unrestricted file upload size | Phase 4 (Admin) | - |
-| CSV injection | Phase 4 (Admin) | - |
-| Missing file type validation | Phase 4 (Admin) | - |
-| Hook order of operations | Phase 1 (Auth) | - |
-| Hook performance degradation | Phase 1 (Auth) | - |
-| Data model mismatch (JSON) | Phase 2 (Schema) | - |
-| Template ID coupling | Phase 2 (Schema) | Phase 4 (Admin) |
-| Breaking wizard state | Phase 3 (BOM Persist) | - |
-| User association retroactive | Phase 2 (Schema) | - |
-| CSV export breaks | Phase 3 (BOM Persist) | Phase 6 (Export) |
+**What goes wrong:** Each cut loses material to kerf. If kerf + cut > remaining stock, algorithm fails or produces negative waste.
+
+**Why it happens:** Kerf subtraction not properly accounted in bin packing:
+- Cut needs 12" + 0.125" kerf = 12.125" actual consumption
+- But final cut on a board doesn't need kerf after it
+
+**Consequences:**
+- Calculated fits don't work in reality
+- Negative numbers in waste calculation
+- Algorithm infinite loop trying to fit impossible cuts
+
+**Warning signs:**
+- Cuts "fit" mathematically but not physically
+- Negative waste percentages
+- Strange results with large kerf values
+
+**Prevention:**
+1. For N cuts from single board: total = sum(cuts) + (N-1) * kerf
+2. NOT: total = sum(cuts) + N * kerf (no kerf after last cut)
+3. Validate: if single cut + kerf > stock length, warn (cut won't fit with kerf)
+4. Test with extreme kerf (1") to surface math errors
+
+**Kerf accounting:**
+```typescript
+function calculateUsedLength(cuts: number[], kerf: number): number {
+  if (cuts.length === 0) return 0;
+  // Sum of cuts + (N-1) kerfs (no kerf after last cut)
+  return cuts.reduce((sum, cut) => sum + cut, 0) + (cuts.length - 1) * kerf;
+}
+
+// Edge case: single cut
+calculateUsedLength([12], 0.125) // = 12, not 12.125
+// Two cuts
+calculateUsedLength([12, 12], 0.125) // = 24.125, not 24.25
+```
+
+**Detection:**
+- Test: 12" board, two 6" cuts, 0.125" kerf - should fit (6 + 0.125 + 6 = 12.125 > 12, doesn't fit!)
+- Test: 12" board, one 12" cut, any kerf - should fit (no kerf needed)
+
+**Which phase should address:** Phase 3 (Cut Optimizer) - algorithm implementation with edge case tests
+
+---
+
+### Pitfall 12: 2D Nesting Algorithm Complexity Explosion
+
+**What goes wrong:** Sheet optimizer tries every possible arrangement, O(n!) complexity causes browser freeze for >10 pieces.
+
+**Why it happens:** Naive implementation of 2D bin packing (NP-hard problem) without heuristics or limits.
+
+**Consequences:**
+- Browser unresponsive
+- "Page not responding" dialog
+- Users think app is broken
+
+**Warning signs:**
+- Performance degrades rapidly as pieces increase
+- No progress indicator during calculation
+- Calculation takes >5 seconds
+
+**Prevention:**
+1. Use proven heuristic: First-Fit Decreasing Height (FFDH) or Guillotine algorithm
+2. Limit pieces per optimization: 50 max, batch if needed
+3. Run algorithm in Web Worker to avoid UI freeze
+4. Show progress indicator for calculations >500ms
+5. Add "cancel" option for long-running optimizations
+
+**Web Worker pattern:**
+```typescript
+// cut-optimizer.worker.ts
+self.onmessage = (e) => {
+  const { cuts, stock, kerf } = e.data;
+  const result = optimizeCuts(cuts, stock, kerf);
+  self.postMessage(result);
+};
+
+// +page.svelte
+let worker = new Worker(new URL('./cut-optimizer.worker.ts', import.meta.url));
+let calculating = $state(false);
+
+async function runOptimization() {
+  calculating = true;
+  worker.postMessage({ cuts, stock, kerf });
+  worker.onmessage = (e) => {
+    result = e.data;
+    calculating = false;
+  };
+}
+```
+
+**Detection:** Test with 5, 10, 20, 50 pieces - time should scale reasonably, not exponentially
+
+**Which phase should address:** Phase 3 (Cut Optimizer) - algorithm selection and performance constraints
+
+---
+
+### Pitfall 13: Drag-Drop Without Keyboard Alternative
+
+**What goes wrong:** Material assignment via drag-drop is inaccessible to keyboard-only users or those with motor impairments.
+
+**Why it happens:** Drag-drop feels intuitive for mouse users; keyboard alternative seems like extra work.
+
+**Consequences:**
+- Accessibility violation (WCAG 2.1 failure)
+- Screen reader users cannot use feature
+- Potential legal liability (ADA)
+
+**Warning signs:**
+- Cannot complete task using only Tab/Enter/Arrow keys
+- Screen reader announces nothing useful during drag operation
+
+**Prevention:**
+1. Add button alternative: "Assign to [dropdown]" for each cut
+2. Implement arrow key movement within drag context
+3. Announce drag state to screen readers: "Dragging Cut 1. Press Enter to drop."
+4. Test with keyboard only, no mouse
+
+**Accessible pattern:**
+```svelte
+<!-- Each cut has drag-drop AND button alternative -->
+<div
+  class="cut-item"
+  draggable="true"
+  ondragstart={handleDragStart}
+>
+  <span>Cut: 24" x 6"</span>
+
+  <!-- Button alternative for accessibility -->
+  <select
+    onchange={(e) => assignToMaterial(cutId, e.target.value)}
+    aria-label="Assign this cut to material"
+  >
+    <option value="">Assign to...</option>
+    {#each materials as material}
+      <option value={material.id}>{material.name}</option>
+    {/each}
+  </select>
+</div>
+```
+
+**Detection:** Unplug mouse, complete material assignment workflow using only keyboard
+
+**Which phase should address:** Phase 3 (Cut Optimizer) - implement keyboard alternative alongside drag-drop
+
+---
+
+### Pitfall 14: Drag-Drop Broken on Touch Devices
+
+**What goes wrong:** Desktop drag-drop uses mouse events; mobile needs touch events. Feature doesn't work on tablets.
+
+**Why it happens:**
+- Using only `ondragstart/ondragend` (limited mobile support)
+- Not testing on actual touch device
+- HTML5 drag-drop has spotty touch support
+
+**Consequences:**
+- Mobile/tablet users cannot assign materials
+- Frustrating UX on iPad (common device for woodworkers in shop)
+
+**Warning signs:**
+- Works on desktop, fails on tablet
+- Touch causes scroll instead of drag
+
+**Prevention:**
+1. Use library with touch support: `svelte-dnd-action` or `@dnd-kit/core`
+2. Or implement touch handlers: `touchstart/touchmove/touchend`
+3. Test on actual iOS/Android device, not just Chrome devtools emulation
+4. Provide tap-to-select alternative (select cut, tap destination)
+
+**Library recommendation:**
+```bash
+npm install svelte-dnd-action
+```
+
+```svelte
+<script>
+  import { dndzone } from 'svelte-dnd-action';
+</script>
+
+<div use:dndzone={{ items: cuts }} on:consider={handleSort} on:finalize={handleDrop}>
+  {#each cuts as cut (cut.id)}
+    <div>{cut.name}</div>
+  {/each}
+</div>
+```
+
+**Detection:** Test on iPad or Android tablet - drag should work
+
+**Which phase should address:** Phase 3 (Cut Optimizer) - use touch-friendly DnD library from start
+
+---
+
+### Pitfall 15: Cut List Not Filtering Lumber Correctly
+
+**What goes wrong:** CUT-04 auto-filters lumber from BOMs, but category matching is fragile. "Hardwood" vs "Lumber" vs "Wood" inconsistency.
+
+**Evidence from codebase:**
+```typescript
+// Current schema: bomItems.category is text, not enum
+category: text('category').notNull()
+```
+
+**Why it happens:** AI-generated BOM items may use varied category names. Exact string matching fails.
+
+**Consequences:**
+- Lumber items not appearing in cut optimizer
+- User manually adds items that should auto-filter
+- "Where did my lumber go?" confusion
+
+**Warning signs:**
+- Some lumber items appear, others don't
+- Different BOMs have different category strings
+
+**Prevention:**
+1. Normalize categories on BOM generation: always "Lumber" (check AI system prompt)
+2. Filter by category containing "lumber" (case-insensitive)
+3. Or add explicit `isLumber` boolean field
+4. Audit existing BOM items for category consistency
+
+**Flexible filter:**
+```typescript
+// Flexible lumber detection
+function isLumberCategory(category: string): boolean {
+  const lumberPatterns = ['lumber', 'wood', 'board', 'plywood', 'hardwood', 'softwood'];
+  const normalized = category.toLowerCase();
+  return lumberPatterns.some(pattern => normalized.includes(pattern));
+}
+
+// Filter lumber from BOM items
+const lumberItems = bomItems.filter(item => isLumberCategory(item.category));
+```
+
+**Detection:** Create BOMs with various templates, check all lumber appears in cut optimizer
+
+**Which phase should address:** Phase 3 (Cut Optimizer) - robust lumber detection logic
+
+---
+
+## Minor Pitfalls
+
+Mistakes that cause annoyance but are quickly fixable.
+
+---
+
+### Pitfall 16: Lumber Dimension Fields Optional Confusion
+
+**What goes wrong:** BOM-06 adds dimension fields to lumber items. What happens to existing lumber items without dimensions?
+
+**Why it happens:** New fields are nullable, but UI doesn't clarify "not set" vs "intentionally blank."
+
+**Consequences:**
+- UI shows blank/0 for old items
+- Board feet calculation shows 0 or NaN
+- User confusion about required fields
+
+**Warning signs:**
+- Existing BOM items look broken after update
+- "0 board feet" shown for legacy items
+
+**Prevention:**
+1. Make dimension fields nullable with clear "N/A" display for null
+2. Board feet calculation: return null/dash if any dimension is null
+3. UI: show "[dimensions not set]" placeholder, not 0
+4. Migration: don't backfill with fake dimensions
+
+**UI pattern:**
+```svelte
+<td>
+  {#if item.length && item.width && item.thickness}
+    {calculateBoardFeet(item.length, item.width, item.thickness).toFixed(2)} BF
+  {:else}
+    <span class="text-gray-400">--</span>
+  {/if}
+</td>
+```
+
+**Detection:** View existing BOM after adding dimension feature - should look reasonable
+
+**Which phase should address:** Phase 2 (BOM Refinements) - handle null dimensions gracefully in UI
+
+---
+
+### Pitfall 17: Eye Icon Toggle State Ambiguity
+
+**What goes wrong:** Eye icon means "visible" in some UIs, "click to hide" in others. Users confused about current state vs action.
+
+**Why it happens:** Icon semantics are ambiguous - does filled eye mean "visible" or "watching"?
+
+**Consequences:**
+- Users toggle wrong direction
+- Hidden items exported accidentally
+- Frustrating trial-and-error
+
+**Warning signs:**
+- User clicks eye expecting to hide, item becomes visible
+- Support questions about icon meaning
+
+**Prevention:**
+1. Eye open = visible, eye with slash = hidden (standard convention)
+2. Add tooltip: "Click to hide" (when visible) / "Click to show" (when hidden)
+3. Visual difference beyond icon: hidden row should be grayed/styled
+4. Consistent with existing checkbox behavior being replaced
+
+**Icon pattern:**
+```svelte
+<button
+  onclick={() => toggleVisibility(item.id)}
+  title={item.hidden ? 'Click to show' : 'Click to hide'}
+  aria-label={item.hidden ? 'Show item' : 'Hide item'}
+>
+  {#if item.hidden}
+    <!-- Eye with slash - hidden -->
+    &#128065;&#xFE0E;&#x0338;
+  {:else}
+    <!-- Eye - visible -->
+    &#128065;
+  {/if}
+</button>
+```
+
+**Detection:** User testing - ask 3 people what icon state means
+
+**Which phase should address:** Phase 2 (BOM Refinements) - design with clear state indication
+
+---
+
+### Pitfall 18: Cut Diagram Unreadable at Scale
+
+**What goes wrong:** Diagram shows 20 cuts on one board. Text overlaps, cuts are too small to see.
+
+**Why it happens:** Fixed-size visualization doesn't scale to variable content.
+
+**Consequences:**
+- Diagram useless for complex cuts
+- Users can't verify optimization is correct
+- Defeats purpose of visual output
+
+**Warning signs:**
+- Labels overlap or truncate
+- Thin cuts appear as lines, not rectangles
+- No zoom or pan capability
+
+**Prevention:**
+1. Implement zoom/pan on diagram (scrollable container with scale)
+2. Collapse small cuts into numbered markers, show details in legend
+3. Minimum visual width for cuts (even if not to scale for very thin cuts)
+4. Hover/tap to highlight and show details
+5. Test with realistic data: 20+ cuts across 5 boards
+
+**Detection:** Generate cut list with many cuts - diagram should be usable
+
+**Which phase should address:** Phase 3 (Cut Optimizer) - diagram scalability in visualization implementation
+
+---
+
+### Pitfall 19: Email Service Credentials Not Set
+
+**What goes wrong:** App deploys without email service API key. First user tries password reset, gets 500 error.
+
+**Why it happens:** Email service is added but environment variable not configured in production.
+
+**Consequences:**
+- Password reset fails silently or with error
+- Email verification fails
+- Users locked out of accounts
+
+**Warning signs:**
+- Works in dev (different env), fails in prod
+- No check for required email config at startup
+
+**Prevention:**
+1. Check for email API key at app startup (not first email send)
+2. Add to `.env.example`: `RESEND_API_KEY=`
+3. Fail fast: if email features enabled, require API key
+4. Log warning if email disabled, don't allow password reset
+
+**Startup check:**
+```typescript
+// lib/server/email.ts
+import { env } from '$env/dynamic/private';
+
+if (!env.RESEND_API_KEY) {
+  console.warn('WARNING: RESEND_API_KEY not set. Email features disabled.');
+}
+
+export const emailEnabled = !!env.RESEND_API_KEY;
+
+export async function sendEmail(...) {
+  if (!emailEnabled) {
+    throw new Error('Email service not configured');
+  }
+  // ... send email
+}
+```
+
+**Detection:** Deploy without API key, try password reset - should fail gracefully with message
+
+**Which phase should address:** Phase 2 (Email Flows) - environment validation
+
+---
+
+## Integration Pitfalls with Existing System
+
+### Existing Code Patterns to Maintain
+
+The codebase has good patterns that MUST be maintained when adding new features:
+
+1. **Data isolation via `userId` filter** (see `projects/[id]/+page.server.ts` line 13-14)
+   - Pattern: `and(eq(resource.id, params.id), eq(resource.userId, locals.user.id))`
+   - Pitfall: Forgetting this pattern in new Cut List routes
+
+2. **Auth check in both load AND actions** (see `admin/templates/+page.server.ts` line 21-23)
+   - Pattern: Duplicate auth check at start of each action
+   - Pitfall: Assuming load protection covers actions (it doesn't)
+
+3. **Cascade deletes configured in schema** (see `schema.ts` foreign keys)
+   - Pattern: `onDelete: 'cascade'` on child relations
+   - Pitfall: New cut_lists table needs same pattern for project deletion
+
+4. **Session includes user data** (see `hooks.server.ts` line 15)
+   - Pattern: `with: { user: true }` fetches fresh user data
+   - Pitfall: Must add `role` to fetched fields and locals type
+
+### New Integration Points
+
+| New Feature | Integrates With | Pitfall Risk |
+|-------------|-----------------|--------------|
+| Role column | users table | Migration breaks NOT NULL |
+| Admin check | hooks.server.ts | Adding role to locals without breaking existing code |
+| Email service | Environment vars | Missing API key crashes app |
+| Password reset | sessions table | New tokens table or repurpose? (new table recommended) |
+| Cut optimizer | projects, boms, bomItems | Cascading deletes, ownership checks |
+| Lumber filter | bomItems.category | Category string inconsistency |
+| Dimension fields | bomItems table | Nullable fields, display handling |
+
+---
+
+## Phase-Specific Warnings Summary
+
+| Phase | Topic | Likely Pitfall | Mitigation |
+|-------|-------|---------------|------------|
+| Phase 1 | RBAC | Existing admin routes unprotected | Audit and retrofit before new features |
+| Phase 1 | RBAC | Actions bypass load auth | Centralized `requireRole()` helper |
+| Phase 1 | RBAC | Migration breaks NOT NULL | Add `role` column with DEFAULT |
+| Phase 1 | RBAC | Session missing role | Update hooks to include role in locals |
+| Phase 2 | Email | Spam folder delivery | Configure SPF/DKIM/DMARC, use transactional service |
+| Phase 2 | Email | Token predictability | Crypto-random, hash storage, short expiry |
+| Phase 2 | Email | User enumeration | Identical responses regardless of email existence |
+| Phase 2 | Email | Rate limiting gaps | Per-email and per-IP limits |
+| Phase 2 | Email | Missing API key | Startup check, fail fast |
+| Phase 2 | BOM | Dimension null handling | Graceful UI for missing dimensions |
+| Phase 2 | BOM | Eye icon ambiguity | Clear state indication, tooltips |
+| Phase 3 | Cut Optimizer | Zero/negative dimensions | Input validation + algorithm guards |
+| Phase 3 | Cut Optimizer | Kerf math errors | Careful accounting: (N-1) * kerf, not N |
+| Phase 3 | Cut Optimizer | 2D complexity explosion | Heuristic algorithm + Web Worker + limits |
+| Phase 3 | Cut Optimizer | Drag-drop accessibility | Keyboard alternative required |
+| Phase 3 | Cut Optimizer | Drag-drop touch failure | Use touch-friendly DnD library |
+| Phase 3 | Cut Optimizer | Lumber filter mismatch | Flexible category matching |
+| Phase 3 | Cut Optimizer | Diagram unreadable | Zoom/pan, hover details |
+
+---
+
+## Priority Order for Addressing Pitfalls
+
+**Must fix before any v3.0 deployment:**
+1. Pitfall 1: Admin routes without role check (security)
+2. Pitfall 2: Actions without role check (security)
+3. Pitfall 3: Missing ownership checks in new routes (security)
+4. Pitfall 4: Token security (security)
+5. Pitfall 5: Email enumeration (privacy)
+
+**Must fix before email features go live:**
+6. Pitfall 6: Spam folder issues (functionality)
+7. Pitfall 8: Rate limiting (abuse prevention)
+8. Pitfall 19: Missing API key handling (reliability)
+
+**Must fix before cut optimizer goes live:**
+9. Pitfall 10: Zero/negative dimensions (crashes)
+10. Pitfall 11: Kerf math (accuracy)
+11. Pitfall 12: Complexity explosion (performance)
+12. Pitfall 13: Keyboard accessibility (compliance)
+13. Pitfall 14: Touch device support (usability)
 
 ---
 
 ## Sources and Confidence
 
-**Confidence: MEDIUM**
+**Confidence: HIGH**
 
 This research is based on:
-- SvelteKit patterns from training knowledge (January 2025 cutoff)
-- Drizzle ORM patterns from training knowledge
-- Analysis of existing codebase (PROJECT.md, schema.ts, page.server.ts)
-- Common pitfalls from adding auth to existing apps (general experience)
+- Direct analysis of existing codebase (`auth.ts`, `hooks.server.ts`, `schema.ts`, `+page.server.ts` files)
+- Existing v2.0 patterns already working in production
+- OWASP guidelines for authentication and password reset
+- Established bin packing algorithm complexity analysis
+- WCAG 2.1 accessibility requirements
 
-**Not verified with:**
-- Context7 (no SvelteKit documentation queries - would increase confidence)
-- Official SvelteKit docs (no WebFetch - would verify hook patterns)
-- Official Drizzle docs (no WebFetch - would verify migration workflow)
+**Key observations from codebase:**
+- Auth pattern is solid (Argon2, session tokens, cookie handling)
+- Data isolation pattern exists and is correctly implemented
+- Foreign key cascades properly configured
+- Hooks correctly fetch fresh user data (just need role field)
 
-**Recommendations for validation:**
-- Test each pitfall prevention strategy in a branch before main implementation
-- Review SvelteKit hooks documentation for current best practices (docs.svelte.dev)
-- Review Drizzle migration workflow documentation (orm.drizzle.team)
-- Consider pilot testing auth on a single route before global rollout
-
-**Known gaps:**
-- Specific Turso limitations or features not researched
-- SvelteKit adapter-auto deployment constraints (Vercel/Cloudflare differences)
-- Performance characteristics of Drizzle queries with Turso (latency, connection pooling)
-
----
-
-## Recommendations for Roadmap
-
-Based on pitfall severity and dependencies:
-
-**Phase 1 (Auth Infrastructure):**
-- Build but don't enforce globally (prevent Pitfall 1)
-- Set up hooks correctly from start (prevent Pitfall 12, 13)
-- Define locals types first (prevent Pitfall 2)
-- Implement session expiry checks (prevent Pitfall 8)
-
-**Phase 2 (Database Schema):**
-- Establish migration workflow before production (prevent Pitfall 4)
-- Design template schema carefully (prevent Pitfall 14)
-- Add userId with backfill strategy (prevent Pitfall 17)
-- Use text PKs for templates matching code IDs (prevent Pitfall 5)
-
-**Phase 3 (BOM Persistence):**
-- Maintain separate new/edit flows (prevent Pitfall 16)
-- Ensure data shape consistency (prevent Pitfall 18)
-- Test with existing BOMs and new BOMs
-
-**Phase 4 (Admin Panel):**
-- Implement file upload validation comprehensively (prevent Pitfalls 9, 10, 11)
-- Seed templates before adding FK constraints (prevent Pitfall 5)
-
-**Critical success factors:**
-- Don't break existing BOM wizard (highest priority)
-- Test auth migration on isolated routes first
-- Use migrations for schema changes, not push
-- Validate all file uploads thoroughly
+**Gaps that need runtime validation:**
+- Email service integration (no existing email code)
+- Cut optimization algorithm performance (theoretical analysis only)
+- Touch device DnD behavior (needs device testing)
