@@ -139,68 +139,68 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RBAC-01 | — | Pending |
-| RBAC-02 | — | Pending |
-| RBAC-03 | — | Pending |
-| RBAC-04 | — | Pending |
-| RBAC-05 | — | Pending |
-| RBAC-06 | — | Pending |
-| USER-01 | — | Pending |
-| USER-02 | — | Pending |
-| USER-03 | — | Pending |
-| USER-04 | — | Pending |
-| USER-05 | — | Pending |
-| USER-06 | — | Pending |
-| EMAIL-01 | — | Pending |
-| EMAIL-02 | — | Pending |
-| EMAIL-03 | — | Pending |
-| EMAIL-04 | — | Pending |
-| EMAIL-05 | — | Pending |
-| EMAIL-06 | — | Pending |
-| BOM-05 | — | Pending |
-| BOM-06 | — | Pending |
-| BOM-07 | — | Pending |
-| BOM-08 | — | Pending |
-| BOM-09 | — | Pending |
-| BOM-10 | — | Pending |
-| CUT-01 | — | Pending |
-| CUT-02 | — | Pending |
-| CUT-03 | — | Pending |
-| CUT-04 | — | Pending |
-| CUT-05 | — | Pending |
-| CUT-06 | — | Pending |
-| CUT-07 | — | Pending |
-| CUT-08 | — | Pending |
-| CUT-09 | — | Pending |
-| CUT-10 | — | Pending |
-| CUT-11 | — | Pending |
-| CUT-12 | — | Pending |
-| CUT-13 | — | Pending |
-| CUT-14 | — | Pending |
-| CUT-15 | — | Pending |
-| CUT-16 | — | Pending |
-| CUT-17 | — | Pending |
-| CUT-18 | — | Pending |
-| CUT-19 | — | Pending |
-| CUT-20 | — | Pending |
-| CUT-21 | — | Pending |
-| CUT-22 | — | Pending |
-| CUT-23 | — | Pending |
-| CUT-24 | — | Pending |
-| CUT-25 | — | Pending |
-| CUT-26 | — | Pending |
-| CUT-27 | — | Pending |
-| CUT-28 | — | Pending |
-| CUT-29 | — | Pending |
-| CUT-30 | — | Pending |
-| CUT-31 | — | Pending |
-| CUT-32 | — | Pending |
+| RBAC-01 | 13 | Pending |
+| RBAC-02 | 13 | Pending |
+| RBAC-03 | 13 | Pending |
+| RBAC-04 | 13 | Pending |
+| RBAC-05 | 13 | Pending |
+| RBAC-06 | 13 | Pending |
+| USER-01 | 14 | Pending |
+| USER-02 | 14 | Pending |
+| USER-03 | 14 | Pending |
+| USER-04 | 14 | Pending |
+| USER-05 | 14 | Pending |
+| USER-06 | 14 | Pending |
+| EMAIL-01 | 15 | Pending |
+| EMAIL-02 | 15 | Pending |
+| EMAIL-03 | 15 | Pending |
+| EMAIL-04 | 16 | Pending |
+| EMAIL-05 | 16 | Pending |
+| EMAIL-06 | 16 | Pending |
+| BOM-05 | 17 | Pending |
+| BOM-06 | 17 | Pending |
+| BOM-07 | 17 | Pending |
+| BOM-08 | 17 | Pending |
+| BOM-09 | 17 | Pending |
+| BOM-10 | 17 | Pending |
+| CUT-01 | 18 | Pending |
+| CUT-02 | 18 | Pending |
+| CUT-03 | 18 | Pending |
+| CUT-04 | 18 | Pending |
+| CUT-05 | 18 | Pending |
+| CUT-06 | 18 | Pending |
+| CUT-07 | 18 | Pending |
+| CUT-08 | 18 | Pending |
+| CUT-09 | 18 | Pending |
+| CUT-10 | 18 | Pending |
+| CUT-11 | 19 | Pending |
+| CUT-12 | 19 | Pending |
+| CUT-13 | 19 | Pending |
+| CUT-14 | 19 | Pending |
+| CUT-15 | 19 | Pending |
+| CUT-16 | 19 | Pending |
+| CUT-17 | 20 | Pending |
+| CUT-18 | 20 | Pending |
+| CUT-19 | 20 | Pending |
+| CUT-20 | 20 | Pending |
+| CUT-21 | 20 | Pending |
+| CUT-22 | 20 | Pending |
+| CUT-23 | 21 | Pending |
+| CUT-24 | 21 | Pending |
+| CUT-25 | 21 | Pending |
+| CUT-26 | 21 | Pending |
+| CUT-27 | 21 | Pending |
+| CUT-28 | 21 | Pending |
+| CUT-29 | 21 | Pending |
+| CUT-30 | 21 | Pending |
+| CUT-31 | 21 | Pending |
+| CUT-32 | 21 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 44 total
-- Mapped to phases: 0
-- Unmapped: 44 ⚠️
+- Mapped to phases: 44
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after initial definition*
+*Last updated: 2026-01-29 after roadmap creation*
