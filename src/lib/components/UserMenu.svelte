@@ -39,6 +39,16 @@
 				<p class="text-sm font-medium text-stone-900 truncate">{email}</p>
 			</div>
 
+			{#if role === 'admin'}
+				<a
+					href="/admin/templates"
+					class="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-100"
+					onclick={() => (open = false)}
+				>
+					Admin
+				</a>
+			{/if}
+
 			<form method="POST" action="/auth/logout" use:enhance>
 				<button
 					type="submit"
