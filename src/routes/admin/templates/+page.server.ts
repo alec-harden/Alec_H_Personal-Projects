@@ -3,12 +3,11 @@ import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
 import { templates } from '$lib/server/schema';
 import { asc } from 'drizzle-orm';
+import { requireAdmin } from '$lib/server/auth';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	// Require authentication
-	if (!locals.user) {
-		throw redirect(302, '/auth/login?redirect=/admin/templates');
-	}
+export const load: PageServerLoad = async (event) => {
+	// Require admin role - throws 403 if not admin
+	requireAdmin(event);
 
 	const allTemplates = await db.query.templates.findMany({
 		orderBy: [asc(templates.name)]
@@ -18,13 +17,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	create: async ({ request, locals }) => {
-		// Auth check in action too (load check doesn't protect actions)
-		if (!locals.user) {
-			throw redirect(302, '/auth/login');
-		}
+	create: async (event) => {
+		// Admin check in action too (load check doesn't protect actions)
+		requireAdmin(event);
 
-		const data = await request.formData();
+		const data = await event.request.formData();
 		const name = data.get('name')?.toString().trim();
 		const icon = data.get('icon')?.toString().trim();
 		const description = data.get('description')?.toString().trim();

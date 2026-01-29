@@ -3,14 +3,14 @@ import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
 import { templates } from '$lib/server/schema';
 import { eq } from 'drizzle-orm';
+import { requireAdmin } from '$lib/server/auth';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) {
-		throw redirect(302, `/auth/login?redirect=/admin/templates/${params.id}`);
-	}
+export const load: PageServerLoad = async (event) => {
+	// Require admin role - throws 403 if not admin
+	requireAdmin(event);
 
 	const template = await db.query.templates.findFirst({
-		where: eq(templates.id, params.id)
+		where: eq(templates.id, event.params.id)
 	});
 
 	if (!template) {
@@ -21,12 +21,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-	update: async ({ request, locals, params }) => {
-		if (!locals.user) {
-			throw redirect(302, '/auth/login');
-		}
+	update: async (event) => {
+		// Admin check in action too (load check doesn't protect actions)
+		requireAdmin(event);
 
-		const data = await request.formData();
+		const data = await event.request.formData();
 		const name = data.get('name')?.toString().trim();
 		const icon = data.get('icon')?.toString().trim();
 		const description = data.get('description')?.toString().trim();
@@ -115,17 +114,16 @@ export const actions: Actions = {
 				typicalHardware,
 				updatedAt: new Date()
 			})
-			.where(eq(templates.id, params.id));
+			.where(eq(templates.id, event.params.id));
 
 		return { success: true };
 	},
 
-	delete: async ({ locals, params }) => {
-		if (!locals.user) {
-			throw redirect(302, '/auth/login');
-		}
+	delete: async (event) => {
+		// Admin check in action too (load check doesn't protect actions)
+		requireAdmin(event);
 
-		await db.delete(templates).where(eq(templates.id, params.id));
+		await db.delete(templates).where(eq(templates.id, event.params.id));
 
 		throw redirect(302, '/admin/templates');
 	}
