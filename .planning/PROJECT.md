@@ -32,6 +32,35 @@ A modular web application hosting personal woodworking tools. The first tool is 
 
 **Codebase:** ~50 source files, 10,450 lines TypeScript/Svelte
 
+## Current Milestone: v3.0 Multi-User & Cut Optimizer
+
+**Goal:** Enable real multi-user operation with proper security, enhance BOM with lumber dimensions, and add a new Cut List Optimizer tool for material efficiency.
+
+**Target features:**
+
+*Platform & Security*
+- RBAC with admin/user roles
+- Data isolation (users only see own data)
+- Self-registration + admin invites
+- Admin user management (create, reset pwd, disable)
+- Password reset via email
+- Email verification after signup
+
+*BOM Refinements*
+- Eye icon visibility toggle (replace checkbox)
+- Lumber dimension fields (length, width, height)
+- Board feet calculation display
+
+*Cut List Optimizer (New Tool)*
+- Linear optimizer (1D bin packing) for boards/trim
+- Sheet optimizer (2D nesting) for plywood
+- Project/BOM integration with lumber auto-filter
+- Cut definition with drag-drop material assignment
+- Kerf/blade width configuration
+- Cut diagram visualization
+- Waste/efficiency reporting
+- Shop checklist with completion tracking
+
 ## Core Value
 
 Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
@@ -92,31 +121,59 @@ Generate accurate, complete bills of materials for woodworking projects through 
 
 ### Active
 
-None — awaiting next milestone definition.
+**Platform & Security (v3.0)**
+- [ ] RBAC-01: Admin role with elevated permissions
+- [ ] RBAC-02: User role with standard access
+- [ ] RBAC-03: Admin routes protected by role check
+- [ ] AUTH-05: Password reset via email link
+- [ ] AUTH-06: Email verification after signup
+- [ ] USER-01: Admin can create user accounts
+- [ ] USER-02: Admin can reset user passwords
+- [ ] USER-03: Admin can disable user accounts
+
+**BOM Refinements (v3.0)**
+- [ ] BOM-05: Eye icon visibility toggle (replace checkbox)
+- [ ] BOM-06: Lumber items have dimension fields (L/W/H)
+- [ ] BOM-07: Board feet calculated and displayed for lumber
+
+**Cut List Optimizer (v3.0)**
+- [ ] CUT-01: New tool route with modular interface
+- [ ] CUT-02: Mode selector (Linear vs Sheet)
+- [ ] CUT-03: Select project and multi-select BOMs
+- [ ] CUT-04: Auto-filter lumber from selected BOMs
+- [ ] CUT-05: Define required cuts with dimensions
+- [ ] CUT-06: Drag-drop material assignment
+- [ ] CUT-07: Kerf/blade width configuration
+- [ ] CUT-08: Linear optimizer (1D bin packing)
+- [ ] CUT-09: Sheet optimizer (2D nesting)
+- [ ] CUT-10: Cut diagram visualization
+- [ ] CUT-11: Waste/efficiency reporting
+- [ ] CUT-12: Save cut list to project
+- [ ] CUT-13: Shop checklist with completion tracking
 
 ### Out of Scope
 
-- Real-time collaboration — single user focus
+- Real-time collaboration — single user focus per account
 - Mobile app — web-first, responsive design sufficient
 - Pricing/cost estimation — may add later
 - Inventory tracking — separate tool if needed
-- Cut list optimization — separate tool if needed
 - 3D visualization — complexity not justified
-- OAuth login (Google/GitHub) — email/password sufficient for single-user
-- Password reset/email verification — v2.1 candidate
-- Session caching (Redis) — over-optimization for single-user
-- Multi-tenancy — v3.0+ scope
+- OAuth login (Google/GitHub) — email/password sufficient
+- Session caching (Redis) — over-optimization for current scale
 
 ## Context
 
-**Domain:** Personal woodworking project planning. User is a hobbyist woodworker who wants to streamline the planning phase of projects.
+**Domain:** Woodworking project planning for hobbyist woodworkers. Expanding from single-user to multi-user for sharing with woodworking community.
 
-**First tool priority:** BOM generator is the flagship tool. Platform architecture should support it well but remain generic enough for future tools.
+**Tools:**
+- BOM Generator (flagship, v1.0) — AI-powered material list generation
+- Cut List Optimizer (v3.0) — Material efficiency through cut optimization
 
 **AI integration:** The BOM generator understands woodworking terminology, common project types, standard material dimensions, and typical hardware requirements. Templates provide domain knowledge, AI provides reasoning and flexibility.
 
+**Cut optimization:** Non-AI algorithmic optimization using 1D bin packing (boards) and 2D nesting (sheet goods). Integrates with BOM to pull lumber items.
+
 **Future tools (not in scope but informs architecture):**
-- Cut list optimizer
 - Project cost estimator
 - Wood movement calculator
 - Finish compatibility checker
@@ -150,4 +207,4 @@ None — awaiting next milestone definition.
 | Optimistic UI for BOM edits | Instant feedback for quantity/visibility changes | ✓ v2.0 |
 
 ---
-*Last updated: 2026-01-29 after v2.0 milestone*
+*Last updated: 2026-01-29 after v3.0 milestone start*

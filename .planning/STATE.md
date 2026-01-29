@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Planning next milestone
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Defining requirements
 
 ## Current Position
 
-Phase: N/A (milestone complete)
-Plan: N/A
-Status: Ready for next milestone
-Last activity: 2026-01-29 — v2.0 milestone complete
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-01-29 — Milestone v3.0 started
 
-Progress: Awaiting /gsd:new-milestone
+Progress: Researching → Requirements → Roadmap
 
 ## Milestone History
 
@@ -22,6 +22,7 @@ Progress: Awaiting /gsd:new-milestone
 |-----------|--------|--------|---------|
 | v1.0 MVP | 1-7 | SHIPPED | 2026-01-23 |
 | v2.0 Persistence | 8-12 | SHIPPED | 2026-01-28 |
+| v3.0 Multi-User & Cut Optimizer | 13-21 | IN PROGRESS | — |
 
 See `.planning/MILESTONES.md` for full milestone details.
 
@@ -53,27 +54,23 @@ None.
 
 ## Research Reference
 
-Previous research available in `.planning/research/` (v2.0):
-- STACK.md — Auth libraries, session storage, password hashing
-- FEATURES.md — UX patterns, table stakes
-- ARCHITECTURE.md — Middleware, schema, route structure
-- PITFALLS.md — Common mistakes to avoid
-- SUMMARY.md — Synthesized findings
+v3.0 research in progress — will cover:
+- Email stack (transactional email services)
+- Cut optimization algorithms (1D bin packing, 2D nesting)
+- Drag-drop implementation patterns
+- Cut diagram visualization
+
+Previous v2.0 research in `.planning/research/` (will be updated/replaced).
 
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: v2.0 milestone complete
+Stopped at: v3.0 milestone started, running research
 Resume file: None
 
 ## Next Steps
 
-Run `/gsd:new-milestone` to start v2.1 or v3.0 planning.
-
-Candidate features for next milestone:
-- AUTH-05: Password reset via email link
-- AUTH-06: Email verification after signup
-- AUTH-07: Rate limiting on auth endpoints
-- USER-01: Admin can create additional user accounts
-- USER-02: Users have distinct data isolation
-- USER-03: Role-based access control (admin vs. user)
+1. Complete research phase (4 parallel researchers)
+2. Define requirements (REQUIREMENTS.md)
+3. Create roadmap (ROADMAP.md)
+4. Run `/gsd:plan-phase 13` to start RBAC Foundation
