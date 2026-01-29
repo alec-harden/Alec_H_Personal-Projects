@@ -8,7 +8,7 @@ See: `.planning/milestones/v3.0-ROADMAP.md` for full roadmap details.
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 13 | RBAC Foundation | 6 | Ready |
+| 13 | RBAC Foundation | 6 | Planned (2 plans) |
 | 14 | User Management (Admin) | 6 | Pending |
 | 15 | Email Infrastructure & Password Reset | 3 | Pending |
 | 16 | Email Verification | 3 | Pending |
@@ -36,7 +36,7 @@ Phase 13: RBAC Foundation
 
 ## Next Action
 
-Run `/gsd:plan-phase 13` to create plans for RBAC Foundation.
+Run `/gsd:execute-phase 13` to execute RBAC Foundation plans.
 
 ---
 *Updated: 2026-01-29*
