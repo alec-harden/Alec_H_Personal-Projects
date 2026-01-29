@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 
 ## Current Position
 
-Phase: 13 - RBAC Foundation (COMPLETE)
-Plan: 02 of 2 complete
-Status: Phase complete
-Last activity: 2026-01-29 — Completed 13-02-PLAN.md
+Phase: 14 - User Management (Admin)
+Plan: Not started
+Status: Ready for discussion/planning
+Last activity: 2026-01-29 — Phase 13 complete
 
-Progress: [==========----------] Phase 13 of 21
+Progress: [====================----------] Phase 14 of 21
 
 ## Milestone History
 
@@ -31,7 +31,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
-| 14 | User Management (Admin) | USER-01 to USER-06 | Pending |
+| 14 | User Management (Admin) | USER-01 to USER-06 | Ready |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | Pending |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | Pending |

@@ -7,14 +7,14 @@
 
 Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature area.
 
-### RBAC & Security
+### RBAC & Security ✓
 
-- [ ] **RBAC-01**: Users have a role field (admin or user)
-- [ ] **RBAC-02**: Admin role grants elevated permissions
-- [ ] **RBAC-03**: User role is default for new registrations
-- [ ] **RBAC-04**: Admin routes (/admin/*) check role before access
-- [ ] **RBAC-05**: Users can only see their own projects, BOMs, and cut lists
-- [ ] **RBAC-06**: First registered user becomes admin (or seed admin)
+- [x] **RBAC-01**: Users have a role field (admin or user)
+- [x] **RBAC-02**: Admin role grants elevated permissions
+- [x] **RBAC-03**: User role is default for new registrations
+- [x] **RBAC-04**: Admin routes (/admin/*) check role before access
+- [x] **RBAC-05**: Users can only see their own projects, BOMs, and cut lists
+- [x] **RBAC-06**: First registered user becomes admin (or seed admin)
 
 ### User Management (Admin)
 
@@ -139,12 +139,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RBAC-01 | 13 | Pending |
-| RBAC-02 | 13 | Pending |
-| RBAC-03 | 13 | Pending |
-| RBAC-04 | 13 | Pending |
-| RBAC-05 | 13 | Pending |
-| RBAC-06 | 13 | Pending |
+| RBAC-01 | 13 | Complete |
+| RBAC-02 | 13 | Complete |
+| RBAC-03 | 13 | Complete |
+| RBAC-04 | 13 | Complete |
+| RBAC-05 | 13 | Complete |
+| RBAC-06 | 13 | Complete |
 | USER-01 | 14 | Pending |
 | USER-02 | 14 | Pending |
 | USER-03 | 14 | Pending |
@@ -203,4 +203,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after roadmap creation*
+*Last updated: 2026-01-29 after phase 13 completion*
