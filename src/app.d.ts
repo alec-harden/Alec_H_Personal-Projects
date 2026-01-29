@@ -8,6 +8,7 @@ declare global {
 				id: string;
 				email: string;
 				role: 'user' | 'admin';
+				disabled: boolean;
 				createdAt: Date;
 			};
 			sessionId?: string;
