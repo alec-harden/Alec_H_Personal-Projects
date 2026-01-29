@@ -16,14 +16,14 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **RBAC-05**: Users can only see their own projects, BOMs, and cut lists
 - [x] **RBAC-06**: First registered user becomes admin (or seed admin)
 
-### User Management (Admin)
+### User Management (Admin) ✓
 
-- [ ] **USER-01**: Admin can view list of all users
-- [ ] **USER-02**: Admin can create new user account
-- [ ] **USER-03**: Admin can reset a user's password
-- [ ] **USER-04**: Admin can disable a user account
-- [ ] **USER-05**: Admin can view user details (email, created date, role)
-- [ ] **USER-06**: Disabled users cannot log in
+- [x] **USER-01**: Admin can view list of all users
+- [x] **USER-02**: Admin can create new user account
+- [x] **USER-03**: Admin can reset a user's password
+- [x] **USER-04**: Admin can disable a user account
+- [x] **USER-05**: Admin can view user details (email, created date, role)
+- [x] **USER-06**: Disabled users cannot log in
 
 ### Email Flows
 
@@ -145,12 +145,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RBAC-04 | 13 | Complete |
 | RBAC-05 | 13 | Complete |
 | RBAC-06 | 13 | Complete |
-| USER-01 | 14 | Pending |
-| USER-02 | 14 | Pending |
-| USER-03 | 14 | Pending |
-| USER-04 | 14 | Pending |
-| USER-05 | 14 | Pending |
-| USER-06 | 14 | Pending |
+| USER-01 | 14 | Complete |
+| USER-02 | 14 | Complete |
+| USER-03 | 14 | Complete |
+| USER-04 | 14 | Complete |
+| USER-05 | 14 | Complete |
+| USER-06 | 14 | Complete |
 | EMAIL-01 | 15 | Pending |
 | EMAIL-02 | 15 | Pending |
 | EMAIL-03 | 15 | Pending |
@@ -203,4 +203,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after phase 13 completion*
+*Last updated: 2026-01-29 after phase 14 completion*
