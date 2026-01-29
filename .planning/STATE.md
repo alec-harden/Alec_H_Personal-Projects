@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Ready for Phase 13
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 13 in progress
 
 ## Current Position
 
 Phase: 13 - RBAC Foundation
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-01-29 — Roadmap created
+Plan: 01 of 3 complete
+Status: In progress
+Last activity: 2026-01-29 — Completed 13-01-PLAN.md
 
 Progress: [==========----------] Phase 13 of 21
 
@@ -30,7 +30,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 13 | RBAC Foundation | RBAC-01 to RBAC-06 | Ready |
+| 13 | RBAC Foundation | RBAC-01 to RBAC-06 | In Progress (1/3 plans) |
 | 14 | User Management (Admin) | USER-01 to USER-06 | Pending |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | Pending |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
@@ -61,6 +61,11 @@ v3.0 stack additions (from research):
 - svelte-dnd-action (^0.9.69) — Drag-drop for cut assignment
 - Custom optimizer algorithms (not external bin-packing libraries)
 
+**Phase 13-01 decisions:**
+- Role stored as text enum ('user' | 'admin') with 'user' default
+- Authorization guard pattern: requireAuth/requireAdmin return user object
+- requireAdmin() composes with requireAuth() internally
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -86,14 +91,14 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Roadmap created for v3.0
+Stopped at: Completed 13-01-PLAN.md
 Resume file: None
 
 ## Next Steps
 
-1. Run `/gsd:plan-phase 13` to create RBAC Foundation plans
-2. Execute Phase 13 plans (security retrofit)
-3. Continue through phases 14-21
+1. Execute 13-02-PLAN.md (First Admin Assignment)
+2. Execute 13-03-PLAN.md (Admin Route Protection)
+3. Continue to Phase 14 (User Management)
 
 ---
-*Last updated: 2026-01-29 after roadmap creation*
+*Last updated: 2026-01-29 after 13-01 plan completion*
