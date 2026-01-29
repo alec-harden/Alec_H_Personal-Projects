@@ -3,9 +3,10 @@
 
 	interface Props {
 		email: string;
+		role: 'user' | 'admin';
 	}
 
-	let { email }: Props = $props();
+	let { email, role }: Props = $props();
 	let open = $state(false);
 
 	function handleClickOutside(event: MouseEvent) {
