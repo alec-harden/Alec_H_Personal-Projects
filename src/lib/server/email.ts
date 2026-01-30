@@ -73,3 +73,62 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
 		throw new Error(`Failed to send password reset email: ${error.message}`);
 	}
 }
+
+/**
+ * Send email verification email with verification link
+ * @param email - User's email address
+ * @param token - Plaintext verification token (will be included in URL)
+ */
+export async function sendVerificationEmail(email: string, token: string): Promise<void> {
+	const resend = getResendClient();
+	const verifyUrl = `${getBaseUrl()}/auth/verify-email?token=${token}`;
+
+	// Use Resend test domain for development, real domain for production
+	const fromAddress = env.RESEND_FROM_EMAIL || 'WoodShop Toolbox <onboarding@resend.dev>';
+
+	const { error } = await resend.emails.send({
+		from: fromAddress,
+		to: email,
+		subject: 'Verify your email - WoodShop Toolbox',
+		html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fafaf9;">
+          <div style="background-color: white; padding: 32px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h1 style="color: #292524; margin: 0 0 16px 0; font-size: 24px;">Verify your email</h1>
+            <p style="color: #57534e; line-height: 1.6; margin: 0 0 24px 0;">
+              Thanks for signing up for WoodShop Toolbox!
+              Click the button below to verify your email address. This link expires in 24 hours.
+            </p>
+            <p style="margin: 0 0 24px 0;">
+              <a href="${verifyUrl}"
+                 style="display: inline-block; background-color: #b45309; color: white; padding: 12px 24px;
+                        text-decoration: none; border-radius: 6px; font-weight: 500;">
+                Verify Email
+              </a>
+            </p>
+            <p style="color: #78716c; font-size: 14px; line-height: 1.5; margin: 0 0 16px 0;">
+              Or copy and paste this link into your browser:
+            </p>
+            <p style="word-break: break-all; color: #b45309; font-size: 14px; margin: 0 0 24px 0;">
+              ${verifyUrl}
+            </p>
+            <hr style="border: none; border-top: 1px solid #e7e5e4; margin: 24px 0;">
+            <p style="color: #a8a29e; font-size: 13px; margin: 0;">
+              If you didn't create an account with WoodShop Toolbox, you can safely ignore this email.
+            </p>
+          </div>
+        </body>
+      </html>
+    `
+	});
+
+	if (error) {
+		console.error('Failed to send verification email:', error);
+		throw new Error(`Failed to send verification email: ${error.message}`);
+	}
+}
