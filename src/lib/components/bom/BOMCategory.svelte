@@ -5,6 +5,7 @@
 	import type { BOMCategory, BOMItem as BOMItemType } from '$lib/types/bom';
 	import BOMItem from './BOMItem.svelte';
 	import AddItemForm from './AddItemForm.svelte';
+	import { calculateBoardFeet, formatBoardFeet } from '$lib/utils/board-feet';
 
 	interface Props {
 		category: BOMCategory;
@@ -12,10 +13,11 @@
 		defaultExpanded?: boolean;
 		onQuantityChange?: (id: string, quantity: number) => void;
 		onToggleVisibility?: (id: string) => void;
+		onDimensionChange?: (id: string, dimensions: { length?: number; width?: number; height?: number }) => void;
 		onAddItem?: (item: BOMItemType) => void;
 	}
 
-	const { category, items, defaultExpanded = true, onQuantityChange, onToggleVisibility, onAddItem }: Props = $props();
+	const { category, items, defaultExpanded = true, onQuantityChange, onToggleVisibility, onDimensionChange, onAddItem }: Props = $props();
 
 	let expanded = $state(true);
 	let showAddForm = $state(false);
@@ -29,6 +31,14 @@
 	const visibleCount = $derived(items.filter(i => !i.hidden).length);
 	const totalCount = $derived(items.length);
 	const hasHidden = $derived(visibleCount < totalCount);
+
+	// Calculate total board feet for visible lumber items
+	const totalBoardFeet = $derived(() => {
+		if (category !== 'lumber') return 0;
+		return items
+			.filter(i => !i.hidden && i.length && i.width && i.height)
+			.reduce((sum, i) => sum + calculateBoardFeet(i.length!, i.width!, i.height!) * i.quantity, 0);
+	});
 
 	// Category display configuration with artisan colors
 	const categoryConfig: Record<BOMCategory, { label: string; color: string; bgColor: string }> = {
@@ -63,13 +73,16 @@
 				{totalCount}
 			{/if}
 			{totalCount === 1 ? 'item' : 'items'}
+			{#if category === 'lumber' && totalBoardFeet() > 0}
+				<span class="board-feet-total">({formatBoardFeet(totalBoardFeet())})</span>
+			{/if}
 		</span>
 	</button>
 
 	{#if expanded}
 		<div class="category-content">
 			{#each items as item (item.id)}
-				<BOMItem {item} {onQuantityChange} {onToggleVisibility} />
+				<BOMItem {item} {onQuantityChange} {onToggleVisibility} {onDimensionChange} />
 			{/each}
 		</div>
 
@@ -158,6 +171,12 @@
 		padding: var(--space-xs) var(--space-sm);
 		background: var(--color-white);
 		border-radius: var(--radius-full);
+	}
+
+	.board-feet-total {
+		margin-left: var(--space-xs);
+		color: var(--color-walnut);
+		font-weight: 500;
 	}
 
 	/* Content */

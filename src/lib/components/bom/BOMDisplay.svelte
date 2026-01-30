@@ -11,12 +11,13 @@
 		onStartOver: () => void;
 		onQuantityChange?: (id: string, quantity: number) => void;
 		onToggleVisibility?: (id: string) => void;
+		onDimensionChange?: (id: string, dimensions: { length?: number; width?: number; height?: number }) => void;
 		onAddItem?: (item: BOMItem) => void;
 		onSave?: () => void;
 		showSaveButton?: boolean;
 	}
 
-	let { bom, onStartOver, onQuantityChange, onToggleVisibility, onAddItem, onSave, showSaveButton }: Props = $props();
+	let { bom, onStartOver, onQuantityChange, onToggleVisibility, onDimensionChange, onAddItem, onSave, showSaveButton }: Props = $props();
 
 	// Category order for consistent display
 	const categoryOrder: BOMCategoryType[] = ['lumber', 'hardware', 'finishes', 'consumables'];
@@ -118,6 +119,7 @@
 						{items}
 						{onQuantityChange}
 						{onToggleVisibility}
+						{onDimensionChange}
 						{onAddItem}
 					/>
 				{/if}

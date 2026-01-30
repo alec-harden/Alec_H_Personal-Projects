@@ -57,6 +57,25 @@
 		});
 	}
 
+	async function handleDimensionChange(id: string, dimensions: { length?: number; width?: number; height?: number }) {
+		// Optimistic update
+		bom = {
+			...bom,
+			items: bom.items.map((item) =>
+				item.id === id
+					? { ...item, length: dimensions.length, width: dimensions.width, height: dimensions.height }
+					: item
+			)
+		};
+
+		// Persist to server
+		await fetch(`/api/bom/${data.bomId}/items/${id}`, {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(dimensions)
+		});
+	}
+
 	async function handleDelete() {
 		if (!confirm('Delete this BOM? This cannot be undone.')) return;
 
@@ -92,6 +111,7 @@
 			onStartOver={handleStartOver}
 			onQuantityChange={handleQuantityChange}
 			onToggleVisibility={handleToggleVisibility}
+			onDimensionChange={handleDimensionChange}
 		/>
 
 		<!-- Delete Section -->

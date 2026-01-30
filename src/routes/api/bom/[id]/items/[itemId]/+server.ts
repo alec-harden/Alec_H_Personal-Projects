@@ -31,6 +31,16 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	if (typeof body.hidden === 'boolean') {
 		updates.hidden = body.hidden;
 	}
+	// Dimension updates (lumber items)
+	if ('length' in body) {
+		updates.length = typeof body.length === 'number' && body.length > 0 ? body.length : null;
+	}
+	if ('width' in body) {
+		updates.width = typeof body.width === 'number' && body.width > 0 ? body.width : null;
+	}
+	if ('height' in body) {
+		updates.height = typeof body.height === 'number' && body.height > 0 ? body.height : null;
+	}
 
 	// Apply updates if any
 	if (Object.keys(updates).length > 0) {
