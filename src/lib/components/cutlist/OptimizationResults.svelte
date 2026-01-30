@@ -2,6 +2,7 @@
 	import type { OptimizationResult } from '$lib/server/cutOptimizer';
 	import type { CutListMode } from '$lib/types/cutlist';
 	import LinearCutDiagram from './LinearCutDiagram.svelte';
+	import SheetCutDiagram from './SheetCutDiagram.svelte';
 
 	interface Props {
 		result: OptimizationResult;
@@ -117,13 +118,22 @@
 		</div>
 	{/if}
 
-	<!-- Cut Diagrams Section (Linear Mode Only) -->
+	<!-- Cut Diagrams Section -->
 	{#if mode === 'linear' && result.plans.length > 0}
 		<div class="diagrams-section">
 			<h3 class="diagrams-title">Cut Diagrams</h3>
 			<div class="diagrams-list">
 				{#each result.plans as plan, index (plan.stockId)}
 					<LinearCutDiagram {plan} {kerf} {index} />
+				{/each}
+			</div>
+		</div>
+	{:else if mode === 'sheet' && result.plans.length > 0}
+		<div class="diagrams-section">
+			<h3 class="diagrams-title">Cut Diagrams</h3>
+			<div class="diagrams-list">
+				{#each result.plans as plan, index (plan.stockId)}
+					<SheetCutDiagram {plan} {kerf} {index} />
 				{/each}
 			</div>
 		</div>
