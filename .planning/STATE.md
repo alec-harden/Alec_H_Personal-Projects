@@ -180,6 +180,13 @@ v3.0 stack additions (from research):
 - Rotation indicator (⟳) displayed when cut is rotated and width >30px
 - Waste color coding matches existing thresholds: green <10%, amber <25%, red ≥25%
 
+**Phase 21-01 decisions:**
+- BOM filtering requires both category='lumber' AND length IS NOT NULL (incomplete items excluded)
+- Mode detection: sheet mode if ANY item has width, otherwise linear
+- State passing via goto({ state }) rather than URL params (cleaner UX)
+- $effect for one-time state population from $page.state on navigation
+- formData.getAll('selectedBoms') for proper multi-select handling
+
 **Phase 21-02 decisions:**
 - completed column defaults to false, completedAt nullable (only set when completed)
 - Optimistic updates in UI for snappier checkbox interactions
