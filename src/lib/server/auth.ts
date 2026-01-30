@@ -1,7 +1,7 @@
 import { hash, verify } from '@node-rs/argon2';
 import crypto from 'crypto';
 import { db } from './db';
-import { sessions, passwordResetTokens } from './schema';
+import { sessions, passwordResetTokens, emailVerificationTokens, users } from './schema';
 import { eq } from 'drizzle-orm';
 import { error, redirect } from '@sveltejs/kit';
 import type { Cookies, RequestEvent } from '@sveltejs/kit';
@@ -183,4 +183,91 @@ export async function consumePasswordResetToken(token: string, userId: string): 
 
 	// Invalidate all user sessions (OWASP recommendation)
 	await db.delete(sessions).where(eq(sessions.userId, userId));
+}
+
+/**
+ * Generate an email verification token for a user.
+ * Deletes any existing tokens for this user first.
+ * Returns the plaintext token (only shown once, in email).
+ */
+export async function generateEmailVerificationToken(userId: string): Promise<string> {
+	// Delete any existing tokens for this user
+	await db
+		.delete(emailVerificationTokens)
+		.where(eq(emailVerificationTokens.userId, userId));
+
+	// Generate 32 random bytes (64 hex characters)
+	const tokenBytes = crypto.randomBytes(32);
+	const token = tokenBytes.toString('hex');
+
+	// Hash token with SHA-256 before storage
+	const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+	// Token expires in 24 hours (longer than password reset)
+	const expiresAt = new Date();
+	expiresAt.setHours(expiresAt.getHours() + 24);
+
+	// Store hashed token
+	await db.insert(emailVerificationTokens).values({
+		tokenHash,
+		userId,
+		expiresAt,
+		createdAt: new Date()
+	});
+
+	// Return plaintext token (for email)
+	return token;
+}
+
+/**
+ * Validate an email verification token.
+ * Returns userId if valid, null if invalid or expired.
+ * Does NOT consume the token - call markEmailAsVerified after validation.
+ */
+export async function verifyEmailToken(token: string): Promise<string | null> {
+	// Hash the submitted token
+	const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+	// Find token in database
+	const verificationToken = await db.query.emailVerificationTokens.findFirst({
+		where: eq(emailVerificationTokens.tokenHash, tokenHash)
+	});
+
+	if (!verificationToken) {
+		return null; // Token not found
+	}
+
+	// Check expiry
+	if (verificationToken.expiresAt < new Date()) {
+		// Delete expired token
+		await db
+			.delete(emailVerificationTokens)
+			.where(eq(emailVerificationTokens.tokenHash, tokenHash));
+		return null;
+	}
+
+	return verificationToken.userId;
+}
+
+/**
+ * Mark user's email as verified and consume the token.
+ * @param userId - The user ID to mark as verified
+ * @param token - The plaintext token to consume
+ */
+export async function markEmailAsVerified(userId: string, token: string): Promise<void> {
+	const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+	// Mark email as verified
+	await db
+		.update(users)
+		.set({
+			emailVerified: true,
+			emailVerifiedAt: new Date()
+		})
+		.where(eq(users.id, userId));
+
+	// Delete token (single use)
+	await db
+		.delete(emailVerificationTokens)
+		.where(eq(emailVerificationTokens.tokenHash, tokenHash));
 }
