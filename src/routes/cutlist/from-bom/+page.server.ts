@@ -83,8 +83,8 @@ export const actions = {
 		const hasWidth = validLumberItems.some((item) => item.width !== null);
 		const mode = hasWidth ? 'sheet' : 'linear';
 
-		// Transform lumber items to Cut format
-		const cuts = validLumberItems.map((item) => ({
+		// Transform lumber items to Stock format (what you have available)
+		const stock = validLumberItems.map((item) => ({
 			id: crypto.randomUUID(),
 			length: item.length!,
 			width: item.width,
@@ -93,6 +93,6 @@ export const actions = {
 			grainMatters: false
 		}));
 
-		return { success: true, cuts, mode };
+		return { success: true, stock, mode };
 	}
 } satisfies Actions;

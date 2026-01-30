@@ -27,12 +27,12 @@
 
 	// Handle incoming state from BOM import
 	$effect(() => {
-		const state = $page.state as { cuts?: Cut[]; mode?: CutListMode } | undefined;
-		if (state?.cuts && state.cuts.length > 0) {
+		const state = $page.state as { stock?: Stock[]; mode?: CutListMode } | undefined;
+		if (state?.stock && state.stock.length > 0) {
 			mode = state.mode || 'linear';
-			cuts = state.cuts;
-			// Reset stock and results when loading from BOM
-			stock = [createStock(mode)];
+			stock = state.stock;
+			// Reset cuts and results when loading from BOM
+			cuts = [createCut(mode)];
 			result = null;
 			error = null;
 		}

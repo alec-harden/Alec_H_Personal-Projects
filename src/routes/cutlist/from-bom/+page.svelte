@@ -51,7 +51,7 @@
 		<div class="header-content">
 			<h1 class="page-title">Import from BOM</h1>
 			<p class="page-subtitle">
-				Select a project and BOMs to pre-populate cuts from lumber items
+				Select a project and BOMs to load lumber items as available stock
 			</p>
 		</div>
 		<a href="/cutlist" class="btn-ghost">Back to Cut List</a>
@@ -147,11 +147,11 @@
 							loading = true;
 							return async ({ result }) => {
 								loading = false;
-								if (result.type === 'success' && result.data?.cuts) {
-									// Redirect to cutlist with pre-populated data
+								if (result.type === 'success' && result.data?.stock) {
+									// Redirect to cutlist with pre-populated stock
 									goto('/cutlist', {
 										state: {
-											cuts: result.data.cuts,
+											stock: result.data.stock,
 											mode: result.data.mode
 										}
 									});
@@ -204,7 +204,7 @@
 									</svg>
 									Loading...
 								{:else}
-									Load Cuts
+									Load Stock
 								{/if}
 							</button>
 						</div>
