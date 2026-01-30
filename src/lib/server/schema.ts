@@ -55,15 +55,33 @@ export const sessions = sqliteTable('sessions', {
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 });
 
+// Password reset tokens table
+export const passwordResetTokens = sqliteTable('password_reset_tokens', {
+	tokenHash: text('token_hash').primaryKey(), // SHA-256 hash of token
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+});
+
 // Drizzle relations for query API
 export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(sessions),
-	projects: many(projects)
+	projects: many(projects),
+	passwordResetTokens: many(passwordResetTokens)
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
 	user: one(users, {
 		fields: [sessions.userId],
+		references: [users.id]
+	})
+}));
+
+export const passwordResetTokensRelations = relations(passwordResetTokens, ({ one }) => ({
+	user: one(users, {
+		fields: [passwordResetTokens.userId],
 		references: [users.id]
 	})
 }));
