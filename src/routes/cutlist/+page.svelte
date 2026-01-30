@@ -1,15 +1,14 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import ModeSelector from '$lib/components/cutlist/ModeSelector.svelte';
 	import CutInputForm from '$lib/components/cutlist/CutInputForm.svelte';
 	import StockInputForm from '$lib/components/cutlist/StockInputForm.svelte';
 	import KerfConfig from '$lib/components/cutlist/KerfConfig.svelte';
-	import OptimizationResults from '$lib/components/cutlist/OptimizationResults.svelte';
-	import SaveCutListModal from '$lib/components/cutlist/SaveCutListModal.svelte';
 	import type { CutListMode, Cut, Stock } from '$lib/types/cutlist';
 	import { createCut, createStock } from '$lib/types/cutlist';
 	import type { OptimizationResult } from '$lib/server/cutOptimizer';
 	import type { PageData } from './$types';
-	import { page } from '$app/stores';
 
 	interface Props {
 		data: PageData;
@@ -25,36 +24,42 @@
 	let stock = $state<Stock[]>([createStock(mode)]);
 	let kerf = $state<number>(0.125);
 
-	// Handle incoming state from BOM import
+	// Handle incoming state from BOM import or Go Back from results
 	$effect(() => {
-		const state = $page.state as { stock?: Stock[]; mode?: CutListMode } | undefined;
+		const state = $page.state as {
+			stock?: Stock[];
+			mode?: CutListMode;
+			cuts?: Cut[];
+			kerf?: number;
+		} | undefined;
+
 		if (state?.stock && state.stock.length > 0) {
 			mode = state.mode || 'linear';
 			stock = state.stock;
-			// Reset cuts and results when loading from BOM
-			cuts = [createCut(mode)];
-			result = null;
+			// If cuts provided (from Go Back), restore them
+			if (state.cuts && state.cuts.length > 0) {
+				cuts = state.cuts;
+			} else {
+				// Reset cuts when loading from BOM
+				cuts = [createCut(mode)];
+			}
+			// Restore kerf if provided
+			if (state.kerf !== undefined) {
+				kerf = state.kerf;
+			}
 			error = null;
 		}
 	});
 
 	// Optimization state
-	let result = $state<OptimizationResult | null>(null);
 	let isOptimizing = $state<boolean>(false);
 	let error = $state<string | null>(null);
-
-	// Save state
-	let showSaveModal = $state(false);
-	let saving = $state(false);
-	let saveError = $state<string | null>(null);
-	let saveSuccess = $state(false);
 
 	function handleModeChange(newMode: CutListMode) {
 		// Reset inputs to match new mode
 		mode = newMode;
 		cuts = [createCut(mode)];
 		stock = [createStock(mode)];
-		result = null;
 		error = null;
 	}
 
@@ -69,14 +74,12 @@
 		cuts = [createCut(mode)];
 		stock = [createStock(mode)];
 		kerf = 0.125;
-		result = null;
 		error = null;
 	}
 
 	async function handleOptimize() {
 		isOptimizing = true;
 		error = null;
-		result = null;
 
 		const startTime = Date.now();
 
@@ -106,7 +109,16 @@
 				await new Promise(resolve => setTimeout(resolve, minimumDuration - elapsed));
 			}
 
-			result = optimizationResult;
+			// Navigate to results page with state
+			goto('/cutlist/results', {
+				state: {
+					result: optimizationResult,
+					mode,
+					cuts,
+					stock,
+					kerf
+				}
+			});
 		} catch (e) {
 			// Network error - show immediately
 			error = e instanceof Error ? e.message : 'An error occurred';
@@ -115,46 +127,8 @@
 		}
 	}
 
-	async function handleSave(projectId: string, name: string) {
-		saving = true;
-		saveError = null;
-
-		try {
-			const response = await fetch('/api/cutlist/save', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					projectId,
-					name,
-					mode,
-					cuts,
-					stock,
-					kerf
-				})
-			});
-
-			if (!response.ok) {
-				const data = await response.json();
-				throw new Error(data.error || 'Failed to save');
-			}
-
-			showSaveModal = false;
-			saveSuccess = true;
-
-			// Clear success message after 5 seconds
-			setTimeout(() => {
-				saveSuccess = false;
-			}, 5000);
-		} catch (e) {
-			saveError = e instanceof Error ? e.message : 'An error occurred';
-		} finally {
-			saving = false;
-		}
-	}
-
 	// Validation
 	const canOptimize = $derived(cuts.length > 0 && stock.length > 0 && !isOptimizing);
-	const canSave = $derived(data.projects && data.projects.length > 0);
 </script>
 
 <svelte:head>
@@ -232,25 +206,12 @@
 				Optimize Cuts
 			{/if}
 		</button>
-		{#if canSave}
-			<a href="/cutlist/from-bom" class="btn-ghost">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-				</svg>
-				Import from BOM
-			</a>
-			<button
-				type="button"
-				class="btn-ghost btn-save"
-				onclick={() => (showSaveModal = true)}
-				disabled={isOptimizing}
-			>
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-				</svg>
-				Save to Project
-			</button>
-		{/if}
+		<a href="/cutlist/from-bom" class="btn-ghost">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+			</svg>
+			Import from BOM
+		</a>
 	</div>
 
 	<!-- Error Display -->
@@ -269,34 +230,7 @@
 			</div>
 		</div>
 	{/if}
-
-	<!-- Save Success Banner -->
-	{#if saveSuccess}
-		<div class="alert-box alert-success">
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="alert-icon">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-			</svg>
-			<div>
-				<div class="alert-title">Cut List Saved</div>
-				<div class="alert-message">Your cut list has been saved to the project successfully.</div>
-			</div>
-		</div>
-	{/if}
-
-	<!-- Results Display -->
-	{#if result}
-		<OptimizationResults {result} {mode} {kerf} />
-	{/if}
 </div>
-
-<!-- Save Modal -->
-<SaveCutListModal
-	open={showSaveModal}
-	projects={data.projects}
-	onSave={handleSave}
-	onClose={() => (showSaveModal = false)}
-	{saving}
-/>
 
 <style>
 	.cutlist-page {
