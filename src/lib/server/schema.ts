@@ -236,7 +236,10 @@ export const cutListCuts = sqliteTable('cut_list_cuts', {
 	label: text('label'), // optional name like "Table top"
 	position: integer('position').notNull(), // for ordering
 	completed: integer('completed', { mode: 'boolean' }).notNull().default(false),
-	completedAt: integer('completed_at', { mode: 'timestamp' })
+	completedAt: integer('completed_at', { mode: 'timestamp' }),
+	// Manual override fields
+	assignedStockId: text('assigned_stock_id').references(() => cutListStock.id, { onDelete: 'set null' }),
+	overridePosition: real('override_position') // nullable, null = use algorithm position
 });
 
 // Cut list stock table - available stock to cut from
