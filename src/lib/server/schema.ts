@@ -234,7 +234,9 @@ export const cutListCuts = sqliteTable('cut_list_cuts', {
 	width: real('width'), // inches, only for sheet mode
 	quantity: integer('quantity').notNull().default(1),
 	label: text('label'), // optional name like "Table top"
-	position: integer('position').notNull() // for ordering
+	position: integer('position').notNull(), // for ordering
+	completed: integer('completed', { mode: 'boolean' }).notNull().default(false),
+	completedAt: integer('completed_at', { mode: 'timestamp' })
 });
 
 // Cut list stock table - available stock to cut from
