@@ -43,18 +43,18 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **BOM-09**: CSV export includes dimension columns for lumber
 - [x] **BOM-10**: CSV import parses dimension columns for lumber
 
-### Cut List Optimizer - Core
+### Cut List Optimizer - Core ✓
 
-- [ ] **CUT-01**: New tool accessible from dashboard (/cutlist)
-- [ ] **CUT-02**: User can select Linear or Sheet optimization mode
-- [ ] **CUT-03**: User can input required cuts with dimensions
-- [ ] **CUT-04**: User can input available stock dimensions
-- [ ] **CUT-05**: User can configure kerf/blade width
-- [ ] **CUT-06**: User can run optimization algorithm
-- [ ] **CUT-07**: Results display waste percentage
-- [ ] **CUT-08**: Results display which cuts come from which stock
-- [ ] **CUT-09**: User can clear all inputs and start over
-- [ ] **CUT-10**: User can save cut list to a project
+- [x] **CUT-01**: New tool accessible from dashboard (/cutlist)
+- [x] **CUT-02**: User can select Linear or Sheet optimization mode
+- [x] **CUT-03**: User can input required cuts with dimensions
+- [x] **CUT-04**: User can input available stock dimensions
+- [x] **CUT-05**: User can configure kerf/blade width
+- [x] **CUT-06**: User can run optimization algorithm
+- [x] **CUT-07**: Results display waste percentage
+- [x] **CUT-08**: Results display which cuts come from which stock
+- [x] **CUT-09**: User can clear all inputs and start over
+- [x] **CUT-10**: User can save cut list to a project
 
 ### Cut List Optimizer - Linear (1D)
 
