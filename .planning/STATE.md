@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 21 - BOM Integration & Shop Checklist
-Plan: 2 of 3 (Shop Checklist)
-Status: In progress
-Last activity: 2026-01-30 — Completed 21-02-PLAN.md (Shop Checklist)
+Plan: 3 of 3 (Manual Placement) - COMPLETE
+Status: Phase complete
+Last activity: 2026-01-30 — Completed 21-03-PLAN.md (Manual Placement)
 
-Progress: [================================] Phase 21 of 21
+Progress: [████████████████████████████████] Phase 21 of 21 (100%)
 
 ## Milestone History
 
@@ -38,7 +38,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | COMPLETE (4/4 plans) |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | COMPLETE (2/2 plans) |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | COMPLETE (2/2 plans) |
-| 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | Pending |
+| 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | COMPLETE (3/3 plans) |
 
 ## Accumulated Context
 
@@ -192,6 +192,13 @@ v3.0 stack additions (from research):
 - Optimistic updates in UI for snappier checkbox interactions
 - Ownership validation chain: user -> cutList -> cut for security
 
+**Phase 21-03 decisions:**
+- Native HTML5 drag-drop chosen over svelte-dnd-action for simplicity
+- Conflict detection calculates overlaps but allows them (UI shows warning)
+- assignedStockId references cutListStock with SET NULL on delete
+- Optimistic UI updates with rollback on API errors
+- Tab interface for switching between Checklist and Manual Placement views
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -223,14 +230,14 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 21-02-PLAN.md (Shop Checklist)
+Stopped at: Completed 21-03-PLAN.md (Manual Placement) - Phase 21 complete
 Resume file: None
 
 ## Next Steps
 
-1. Continue Phase 21: Execute remaining plan (21-03 BOM Integration)
-2. Complete Phase 21 to finish v3.0 milestone
-3. Audit and ship v3.0 milestone
+1. **v3.0 MILESTONE COMPLETE** - All 9 phases shipped (13-21)
+2. Verify v3.0 requirements fulfilled (RBAC-01 to CUT-32)
+3. Consider v3.0 audit and production deployment
 
 ---
-*Last updated: 2026-01-30 after 21-02 completion (Shop Checklist)*
+*Last updated: 2026-01-30 after 21-03 completion (Manual Placement) - Phase 21 and v3.0 complete*
