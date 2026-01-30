@@ -115,6 +115,12 @@ v3.0 stack additions (from research):
 - Nullable real columns for dimensions (only lumber items need them)
 - Eye icon button replacing checkbox (open=visible, slashed=hidden)
 
+**Phase 17-02 decisions:**
+- Fractional inch parsing supports 3/4, 1-1/2, and 1 1/2 formats
+- Board feet formula: (L x W x H) / 144
+- Common fractions converted back from decimals for display
+- Total board feet only counts visible items
+
 **Phase 17-03 decisions:**
 - Dimension columns placed after Notes column (natural extension of existing format)
 - Non-lumber items export empty strings for dimensions
