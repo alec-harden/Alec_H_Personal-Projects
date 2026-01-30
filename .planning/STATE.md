@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — ALL PHASES COMPLETE (verified), ready for milestone audit
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 22 added (UI Refinements & Cut List Fixes)
 
 ## Current Position
 
-Phase: 21 - BOM Integration & Shop Checklist
-Plan: 3 of 3 (Manual Placement) - COMPLETE
-Status: Phase complete (VERIFIED)
-Last activity: 2026-01-30 — Completed 21-03-PLAN.md (Manual Placement)
+Phase: 22 - UI Refinements & Cut List Fixes
+Plan: 1 of 4 (Completed 22-02)
+Status: In progress
+Last activity: 2026-01-30 — Completed 22-02-PLAN.md (Navigation restructure)
 
-Progress: [████████████████████████████████] Phase 21 of 21 (100%)
+Progress: [████████████████████████████████░] Phase 22 of 22 (96%)
 
 ## Milestone History
 
@@ -39,6 +39,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | COMPLETE (2/2 plans) |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | COMPLETE (2/2 plans) |
 | 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | COMPLETE (3/3 plans) |
+| 22 | UI Refinements & Cut List Fixes | UI-01 to CUT-39 | IN PROGRESS (1/4 plans) |
 
 ## Accumulated Context
 
@@ -199,6 +200,13 @@ v3.0 stack additions (from research):
 - Optimistic UI updates with rollback on API errors
 - Tab interface for switching between Checklist and Manual Placement views
 
+**Phase 22-02 decisions:**
+- NAVIGATION section for viewing content (Dashboard, Projects, BOMs, Cut Lists)
+- TOOLS section for creating content (Create BOM, Create Cut List)
+- Wood Movement Calculator removed from all navigation and dashboard
+- Dashboard shows maximum 6 most recent projects (already implemented)
+- Icon variants (clipboard-plus, scissors-plus) differentiate creation from viewing
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -230,14 +238,15 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 21-03-PLAN.md (Manual Placement) - Phase 21 complete
+Stopped at: Completed 22-02-PLAN.md (Navigation restructure and dashboard cleanup)
 Resume file: None
 
 ## Next Steps
 
-1. **v3.0 MILESTONE COMPLETE** - All 9 phases shipped (13-21)
-2. Verify v3.0 requirements fulfilled (RBAC-01 to CUT-32)
-3. Consider v3.0 audit and production deployment
+1. **Phase 22-02 complete** - Sidebar reorganized with NAVIGATION/TOOLS sections
+2. Continue with remaining Phase 22 plans (22-01, 22-03, 22-04)
+3. Requirements covered: NAV-01 to NAV-05 ✓
+4. Remaining: UI-01 to UI-03, CUT-33 to CUT-39
 
 ---
-*Last updated: 2026-01-30 after 21-03 completion (Manual Placement) - Phase 21 and v3.0 complete*
+*Last updated: 2026-01-30 after completing 22-02-PLAN.md*
