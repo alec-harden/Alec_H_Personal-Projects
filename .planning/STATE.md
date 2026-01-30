@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 21 - BOM Integration & Shop Checklist
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-01-30 — Completed Phase 20: Sheet Optimizer (verified)
+Plan: 2 of 3 (Shop Checklist)
+Status: In progress
+Last activity: 2026-01-30 — Completed 21-02-PLAN.md (Shop Checklist)
 
 Progress: [================================] Phase 21 of 21
 
@@ -180,6 +180,11 @@ v3.0 stack additions (from research):
 - Rotation indicator (⟳) displayed when cut is rotated and width >30px
 - Waste color coding matches existing thresholds: green <10%, amber <25%, red ≥25%
 
+**Phase 21-02 decisions:**
+- completed column defaults to false, completedAt nullable (only set when completed)
+- Optimistic updates in UI for snappier checkbox interactions
+- Ownership validation chain: user -> cutList -> cut for security
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -211,14 +216,14 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Phase 20 complete (verified)
+Stopped at: Completed 21-02-PLAN.md (Shop Checklist)
 Resume file: None
 
 ## Next Steps
 
-1. Begin Phase 21: BOM Integration & Shop Checklist
+1. Continue Phase 21: Execute remaining plan (21-03 BOM Integration)
 2. Complete Phase 21 to finish v3.0 milestone
 3. Audit and ship v3.0 milestone
 
 ---
-*Last updated: 2026-01-30 after phase 20 completion (verified)*
+*Last updated: 2026-01-30 after 21-02 completion (Shop Checklist)*

@@ -9,6 +9,7 @@
 	import { createCut, createStock } from '$lib/types/cutlist';
 	import type { OptimizationResult } from '$lib/server/cutOptimizer';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	interface Props {
 		data: PageData;
@@ -23,6 +24,19 @@
 	let cuts = $state<Cut[]>([createCut(mode)]);
 	let stock = $state<Stock[]>([createStock(mode)]);
 	let kerf = $state<number>(0.125);
+
+	// Handle incoming state from BOM import
+	$effect(() => {
+		const state = $page.state as { cuts?: Cut[]; mode?: CutListMode } | undefined;
+		if (state?.cuts && state.cuts.length > 0) {
+			mode = state.mode || 'linear';
+			cuts = state.cuts;
+			// Reset stock and results when loading from BOM
+			stock = [createStock(mode)];
+			result = null;
+			error = null;
+		}
+	});
 
 	// Optimization state
 	let result = $state<OptimizationResult | null>(null);
@@ -202,6 +216,12 @@
 			{/if}
 		</button>
 		{#if canSave}
+			<a href="/cutlist/from-bom" class="btn-ghost">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+				</svg>
+				Import from BOM
+			</a>
 			<button
 				type="button"
 				class="btn-ghost btn-save"
