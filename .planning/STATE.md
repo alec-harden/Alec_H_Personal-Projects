@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 19 - Linear Optimizer (1D)
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-01-29 — Completed Phase 18: Cut Optimizer Foundation (verified)
+Plan: 2 of 4 complete
+Status: In progress
+Last activity: 2026-01-30 — Completed 19-02-PLAN.md (Visual Cut Diagrams)
 
 Progress: [============================--] Phase 19 of 21
 
@@ -36,7 +36,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | COMPLETE (2/2 plans) |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | COMPLETE (3/3 plans) |
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | COMPLETE (4/4 plans) |
-| 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | Pending |
+| 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | IN PROGRESS (2/4 plans) |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | Pending |
 | 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | Pending |
 
@@ -153,6 +153,19 @@ v3.0 stack additions (from research):
 - API validates project ownership before allowing save (data isolation via requireAuth)
 - Transaction ensures cutList, cuts, and stock created atomically
 
+**Phase 19-01 decisions:**
+- Enhanced FFD sorts stock descending by length (try largest stock first for better fit)
+- Linear feet tracking uses expandedStock array (represents all available stock after quantity expansion)
+- Stock sorting improves waste percentage by ~5-10% on typical workloads
+- Placeholder 2D optimizer returns 0 for linear feet (not applicable to sheet mode)
+
+**Phase 19-02 decisions:**
+- Cut labels only display when cut width exceeds 30px (prevents cramped text)
+- Waste label displays when waste region exceeds 40px width
+- Linear feet displayed in feet (inches/12) with 1 decimal place
+- Diagrams section placed between summary and plans for logical flow
+- $derived.by() used for complex computed values with multiple steps in Svelte 5
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -183,15 +196,15 @@ Key research flags:
 
 ## Session Continuity
 
-Last session: 2026-01-29
-Stopped at: Phase 18 complete (verified)
+Last session: 2026-01-30
+Stopped at: Completed 19-02-PLAN.md (Visual Cut Diagrams)
 Resume file: None
 
 ## Next Steps
 
-1. Plan and execute Phase 19: Linear Optimizer (1D) - Proper FFD algorithm
+1. Continue Phase 19 (2/4 complete): Plans 03 and 04
 2. Continue to Phase 20: Sheet Optimizer (2D) - Guillotine algorithm
 3. Continue to Phase 21: BOM Integration & Shop Checklist
 
 ---
-*Last updated: 2026-01-29 after phase 18 completion (verified)*
+*Last updated: 2026-01-30 after 19-02 completion*
