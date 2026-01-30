@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 17 - BOM Refinements
-Plan: 01 of 3 complete
-Status: In progress
-Last activity: 2026-01-30 — Completed 17-01-PLAN.md (Lumber Dimensions & Eye Icon Toggle)
+Plan: 03 of 3 complete
+Status: Phase complete
+Last activity: 2026-01-29 — Completed 17-03-PLAN.md (CSV Dimension Export/Import)
 
 Progress: [=========================-----] Phase 17 of 21
 
@@ -34,7 +34,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (3/3 plans) |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | COMPLETE (2/2 plans) |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | COMPLETE (2/2 plans) |
-| 17 | BOM Refinements | BOM-05 to BOM-10 | IN PROGRESS (1/3 plans) |
+| 17 | BOM Refinements | BOM-05 to BOM-10 | COMPLETE (3/3 plans) |
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | Pending |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | Pending |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | Pending |
@@ -115,6 +115,11 @@ v3.0 stack additions (from research):
 - Nullable real columns for dimensions (only lumber items need them)
 - Eye icon button replacing checkbox (open=visible, slashed=hidden)
 
+**Phase 17-03 decisions:**
+- Dimension columns placed after Notes column (natural extension of existing format)
+- Non-lumber items export empty strings for dimensions
+- Dimensions are optional in import validation (backward compatibility with old CSVs)
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -145,14 +150,14 @@ Key research flags:
 
 ## Session Continuity
 
-Last session: 2026-01-30
-Stopped at: Completed 17-01-PLAN.md (Lumber Dimensions & Eye Icon Toggle)
+Last session: 2026-01-29
+Stopped at: Completed 17-03-PLAN.md (CSV Dimension Export/Import)
 Resume file: None
 
 ## Next Steps
 
-1. Continue Phase 17: Execute 17-02-PLAN.md and 17-03-PLAN.md
-2. Continue through v3.0 phases (Cut Optimizer foundation next)
+1. Begin Phase 18: Cut Optimizer Foundation
+2. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-30 after 17-01 completion*
+*Last updated: 2026-01-29 after 17-03 completion*
