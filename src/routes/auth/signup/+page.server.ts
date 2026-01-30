@@ -3,7 +3,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/schema';
 import { eq, sql } from 'drizzle-orm';
-import { hashPassword, createSession } from '$lib/server/auth';
+import { hashPassword, createSession, generateEmailVerificationToken } from '$lib/server/auth';
+import { sendVerificationEmail } from '$lib/server/email';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	// Redirect if already logged in
@@ -77,8 +78,18 @@ export const actions: Actions = {
 			email,
 			passwordHash,
 			role,
+			emailVerified: false,
 			createdAt: new Date()
 		});
+
+		// Send verification email (non-blocking - errors logged but don't prevent signup)
+		try {
+			const verificationToken = await generateEmailVerificationToken(id);
+			await sendVerificationEmail(email, verificationToken);
+		} catch (error) {
+			console.error('Failed to send verification email:', error);
+			// Continue with signup - user can request resend later
+		}
 
 		// Create session and set cookie
 		await createSession(id, cookies);

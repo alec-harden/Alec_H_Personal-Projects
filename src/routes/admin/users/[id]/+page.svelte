@@ -7,6 +7,7 @@
 		email: string;
 		role: 'user' | 'admin';
 		disabled: boolean;
+		emailVerified: boolean;
 		createdAt: Date;
 	}
 
@@ -94,6 +95,20 @@
 						Active
 					</span>
 				{/if}
+				<!-- Email verification badge -->
+				{#if data.user.emailVerified}
+					<span
+						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+					>
+						&#x2713; Verified
+					</span>
+				{:else}
+					<span
+						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800"
+					>
+						&#x26A0; Unverified
+					</span>
+				{/if}
 			</div>
 		</div>
 
@@ -127,6 +142,12 @@
 					<dt class="text-sm font-medium text-stone-500">Status</dt>
 					<dd class="mt-1 text-sm text-stone-900">
 						{data.user.disabled ? 'Disabled' : 'Active'}
+					</dd>
+				</div>
+				<div>
+					<dt class="text-sm font-medium text-stone-500">Email Verified</dt>
+					<dd class="mt-1 text-sm text-stone-900">
+						{data.user.emailVerified ? 'Yes' : 'No'}
 					</dd>
 				</div>
 				<div>

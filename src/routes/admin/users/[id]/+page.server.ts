@@ -16,6 +16,7 @@ export const load: PageServerLoad = async (event) => {
 			email: true,
 			role: true,
 			disabled: true,
+			emailVerified: true,
 			createdAt: true
 			// Explicitly exclude passwordHash
 		}
