@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 18 - Cut Optimizer Foundation
-Plan: 01 of 04
+Plan: 03 of 04
 Status: In progress
-Last activity: 2026-01-29 — Completed 18-01-PLAN.md (Database Schema & Route Scaffold)
+Last activity: 2026-01-30 — Completed 18-03-PLAN.md (Optimization Algorithms & Results Display)
 
 Progress: [===========================---] Phase 18 of 21
 
@@ -35,7 +35,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | COMPLETE (2/2 plans) |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | COMPLETE (2/2 plans) |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | COMPLETE (3/3 plans) |
-| 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | IN PROGRESS (1/4 plans) |
+| 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | IN PROGRESS (3/4 plans) |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | Pending |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | Pending |
 | 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | Pending |
@@ -139,6 +139,13 @@ v3.0 stack additions (from research):
 - Grid layout with responsive mobile stacking (vertical with inline labels)
 - Float comparison tolerance (0.0001) for kerf preset active state detection
 
+**Phase 18-03 decisions:**
+- Placeholder algorithms implement simple greedy FFD to validate data flow (will be replaced in Phases 19-20)
+- Waste percentage color coding: green <10%, yellow <25%, red ≥25%
+- Kerf accounted for in cut placement using formula: usedLength = sum(cuts) + (count-1) * kerf
+- 2D optimization placeholder treats as 1D on length only (proper guillotine comes in Phase 20)
+- Cut/stock expansion by quantity before optimization (each qty=2 becomes 2 separate entries)
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -169,16 +176,16 @@ Key research flags:
 
 ## Session Continuity
 
-Last session: 2026-01-29
-Stopped at: Completed 18-01-PLAN.md (Database Schema & Route Scaffold)
+Last session: 2026-01-30
+Stopped at: Completed 18-03-PLAN.md (Optimization Algorithms & Results Display)
 Resume file: None
 
 ## Next Steps
 
-1. Execute Phase 18-02: Cut List Input Forms
-2. Execute Phase 18-03: Compose cut optimizer page with input forms
-3. Execute Phase 18-04: Remaining foundation tasks
-4. Continue to Phase 19: Linear Optimizer (1D)
+1. Execute Phase 18-04: Save & Load Cut Lists (final foundation plan)
+2. Continue to Phase 19: Linear Optimizer (1D)
+3. Continue to Phase 20: Sheet Optimizer (2D)
+4. Continue to Phase 21: BOM Integration & Shop Checklist
 
 ---
-*Last updated: 2026-01-29 after completing 18-01-PLAN.md execution*
+*Last updated: 2026-01-30 after completing 18-03-PLAN.md execution*
