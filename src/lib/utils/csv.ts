@@ -24,10 +24,10 @@ export function escapeCSVField(field: string): string {
  * Generate a CSV string from a BOM
  * - Filters out hidden items
  * - Sorts by category order: lumber, hardware, finishes, consumables
- * - Includes headers: Category, Name, Quantity, Unit, Description, Notes
+ * - Includes headers: Category, Name, Quantity, Unit, Description, Notes, Length, Width, Height
  */
 export function generateBOMCSV(bom: BOM): string {
-	const headers = ['Category', 'Name', 'Quantity', 'Unit', 'Description', 'Notes'];
+	const headers = ['Category', 'Name', 'Quantity', 'Unit', 'Description', 'Notes', 'Length', 'Width', 'Height'];
 	const categoryOrder: BOMCategory[] = ['lumber', 'hardware', 'finishes', 'consumables'];
 
 	// Filter visible items and sort by category
@@ -50,7 +50,11 @@ export function generateBOMCSV(bom: BOM): string {
 			escapeCSVField(String(item.quantity)),
 			escapeCSVField(item.unit),
 			escapeCSVField(item.description ?? ''),
-			escapeCSVField(item.notes ?? '')
+			escapeCSVField(item.notes ?? ''),
+			// Dimension columns - only for lumber, empty string otherwise
+			escapeCSVField(item.length != null ? String(item.length) : ''),
+			escapeCSVField(item.width != null ? String(item.width) : ''),
+			escapeCSVField(item.height != null ? String(item.height) : '')
 		].join(',');
 	});
 
