@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 16 complete, ready for Phase 17
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 17 in progress
 
 ## Current Position
 
 Phase: 17 - BOM Refinements
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-01-29 — Completed Phase 16: Email Verification
+Plan: 01 of 3 complete
+Status: In progress
+Last activity: 2026-01-30 — Completed 17-01-PLAN.md (Lumber Dimensions & Eye Icon Toggle)
 
 Progress: [=========================-----] Phase 17 of 21
 
@@ -34,7 +34,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (3/3 plans) |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | COMPLETE (2/2 plans) |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | COMPLETE (2/2 plans) |
-| 17 | BOM Refinements | BOM-05 to BOM-10 | Pending |
+| 17 | BOM Refinements | BOM-05 to BOM-10 | IN PROGRESS (1/3 plans) |
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | Pending |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | Pending |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | Pending |
@@ -111,6 +111,10 @@ v3.0 stack additions (from research):
 - Signup email send is non-blocking (errors logged, signup continues)
 - Verification happens in load() for immediate result display
 
+**Phase 17-01 decisions:**
+- Nullable real columns for dimensions (only lumber items need them)
+- Eye icon button replacing checkbox (open=visible, slashed=hidden)
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -141,14 +145,14 @@ Key research flags:
 
 ## Session Continuity
 
-Last session: 2026-01-29
-Stopped at: Completed 16-02-PLAN.md (Verification Routes & Signup Integration)
+Last session: 2026-01-30
+Stopped at: Completed 17-01-PLAN.md (Lumber Dimensions & Eye Icon Toggle)
 Resume file: None
 
 ## Next Steps
 
-1. Plan and execute Phase 17: BOM Refinements
+1. Continue Phase 17: Execute 17-02-PLAN.md and 17-03-PLAN.md
 2. Continue through v3.0 phases (Cut Optimizer foundation next)
 
 ---
-*Last updated: 2026-01-29 after phase 16 completion*
+*Last updated: 2026-01-30 after 17-01 completion*
