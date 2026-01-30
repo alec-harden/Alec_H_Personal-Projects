@@ -56,14 +56,14 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **CUT-09**: User can clear all inputs and start over
 - [x] **CUT-10**: User can save cut list to a project
 
-### Cut List Optimizer - Linear (1D)
+### Cut List Optimizer - Linear (1D) ✓
 
-- [ ] **CUT-11**: Linear mode accepts cut lengths
-- [ ] **CUT-12**: Linear mode accepts stock lengths
-- [ ] **CUT-13**: Linear mode supports multiple stock length options
-- [ ] **CUT-14**: Linear mode displays total linear feet summary
-- [ ] **CUT-15**: Linear mode visualizes unused portions of stock
-- [ ] **CUT-16**: 1D bin packing algorithm (FFD) produces optimal-ish cuts
+- [x] **CUT-11**: Linear mode accepts cut lengths
+- [x] **CUT-12**: Linear mode accepts stock lengths
+- [x] **CUT-13**: Linear mode supports multiple stock length options
+- [x] **CUT-14**: Linear mode displays total linear feet summary
+- [x] **CUT-15**: Linear mode visualizes unused portions of stock
+- [x] **CUT-16**: 1D bin packing algorithm (FFD) produces optimal-ish cuts
 
 ### Cut List Optimizer - Sheet (2D)
 
@@ -163,22 +163,22 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BOM-08 | 17 | Complete |
 | BOM-09 | 17 | Complete |
 | BOM-10 | 17 | Complete |
-| CUT-01 | 18 | Pending |
-| CUT-02 | 18 | Pending |
-| CUT-03 | 18 | Pending |
-| CUT-04 | 18 | Pending |
-| CUT-05 | 18 | Pending |
-| CUT-06 | 18 | Pending |
-| CUT-07 | 18 | Pending |
-| CUT-08 | 18 | Pending |
-| CUT-09 | 18 | Pending |
-| CUT-10 | 18 | Pending |
-| CUT-11 | 19 | Pending |
-| CUT-12 | 19 | Pending |
-| CUT-13 | 19 | Pending |
-| CUT-14 | 19 | Pending |
-| CUT-15 | 19 | Pending |
-| CUT-16 | 19 | Pending |
+| CUT-01 | 18 | Complete |
+| CUT-02 | 18 | Complete |
+| CUT-03 | 18 | Complete |
+| CUT-04 | 18 | Complete |
+| CUT-05 | 18 | Complete |
+| CUT-06 | 18 | Complete |
+| CUT-07 | 18 | Complete |
+| CUT-08 | 18 | Complete |
+| CUT-09 | 18 | Complete |
+| CUT-10 | 18 | Complete |
+| CUT-11 | 19 | Complete |
+| CUT-12 | 19 | Complete |
+| CUT-13 | 19 | Complete |
+| CUT-14 | 19 | Complete |
+| CUT-15 | 19 | Complete |
+| CUT-16 | 19 | Complete |
 | CUT-17 | 20 | Pending |
 | CUT-18 | 20 | Pending |
 | CUT-19 | 20 | Pending |

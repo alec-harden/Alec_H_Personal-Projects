@@ -14,7 +14,7 @@ See: `.planning/milestones/v3.0-ROADMAP.md` for full roadmap details.
 | 16 | Email Verification | 3 | ✓ Complete |
 | 17 | BOM Refinements | 6 | ✓ Complete |
 | 18 | Cut Optimizer Foundation | 10 | ✓ Complete |
-| 19 | Linear Optimizer (1D) | 6 | Pending |
+| 19 | Linear Optimizer (1D) | 6 | ✓ Complete |
 | 20 | Sheet Optimizer (2D) | 6 | Pending |
 | 21 | BOM Integration & Shop Checklist | 10 | Pending |
 
@@ -36,7 +36,7 @@ Phase 13: RBAC Foundation
 
 ## Next Action
 
-Run `/gsd:plan-phase 19` to plan Linear Optimizer (1D).
+Run `/gsd:plan-phase 20` to plan Sheet Optimizer (2D).
 
 ---
-*Updated: 2026-01-29 after phase 18 completion*
+*Updated: 2026-01-29 after phase 19 completion*
