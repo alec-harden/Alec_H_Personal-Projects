@@ -41,11 +41,18 @@
 
 			{#if role === 'admin'}
 				<a
+					href="/admin/users"
+					class="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-100"
+					onclick={() => (open = false)}
+				>
+					Manage Users
+				</a>
+				<a
 					href="/admin/templates"
 					class="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-100"
 					onclick={() => (open = false)}
 				>
-					Admin
+					Manage Templates
 				</a>
 			{/if}
 

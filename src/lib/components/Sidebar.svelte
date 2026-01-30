@@ -29,8 +29,7 @@
 			label: 'Cut List',
 			href: '/cutlist',
 			icon: 'scissors',
-			description: 'Optimize material cuts',
-			disabled: true
+			description: 'Optimize material cuts'
 		},
 		{
 			label: 'Calculator',
