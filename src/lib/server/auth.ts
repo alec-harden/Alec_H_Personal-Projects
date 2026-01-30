@@ -1,6 +1,7 @@
 import { hash, verify } from '@node-rs/argon2';
+import crypto from 'crypto';
 import { db } from './db';
-import { sessions } from './schema';
+import { sessions, passwordResetTokens } from './schema';
 import { eq } from 'drizzle-orm';
 import { error, redirect } from '@sveltejs/kit';
 import type { Cookies, RequestEvent } from '@sveltejs/kit';
@@ -108,4 +109,78 @@ export function requireAdmin(event: RequestEvent) {
 		throw error(403, 'Admin access required');
 	}
 	return user;
+}
+
+/**
+ * Generate a password reset token for a user.
+ * Deletes any existing tokens for this user first.
+ * Returns the plaintext token (only shown once, in email).
+ */
+export async function generatePasswordResetToken(userId: string): Promise<string> {
+	// Delete any existing tokens for this user
+	await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, userId));
+
+	// Generate 32 random bytes (64 hex characters)
+	const tokenBytes = crypto.randomBytes(32);
+	const token = tokenBytes.toString('hex');
+
+	// Hash token with SHA-256 before storage
+	const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+	// Token expires in 1 hour
+	const expiresAt = new Date();
+	expiresAt.setHours(expiresAt.getHours() + 1);
+
+	// Store hashed token
+	await db.insert(passwordResetTokens).values({
+		tokenHash,
+		userId,
+		expiresAt,
+		createdAt: new Date()
+	});
+
+	// Return plaintext token (for email)
+	return token;
+}
+
+/**
+ * Validate a password reset token.
+ * Returns userId if valid, null if invalid or expired.
+ * Does NOT consume the token - call consumePasswordResetToken after successful reset.
+ */
+export async function validatePasswordResetToken(token: string): Promise<string | null> {
+	// Hash the submitted token
+	const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+	// Find token in database
+	const resetToken = await db.query.passwordResetTokens.findFirst({
+		where: eq(passwordResetTokens.tokenHash, tokenHash)
+	});
+
+	if (!resetToken) {
+		return null; // Token not found
+	}
+
+	// Check expiry
+	if (resetToken.expiresAt < new Date()) {
+		// Delete expired token
+		await db.delete(passwordResetTokens).where(eq(passwordResetTokens.tokenHash, tokenHash));
+		return null;
+	}
+
+	return resetToken.userId;
+}
+
+/**
+ * Consume (delete) a password reset token after successful use.
+ * Also deletes all sessions for the user (forces re-login on all devices).
+ */
+export async function consumePasswordResetToken(token: string, userId: string): Promise<void> {
+	const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+	// Delete the token (single use)
+	await db.delete(passwordResetTokens).where(eq(passwordResetTokens.tokenHash, tokenHash));
+
+	// Invalidate all user sessions (OWASP recommendation)
+	await db.delete(sessions).where(eq(sessions.userId, userId));
 }
