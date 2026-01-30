@@ -35,11 +35,14 @@ export interface OptimizationResult {
 		totalWaste: number; // linear inches or square inches
 		wastePercentage: number; // 0-100
 		unplacedCuts: string[]; // cut IDs that couldn't fit
+		totalLinearFeetUsed: number; // feet (not inches) - for linear mode
+		totalLinearFeetAvailable: number; // feet (not inches) - for linear mode
 	};
 }
 
 /**
- * 1D Linear optimization using simple First Fit Decreasing algorithm
+ * 1D Linear optimization using First Fit Decreasing (FFD) algorithm
+ * Phase 19 enhancement: Sorts both cuts and stock descending, adds linear feet tracking
  */
 export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): OptimizationResult {
 	// Validation
@@ -53,7 +56,9 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 				totalStockUsed: 0,
 				totalWaste: 0,
 				wastePercentage: 0,
-				unplacedCuts: []
+				unplacedCuts: [],
+				totalLinearFeetUsed: 0,
+				totalLinearFeetAvailable: 0
 			}
 		};
 	}
@@ -68,7 +73,9 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 				totalStockUsed: 0,
 				totalWaste: 0,
 				wastePercentage: 0,
-				unplacedCuts: []
+				unplacedCuts: [],
+				totalLinearFeetUsed: 0,
+				totalLinearFeetAvailable: 0
 			}
 		};
 	}
@@ -103,7 +110,9 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 				totalStockUsed: 0,
 				totalWaste: 0,
 				wastePercentage: 0,
-				unplacedCuts: cuts.map((c) => c.id)
+				unplacedCuts: cuts.map((c) => c.id),
+				totalLinearFeetUsed: 0,
+				totalLinearFeetAvailable: 0
 			}
 		};
 	}
@@ -126,7 +135,10 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 		}
 	});
 
-	// Greedy first-fit algorithm
+	// Sort stock descending by length (try longest pieces first for efficiency)
+	expandedStock.sort((a, b) => b.length - a.length);
+
+	// First-fit algorithm
 	const plans: StockPlan[] = [];
 	const unplacedCuts: string[] = [];
 	let totalCutsPlaced = 0;
@@ -205,6 +217,10 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 	// Calculate waste percentage
 	const wastePercentage = totalStockMaterial > 0 ? (totalWaste / totalStockMaterial) * 100 : 0;
 
+	// Linear feet summary (convert from inches to feet)
+	const totalLinearFeetUsed = totalStockMaterial / 12;
+	const totalLinearFeetAvailable = expandedStock.reduce((sum, s) => sum + s.length, 0) / 12;
+
 	return {
 		success: true,
 		plans,
@@ -213,7 +229,9 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 			totalStockUsed: plans.length,
 			totalWaste,
 			wastePercentage,
-			unplacedCuts
+			unplacedCuts,
+			totalLinearFeetUsed,
+			totalLinearFeetAvailable
 		}
 	};
 }
@@ -237,7 +255,9 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 				totalStockUsed: 0,
 				totalWaste: 0,
 				wastePercentage: 0,
-				unplacedCuts: []
+				unplacedCuts: [],
+				totalLinearFeetUsed: 0,
+				totalLinearFeetAvailable: 0
 			}
 		};
 	}
@@ -252,7 +272,9 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 				totalStockUsed: 0,
 				totalWaste: 0,
 				wastePercentage: 0,
-				unplacedCuts: []
+				unplacedCuts: [],
+				totalLinearFeetUsed: 0,
+				totalLinearFeetAvailable: 0
 			}
 		};
 	}
@@ -296,7 +318,9 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 				totalStockUsed: 0,
 				totalWaste: 0,
 				wastePercentage: 0,
-				unplacedCuts: cuts.map((c) => c.id)
+				unplacedCuts: cuts.map((c) => c.id),
+				totalLinearFeetUsed: 0,
+				totalLinearFeetAvailable: 0
 			}
 		};
 	}
@@ -380,7 +404,9 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 			totalStockUsed: plans.length,
 			totalWaste: totalWasteArea,
 			wastePercentage,
-			unplacedCuts
+			unplacedCuts,
+			totalLinearFeetUsed: 0, // Not applicable for sheet mode
+			totalLinearFeetAvailable: 0 // Not applicable for sheet mode
 		}
 	};
 }
