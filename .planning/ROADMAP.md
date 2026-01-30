@@ -11,7 +11,7 @@ See: `.planning/milestones/v3.0-ROADMAP.md` for full roadmap details.
 | 13 | RBAC Foundation | 6 | ✓ Complete |
 | 14 | User Management (Admin) | 6 | ✓ Complete |
 | 15 | Email Infrastructure & Password Reset | 3 | ✓ Complete |
-| 16 | Email Verification | 3 | Planned (2 plans) |
+| 16 | Email Verification | 3 | ✓ Complete |
 | 17 | BOM Refinements | 6 | Pending |
 | 18 | Cut Optimizer Foundation | 10 | Pending |
 | 19 | Linear Optimizer (1D) | 6 | Pending |
@@ -36,7 +36,7 @@ Phase 13: RBAC Foundation
 
 ## Next Action
 
-Run `/gsd:execute-phase 16` to implement Email Verification.
+Run `/gsd:plan-phase 17` to plan BOM Refinements.
 
 ---
-*Updated: 2026-01-29 after phase 16 planning*
+*Updated: 2026-01-29 after phase 16 completion*

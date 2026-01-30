@@ -25,14 +25,14 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **USER-05**: Admin can view user details (email, created date, role)
 - [x] **USER-06**: Disabled users cannot log in
 
-### Email Flows
+### Email Flows ✓
 
 - [x] **EMAIL-01**: User can request password reset from login page
 - [x] **EMAIL-02**: User receives email with password reset link
 - [x] **EMAIL-03**: User can set new password via reset link (expires in 1 hour)
-- [ ] **EMAIL-04**: New user receives email verification request after signup
-- [ ] **EMAIL-05**: User can verify email by clicking link in email
-- [ ] **EMAIL-06**: User profile shows email verification status
+- [x] **EMAIL-04**: New user receives email verification request after signup
+- [x] **EMAIL-05**: User can verify email by clicking link in email
+- [x] **EMAIL-06**: User profile shows email verification status
 
 ### BOM Refinements
 
@@ -154,9 +154,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EMAIL-01 | 15 | Complete |
 | EMAIL-02 | 15 | Complete |
 | EMAIL-03 | 15 | Complete |
-| EMAIL-04 | 16 | Pending |
-| EMAIL-05 | 16 | Pending |
-| EMAIL-06 | 16 | Pending |
+| EMAIL-04 | 16 | Complete |
+| EMAIL-05 | 16 | Complete |
+| EMAIL-06 | 16 | Complete |
 | BOM-05 | 17 | Pending |
 | BOM-06 | 17 | Pending |
 | BOM-07 | 17 | Pending |
@@ -203,4 +203,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after phase 15 completion*
+*Last updated: 2026-01-29 after phase 16 completion*
