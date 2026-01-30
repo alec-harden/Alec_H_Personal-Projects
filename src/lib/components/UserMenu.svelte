@@ -3,11 +3,16 @@
 
 	interface Props {
 		email: string;
+		firstName?: string;
+		lastName?: string;
 		role: 'user' | 'admin';
 	}
 
-	let { email, role }: Props = $props();
+	let { email, firstName, lastName, role }: Props = $props();
 	let open = $state(false);
+
+	// Display name logic: use firstName if available, otherwise email prefix
+	const displayName = $derived(firstName || email.split('@')[0]);
 
 	function handleClickOutside(event: MouseEvent) {
 		const target = event.target as HTMLElement;
@@ -25,16 +30,16 @@
 		class="flex items-center gap-2 px-3 py-1.5 text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-100 rounded-md transition-colors"
 	>
 		<span class="w-7 h-7 bg-amber-600 text-white rounded-full flex items-center justify-center text-xs font-medium">
-			{email[0].toUpperCase()}
+			{displayName[0].toUpperCase()}
 		</span>
-		<span class="hidden sm:inline max-w-32 truncate">{email}</span>
+		<span class="hidden sm:inline max-w-32 truncate">{displayName}</span>
 		<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 		</svg>
 	</button>
 
 	{#if open}
-		<div class="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-stone-200 py-1 z-50">
+		<div class="fixed right-4 mt-1 w-48 bg-white rounded-md shadow-lg border border-stone-200 py-1 z-50">
 			<div class="px-4 py-2 border-b border-stone-100">
 				<p class="text-sm font-medium text-stone-900 truncate">{email}</p>
 			</div>

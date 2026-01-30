@@ -6,6 +6,8 @@
 	interface User {
 		id: string;
 		email: string;
+		firstName?: string;
+		lastName?: string;
 		role: 'user' | 'admin';
 		createdAt: Date;
 	}
@@ -47,7 +49,7 @@
 		<!-- User Authentication Actions -->
 		<div class="header-actions">
 			{#if user}
-				<UserMenu email={user.email} role={user.role} />
+				<UserMenu email={user.email} firstName={user.firstName} lastName={user.lastName} role={user.role} />
 			{:else}
 				<a href="/auth/login" class="login-link">Log in</a>
 			{/if}
