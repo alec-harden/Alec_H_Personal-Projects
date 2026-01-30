@@ -39,6 +39,8 @@ export const users = sqliteTable('users', {
 	id: text('id').primaryKey(),
 	email: text('email').notNull().unique(),
 	passwordHash: text('password_hash').notNull(),
+	firstName: text('first_name'),
+	lastName: text('last_name'),
 	role: text('role', { enum: ['user', 'admin'] }).notNull().default('user'),
 	disabled: integer('disabled', { mode: 'boolean' }).notNull().default(false),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
