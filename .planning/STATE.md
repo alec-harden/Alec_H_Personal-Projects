@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 22 - UI Refinements & Cut List Fixes
-Plan: 1 of 4 (Completed 22-02)
+Plan: 2 of 4 (Completed 22-01)
 Status: In progress
-Last activity: 2026-01-30 — Completed 22-02-PLAN.md (Navigation restructure)
+Last activity: 2026-01-30 — Completed 22-01-PLAN.md (User names and UI fixes)
 
-Progress: [████████████████████████████████░] Phase 22 of 22 (96%)
+Progress: [████████████████████████████████░] Phase 22 of 22 (97%)
 
 ## Milestone History
 
@@ -39,7 +39,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | COMPLETE (2/2 plans) |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | COMPLETE (2/2 plans) |
 | 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | COMPLETE (3/3 plans) |
-| 22 | UI Refinements & Cut List Fixes | UI-01 to CUT-39 | IN PROGRESS (1/4 plans) |
+| 22 | UI Refinements & Cut List Fixes | UI-01 to CUT-39 | IN PROGRESS (2/4 plans) |
 
 ## Accumulated Context
 
@@ -200,6 +200,12 @@ v3.0 stack additions (from research):
 - Optimistic UI updates with rollback on API errors
 - Tab interface for switching between Checklist and Manual Placement views
 
+**Phase 22-01 decisions:**
+- Name fields nullable for backward compatibility with existing users
+- Default to 'Wood' and 'Worker' for blank names during signup
+- Display name falls back to email prefix when firstName unavailable
+- Dropdown uses fixed positioning (right-4) instead of absolute
+
 **Phase 22-02 decisions:**
 - NAVIGATION section for viewing content (Dashboard, Projects, BOMs, Cut Lists)
 - TOOLS section for creating content (Create BOM, Create Cut List)
@@ -238,15 +244,16 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 22-02-PLAN.md (Navigation restructure and dashboard cleanup)
+Stopped at: Completed 22-01-PLAN.md (User names and UI fixes)
 Resume file: None
 
 ## Next Steps
 
-1. **Phase 22-02 complete** - Sidebar reorganized with NAVIGATION/TOOLS sections
-2. Continue with remaining Phase 22 plans (22-01, 22-03, 22-04)
-3. Requirements covered: NAV-01 to NAV-05 ✓
-4. Remaining: UI-01 to UI-03, CUT-33 to CUT-39
+1. **Phase 22-01 complete** - User profiles with firstName/lastName, personalized UI
+2. **Phase 22-02 complete** - Sidebar reorganized with NAVIGATION/TOOLS sections
+3. Continue with remaining Phase 22 plans (22-03, 22-04)
+4. Requirements covered: UI-01 to UI-03 ✓, NAV-01 to NAV-05 ✓
+5. Remaining: CUT-33 to CUT-39
 
 ---
-*Last updated: 2026-01-30 after completing 22-02-PLAN.md*
+*Last updated: 2026-01-30 after completing 22-01-PLAN.md*
