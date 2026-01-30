@@ -42,6 +42,9 @@
 				{/if}
 				<div class="header-cell header-qty">Qty</div>
 				<div class="header-cell header-label">Label</div>
+				{#if mode === 'sheet'}
+					<div class="header-cell header-grain">Grain</div>
+				{/if}
 				<div class="header-cell header-actions"></div>
 			</div>
 
@@ -89,6 +92,15 @@
 							class="input-field"
 						/>
 					</div>
+
+					{#if mode === 'sheet'}
+						<div class="entry-field entry-grain">
+							<label class="grain-toggle">
+								<input type="checkbox" bind:checked={cut.grainMatters} class="grain-checkbox" />
+								<span class="grain-label">Lock</span>
+							</label>
+						</div>
+					{/if}
 
 					<div class="entry-field entry-actions">
 						<button
@@ -162,9 +174,18 @@
 
 	.entries-header {
 		display: grid;
-		grid-template-columns: 1fr 1fr 80px 1.5fr 50px;
 		gap: var(--space-sm);
 		padding: 0 var(--space-sm);
+	}
+
+	/* Linear mode: Length, Qty, Label, Actions */
+	.entries-header:not(:has(.header-width)) {
+		grid-template-columns: 1fr 80px 1.5fr 50px;
+	}
+
+	/* Sheet mode: Length, Width, Qty, Label, Grain, Actions */
+	.entries-header:has(.header-width) {
+		grid-template-columns: 1fr 1fr 80px 1.5fr 70px 50px;
 	}
 
 	.header-cell {
@@ -177,13 +198,22 @@
 
 	.entry-row {
 		display: grid;
-		grid-template-columns: 1fr 1fr 80px 1.5fr 50px;
 		gap: var(--space-sm);
 		padding: var(--space-sm);
 		background: var(--color-white);
 		border: 1px solid rgba(17, 17, 17, 0.08);
 		border-radius: var(--radius-md);
 		transition: border-color var(--transition-fast);
+	}
+
+	/* Linear mode: Length, Qty, Label, Actions */
+	.entry-row:not(:has(.entry-width)) {
+		grid-template-columns: 1fr 80px 1.5fr 50px;
+	}
+
+	/* Sheet mode: Length, Width, Qty, Label, Grain, Actions */
+	.entry-row:has(.entry-width) {
+		grid-template-columns: 1fr 1fr 80px 1.5fr 70px 50px;
 	}
 
 	.entry-row:hover {
@@ -203,6 +233,27 @@
 	.icon {
 		width: 18px;
 		height: 18px;
+	}
+
+	.grain-toggle {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		cursor: pointer;
+		user-select: none;
+	}
+
+	.grain-checkbox {
+		width: 16px;
+		height: 16px;
+		cursor: pointer;
+		accent-color: var(--color-primary);
+	}
+
+	.grain-label {
+		font-size: 0.8125rem;
+		color: var(--color-ink);
+		white-space: nowrap;
 	}
 
 	/* Mobile stacking */
@@ -252,6 +303,10 @@
 
 		.entry-label::before {
 			content: 'Label';
+		}
+
+		.entry-grain::before {
+			content: 'Grain Lock';
 		}
 
 		.entry-actions {
