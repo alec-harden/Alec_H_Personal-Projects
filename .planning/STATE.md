@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 18 - Cut Optimizer Foundation
-Plan: 02 of 04
+Plan: 01 of 04
 Status: In progress
-Last activity: 2026-01-29 — Completed 18-02-PLAN.md (Cut List Input Forms)
+Last activity: 2026-01-29 — Completed 18-01-PLAN.md (Database Schema & Route Scaffold)
 
 Progress: [===========================---] Phase 18 of 21
 
@@ -35,7 +35,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | COMPLETE (2/2 plans) |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | COMPLETE (2/2 plans) |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | COMPLETE (3/3 plans) |
-| 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | IN PROGRESS (2/4 plans) |
+| 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | IN PROGRESS (1/4 plans) |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | Pending |
 | 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | Pending |
 | 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | Pending |
@@ -126,6 +126,12 @@ v3.0 stack additions (from research):
 - Non-lumber items export empty strings for dimensions
 - Dimensions are optional in import validation (backward compatibility with old CSVs)
 
+**Phase 18-01 decisions:**
+- Cut lists can exist independently or be associated with projects (nullable projectId)
+- Mode selection (Linear vs Sheet) determines which optimization algorithm and input forms to use
+- Default kerf width set to 0.125 inches (standard 1/8 inch table saw blade)
+- Tool works without authentication, but save functionality requires login
+
 **Phase 18-02 decisions:**
 - Cut and Stock use width: number | null pattern (null for linear mode, number for sheet mode)
 - Kerf presets include four common blade widths: 1/8", 3/32", 5/32", and No Kerf
@@ -164,14 +170,15 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 18-02-PLAN.md (Cut List Input Forms)
+Stopped at: Completed 18-01-PLAN.md (Database Schema & Route Scaffold)
 Resume file: None
 
 ## Next Steps
 
-1. Execute Phase 18-03: Compose cut optimizer page with input forms
-2. Execute Phase 18-04: Remaining foundation tasks
-3. Continue to Phase 19: Linear Optimizer (1D)
+1. Execute Phase 18-02: Cut List Input Forms
+2. Execute Phase 18-03: Compose cut optimizer page with input forms
+3. Execute Phase 18-04: Remaining foundation tasks
+4. Continue to Phase 19: Linear Optimizer (1D)
 
 ---
-*Last updated: 2026-01-29 after completing 18-02-PLAN.md*
+*Last updated: 2026-01-29 after completing 18-01-PLAN.md execution*
