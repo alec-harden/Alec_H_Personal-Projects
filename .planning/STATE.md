@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 20 - Sheet Optimizer (2D)
-Plan: 01 of 02 complete
-Status: In progress
-Last activity: 2026-01-30 — Completed 20-01-PLAN.md (Guillotine 2D Bin Packing)
+Plan: 02 of 02 complete
+Status: Phase complete
+Last activity: 2026-01-30 — Completed 20-02-PLAN.md (Visual Cut Diagrams - 2D)
 
 Progress: [==============================-] Phase 20 of 21
 
@@ -37,7 +37,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 17 | BOM Refinements | BOM-05 to BOM-10 | COMPLETE (3/3 plans) |
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | COMPLETE (4/4 plans) |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | COMPLETE (2/2 plans) |
-| 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | IN PROGRESS (1/2 plans) |
+| 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | COMPLETE (2/2 plans) |
 | 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | Pending |
 
 ## Accumulated Context
@@ -173,6 +173,13 @@ v3.0 stack additions (from research):
 - Grain toggle only visible in sheet mode (not applicable to linear cuts)
 - Free rectangles tracked per plan for multi-cut placement on single sheet
 
+**Phase 20-02 decisions:**
+- Fixed viewBox 600x400 for consistent horizontal sheet orientation
+- Aspect ratio maintained using min(scaleX, scaleY) for both axes
+- Cut labels shown only when rect >40x20px to prevent cramped text
+- Rotation indicator (⟳) displayed when cut is rotated and width >30px
+- Waste color coding matches existing thresholds: green <10%, amber <25%, red ≥25%
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -204,14 +211,14 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 20-01-PLAN.md (Guillotine 2D Bin Packing with Grain Direction)
+Stopped at: Completed 20-02-PLAN.md (Visual Cut Diagrams - 2D)
 Resume file: None
 
 ## Next Steps
 
-1. Continue Phase 20: Plan 20-02 - Visual Cut Diagrams (2D SVG visualization)
-2. Complete Phase 20 and continue to Phase 21: BOM Integration & Shop Checklist
+1. Begin Phase 21: BOM Integration & Shop Checklist
+2. Complete Phase 21 to finish v3.0 milestone
 3. Audit and ship v3.0 milestone
 
 ---
-*Last updated: 2026-01-30 after phase 20-01 completion*
+*Last updated: 2026-01-30 after phase 20-02 completion (Phase 20 complete)*
