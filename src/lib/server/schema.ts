@@ -82,7 +82,8 @@ export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(sessions),
 	projects: many(projects),
 	passwordResetTokens: many(passwordResetTokens),
-	emailVerificationTokens: many(emailVerificationTokens)
+	emailVerificationTokens: many(emailVerificationTokens),
+	cutLists: many(cutLists)
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -125,7 +126,8 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
 		fields: [projects.userId],
 		references: [users.id]
 	}),
-	boms: many(boms)
+	boms: many(boms),
+	cutLists: many(cutLists)
 }));
 
 // BOMs table - bill of materials linked to projects
@@ -203,3 +205,75 @@ export const templates = sqliteTable('templates', {
 
 // Templates relations (standalone - no foreign keys)
 export const templatesRelations = relations(templates, () => ({}));
+
+// =============================================================================
+// Cut List Optimizer Tables
+// =============================================================================
+
+// Cut lists table - stores cut optimization projects
+export const cutLists = sqliteTable('cut_lists', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
+	name: text('name').notNull(),
+	mode: text('mode', { enum: ['linear', 'sheet'] }).notNull(),
+	kerf: real('kerf').notNull().default(0.125), // blade width in inches
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// Cut list cuts table - pieces to cut from stock
+export const cutListCuts = sqliteTable('cut_list_cuts', {
+	id: text('id').primaryKey(),
+	cutListId: text('cut_list_id')
+		.notNull()
+		.references(() => cutLists.id, { onDelete: 'cascade' }),
+	length: real('length').notNull(), // inches
+	width: real('width'), // inches, only for sheet mode
+	quantity: integer('quantity').notNull().default(1),
+	label: text('label'), // optional name like "Table top"
+	position: integer('position').notNull() // for ordering
+});
+
+// Cut list stock table - available stock to cut from
+export const cutListStock = sqliteTable('cut_list_stock', {
+	id: text('id').primaryKey(),
+	cutListId: text('cut_list_id')
+		.notNull()
+		.references(() => cutLists.id, { onDelete: 'cascade' }),
+	length: real('length').notNull(), // inches
+	width: real('width'), // inches, only for sheet mode
+	quantity: integer('quantity').notNull().default(1),
+	label: text('label'), // optional name like "8ft pine"
+	position: integer('position').notNull() // for ordering
+});
+
+// Cut list relations
+export const cutListsRelations = relations(cutLists, ({ one, many }) => ({
+	user: one(users, {
+		fields: [cutLists.userId],
+		references: [users.id]
+	}),
+	project: one(projects, {
+		fields: [cutLists.projectId],
+		references: [projects.id]
+	}),
+	cuts: many(cutListCuts),
+	stock: many(cutListStock)
+}));
+
+export const cutListCutsRelations = relations(cutListCuts, ({ one }) => ({
+	cutList: one(cutLists, {
+		fields: [cutListCuts.cutListId],
+		references: [cutLists.id]
+	})
+}));
+
+export const cutListStockRelations = relations(cutListStock, ({ one }) => ({
+	cutList: one(cutLists, {
+		fields: [cutListStock.cutListId],
+		references: [cutLists.id]
+	})
+}));
