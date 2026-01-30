@@ -170,14 +170,6 @@
 					href="/cutlist"
 					icon="scissors"
 				/>
-
-				<ToolCard
-					title="Wood Movement Calculator"
-					description="Calculate seasonal wood movement for your designs and joinery."
-					href="/calculator"
-					icon="ruler"
-					disabled={true}
-				/>
 			</div>
 		</section>
 	</div>
