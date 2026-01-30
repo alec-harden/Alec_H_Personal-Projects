@@ -248,7 +248,7 @@
 
 	<!-- Results Display -->
 	{#if result}
-		<OptimizationResults {result} {mode} />
+		<OptimizationResults {result} {mode} {kerf} />
 	{/if}
 </div>
 

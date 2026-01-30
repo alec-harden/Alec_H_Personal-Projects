@@ -1,13 +1,15 @@
 <script lang="ts">
 	import type { OptimizationResult } from '$lib/server/cutOptimizer';
 	import type { CutListMode } from '$lib/types/cutlist';
+	import LinearCutDiagram from './LinearCutDiagram.svelte';
 
 	interface Props {
 		result: OptimizationResult;
 		mode: CutListMode;
+		kerf: number;
 	}
 
-	let { result, mode }: Props = $props();
+	let { result, mode, kerf }: Props = $props();
 
 	// Derive waste color based on percentage
 	const wasteColor = $derived(() => {
@@ -77,6 +79,21 @@
 					{/if}
 				</div>
 			</div>
+
+			{#if mode === 'linear'}
+				<div class="summary-card">
+					<div class="summary-label">Stock Used</div>
+					<div class="summary-value">
+						{result.summary.totalLinearFeetUsed.toFixed(1)} ft
+					</div>
+				</div>
+				<div class="summary-card">
+					<div class="summary-label">Stock Available</div>
+					<div class="summary-value">
+						{result.summary.totalLinearFeetAvailable.toFixed(1)} ft
+					</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 
@@ -96,6 +113,18 @@
 					{result.summary.unplacedCuts.length} cut(s) could not fit in available stock. Add more
 					stock or adjust cut dimensions.
 				</div>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Cut Diagrams Section (Linear Mode Only) -->
+	{#if mode === 'linear' && result.plans.length > 0}
+		<div class="diagrams-section">
+			<h3 class="diagrams-title">Cut Diagrams</h3>
+			<div class="diagrams-list">
+				{#each result.plans as plan, index (plan.stockId)}
+					<LinearCutDiagram {plan} {kerf} {index} />
+				{/each}
 			</div>
 		</div>
 	{/if}
@@ -235,6 +264,26 @@
 
 	.waste-fill-red {
 		background: #dc2626;
+	}
+
+	/* Diagrams Section */
+	.diagrams-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.diagrams-title {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.diagrams-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
 	}
 
 	/* Alert Box */
