@@ -19,33 +19,43 @@ export const actions: Actions = {
 		const email = data.get('email')?.toString().trim().toLowerCase();
 		const password = data.get('password')?.toString();
 		const confirmPassword = data.get('confirmPassword')?.toString();
+		const firstName = data.get('firstName')?.toString().trim() || 'Wood';
+		const lastName = data.get('lastName')?.toString().trim() || 'Worker';
 
 		// Validation
 		if (!email || !password || !confirmPassword) {
 			return fail(400, {
 				error: 'All fields are required',
-				email
+				email,
+				firstName,
+				lastName
 			});
 		}
 
 		if (!email.includes('@') || email.length < 5) {
 			return fail(400, {
 				error: 'Please enter a valid email address',
-				email
+				email,
+				firstName,
+				lastName
 			});
 		}
 
 		if (password.length < 8) {
 			return fail(400, {
 				error: 'Password must be at least 8 characters',
-				email
+				email,
+				firstName,
+				lastName
 			});
 		}
 
 		if (password !== confirmPassword) {
 			return fail(400, {
 				error: 'Passwords do not match',
-				email
+				email,
+				firstName,
+				lastName
 			});
 		}
 
@@ -57,7 +67,9 @@ export const actions: Actions = {
 		if (existing) {
 			return fail(400, {
 				error: 'An account with this email already exists',
-				email
+				email,
+				firstName,
+				lastName
 			});
 		}
 
@@ -77,6 +89,8 @@ export const actions: Actions = {
 			id,
 			email,
 			passwordHash,
+			firstName,
+			lastName,
 			role,
 			emailVerified: false,
 			createdAt: new Date()
