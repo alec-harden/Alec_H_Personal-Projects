@@ -22,6 +22,7 @@ export interface Cut {
 	width: number | null; // inches, null for linear mode
 	quantity: number;
 	label: string; // optional name
+	grainMatters: boolean; // true = no rotation, false = allow rotation (sheet mode only)
 }
 
 /**
@@ -59,7 +60,8 @@ export function createCut(mode: CutListMode): Cut {
 		length: 0,
 		width: mode === 'sheet' ? 0 : null,
 		quantity: 1,
-		label: ''
+		label: '',
+		grainMatters: false // Default: rotation allowed
 	};
 }
 

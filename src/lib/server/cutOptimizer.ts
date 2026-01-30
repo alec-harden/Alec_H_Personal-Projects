@@ -13,6 +13,9 @@ export interface CutAssignment {
 	cutLabel: string;
 	length: number;
 	width: number | null;
+	x: number | null; // position on sheet (null for 1D)
+	y: number | null; // position on sheet (null for 1D)
+	rotated: boolean; // true if 90-degree rotated from original
 }
 
 export interface StockPlan {
@@ -161,7 +164,10 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 					cutId: cut.id,
 					cutLabel: cut.label,
 					length: cut.length,
-					width: null
+					width: null,
+					x: null, // Not used in 1D mode
+					y: null, // Not used in 1D mode
+					rotated: false // Not used in 1D mode
 				});
 				placed = true;
 				totalCutsPlaced++;
@@ -183,7 +189,10 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 							cutId: cut.id,
 							cutLabel: cut.label,
 							length: cut.length,
-							width: null
+							width: null,
+							x: null, // Not used in 1D mode
+							y: null, // Not used in 1D mode
+							rotated: false // Not used in 1D mode
 						}
 					],
 					wasteLength: 0, // Will be calculated below
@@ -372,7 +381,10 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 						cutId: cut.id,
 						cutLabel: cut.label,
 						length: cut.length,
-						width: cut.width
+						width: cut.width,
+						x: 0, // Placeholder position
+						y: 0, // Placeholder position
+						rotated: false // Placeholder
 					}
 				],
 				wasteLength: 0, // Not meaningful for 2D
