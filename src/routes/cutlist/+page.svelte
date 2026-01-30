@@ -78,6 +78,8 @@
 		error = null;
 		result = null;
 
+		const startTime = Date.now();
+
 		try {
 			const response = await fetch('/api/cutlist/optimize', {
 				method: 'POST',
@@ -86,12 +88,27 @@
 			});
 
 			if (!response.ok) {
+				// Error occurred - skip delay, show error immediately
 				const data = await response.json();
-				throw new Error(data.error || 'Optimization failed');
+				error = data.error || 'Optimization failed';
+				isOptimizing = false;
+				return;
 			}
 
-			result = await response.json();
+			// Parse result
+			const optimizationResult = await response.json();
+
+			// Enforce minimum 2.5 second loading display
+			const elapsed = Date.now() - startTime;
+			const minimumDuration = 2500; // 2.5 seconds
+
+			if (elapsed < minimumDuration) {
+				await new Promise(resolve => setTimeout(resolve, minimumDuration - elapsed));
+			}
+
+			result = optimizationResult;
 		} catch (e) {
+			// Network error - show immediately
 			error = e instanceof Error ? e.message : 'An error occurred';
 		} finally {
 			isOptimizing = false;
