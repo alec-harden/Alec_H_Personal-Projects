@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 15 complete, ready for Phase 16
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 16 in progress
 
 ## Current Position
 
 Phase: 16 - Email Verification
-Plan: Not started
-Status: Ready for discussion/planning
-Last activity: 2026-01-29 — Completed Phase 15: Email Infrastructure & Password Reset
+Plan: 01 of 2 complete
+Status: In progress
+Last activity: 2026-01-29 — Completed 16-01-PLAN.md (Token Infrastructure)
 
 Progress: [========================------] Phase 16 of 21
 
@@ -33,7 +33,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
 | 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (3/3 plans) |
 | 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | COMPLETE (2/2 plans) |
-| 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
+| 16 | Email Verification | EMAIL-04 to EMAIL-06 | IN PROGRESS (1/2 plans) |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | Pending |
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | Pending |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | Pending |
@@ -101,6 +101,11 @@ v3.0 stack additions (from research):
 - Token validated in load() before showing reset form
 - Hidden token field in form for action submission
 
+**Phase 16-01 decisions:**
+- 24-hour token expiry for email verification (longer than 1-hour password reset)
+- Single active token per user (delete existing before creating new)
+- markEmailAsVerified consumes token atomically when email marked verified
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -132,14 +137,14 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed Phase 15 (Email Infrastructure & Password Reset)
+Stopped at: Completed 16-01-PLAN.md (Token Infrastructure)
 Resume file: None
 
 ## Next Steps
 
-1. Plan Phase 16: Email Verification
-2. Execute Phase 16 plans
+1. Execute 16-02-PLAN.md (Registration Integration + Verify Email Route)
+2. Complete Phase 16: Email Verification
 3. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-29 after phase 15 completion*
+*Last updated: 2026-01-29 after 16-01 completion*
