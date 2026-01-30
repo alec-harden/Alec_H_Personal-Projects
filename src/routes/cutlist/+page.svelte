@@ -37,6 +37,21 @@
 		error = null;
 	}
 
+	function handleClearAll() {
+		// Confirmation if user has entered multiple entries
+		if (cuts.length > 1 || stock.length > 1) {
+			const confirmed = confirm('Clear all cuts and stock? This cannot be undone.');
+			if (!confirmed) return;
+		}
+
+		// Reset to initial state
+		cuts = [createCut(mode)];
+		stock = [createStock(mode)];
+		kerf = 0.125;
+		result = null;
+		error = null;
+	}
+
 	async function handleOptimize() {
 		isOptimizing = true;
 		error = null;
