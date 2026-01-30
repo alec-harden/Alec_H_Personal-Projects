@@ -74,24 +74,24 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **CUT-21**: Sheet mode displays number of sheets needed
 - [x] **CUT-22**: 2D nesting algorithm (guillotine) produces optimal-ish placement
 
-### Cut List Optimizer - BOM Integration
+### Cut List Optimizer - BOM Integration ✓
 
-- [ ] **CUT-23**: User can select a project
-- [ ] **CUT-24**: User can multi-select BOMs within selected project
-- [ ] **CUT-25**: Selected BOMs auto-filter to lumber items only
-- [ ] **CUT-26**: Lumber items pre-populate as cuts with dimensions
+- [x] **CUT-23**: User can select a project
+- [x] **CUT-24**: User can multi-select BOMs within selected project
+- [x] **CUT-25**: Selected BOMs auto-filter to lumber items only
+- [x] **CUT-26**: Lumber items pre-populate as cuts with dimensions
 
-### Cut List Optimizer - Shop Checklist
+### Cut List Optimizer - Shop Checklist ✓
 
-- [ ] **CUT-27**: User can view cut list as shop checklist
-- [ ] **CUT-28**: User can mark individual cuts as complete
-- [ ] **CUT-29**: Checklist shows completion progress indicator
-- [ ] **CUT-30**: Checklist completion state persists to project
+- [x] **CUT-27**: User can view cut list as shop checklist
+- [x] **CUT-28**: User can mark individual cuts as complete
+- [x] **CUT-29**: Checklist shows completion progress indicator
+- [x] **CUT-30**: Checklist completion state persists to project
 
-### Cut List Optimizer - Differentiators
+### Cut List Optimizer - Differentiators ✓
 
-- [ ] **CUT-31**: User can drag-drop materials to assign stock to cuts
-- [ ] **CUT-32**: User can manually override algorithm cut placement
+- [x] **CUT-31**: User can drag-drop materials to assign stock to cuts
+- [x] **CUT-32**: User can manually override algorithm cut placement
 
 ## v4.0+ Requirements (Deferred)
 
@@ -185,16 +185,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CUT-20 | 20 | Complete |
 | CUT-21 | 20 | Complete |
 | CUT-22 | 20 | Complete |
-| CUT-23 | 21 | Pending |
-| CUT-24 | 21 | Pending |
-| CUT-25 | 21 | Pending |
-| CUT-26 | 21 | Pending |
-| CUT-27 | 21 | Pending |
-| CUT-28 | 21 | Pending |
-| CUT-29 | 21 | Pending |
-| CUT-30 | 21 | Pending |
-| CUT-31 | 21 | Pending |
-| CUT-32 | 21 | Pending |
+| CUT-23 | 21 | Complete |
+| CUT-24 | 21 | Complete |
+| CUT-25 | 21 | Complete |
+| CUT-26 | 21 | Complete |
+| CUT-27 | 21 | Complete |
+| CUT-28 | 21 | Complete |
+| CUT-29 | 21 | Complete |
+| CUT-30 | 21 | Complete |
+| CUT-31 | 21 | Complete |
+| CUT-32 | 21 | Complete |
 
 **Coverage:**
 - v3.0 requirements: 44 total
@@ -203,4 +203,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-30 after phase 20 completion*
+*Last updated: 2026-01-30 after phase 21 completion*

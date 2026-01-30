@@ -16,20 +16,21 @@ See: `.planning/milestones/v3.0-ROADMAP.md` for full roadmap details.
 | 18 | Cut Optimizer Foundation | 10 | Complete |
 | 19 | Linear Optimizer (1D) | 6 | Complete |
 | 20 | Sheet Optimizer (2D) | 6 | Complete |
-| 21 | BOM Integration & Shop Checklist | 10 | Pending |
+| 21 | BOM Integration & Shop Checklist | 10 | Complete |
 
 **Total:** 9 phases, 56 requirements
 
-## Phase 21: BOM Integration & Shop Checklist (CURRENT)
+## Phase 21: BOM Integration & Shop Checklist ✓
 
 **Goal:** BOM Integration allows pre-populating cuts from project lumber; Shop Checklist tracks cut completion with persistent progress; Manual overrides enable drag-drop stock assignment and position editing.
 
 **Plans:** 3 plans
+**Status:** COMPLETE (2026-01-30)
 
 Plans:
-- [ ] 21-01-PLAN.md — BOM Integration (project selection, BOM multi-select, lumber filter, cut pre-population)
-- [ ] 21-02-PLAN.md — Shop Checklist (schema extension, checklist view, progress indicator, persistence)
-- [ ] 21-03-PLAN.md — Manual Overrides (drag-drop stock assignment, position editing, conflict detection)
+- [x] 21-01-PLAN.md — BOM Integration (project selection, BOM multi-select, lumber filter, cut pre-population)
+- [x] 21-02-PLAN.md — Shop Checklist (schema extension, checklist view, progress indicator, persistence)
+- [x] 21-03-PLAN.md — Manual Overrides (drag-drop stock assignment, position editing, conflict detection)
 
 ## Dependencies
 
@@ -42,12 +43,12 @@ Phase 13: RBAC Foundation
             +-- Phase 18: Cut Optimizer Foundation
                     +-- Phase 19: Linear Optimizer (1D)
                             +-- Phase 20: Sheet Optimizer (2D) ✓
-                                    +-- Phase 21: BOM Integration & Shop Checklist <-- CURRENT
+                                    +-- Phase 21: BOM Integration & Shop Checklist ✓
 ```
 
 ## Next Action
 
-Run `/gsd:execute-phase 21` to begin BOM Integration & Shop Checklist implementation.
+All phases complete. Run `/gsd:audit-milestone` to verify v3.0 milestone completion.
 
 ---
-*Updated: 2026-01-30 after phase 21 planning*
+*Updated: 2026-01-30 after phase 21 execution complete*
