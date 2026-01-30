@@ -18,18 +18,18 @@ See: `.planning/milestones/v3.0-ROADMAP.md` for full roadmap details.
 | 20 | Sheet Optimizer (2D) | 6 | Complete |
 | 21 | BOM Integration & Shop Checklist | 10 | Pending |
 
-**Total:** 9 phases, 44 requirements
+**Total:** 9 phases, 56 requirements
 
-## Phase 20: Sheet Optimizer (2D) ✓
+## Phase 21: BOM Integration & Shop Checklist (CURRENT)
 
-**Goal:** 2D guillotine bin packing algorithm optimizes plywood and panel cuts with grain direction support and visual diagram.
+**Goal:** BOM Integration allows pre-populating cuts from project lumber; Shop Checklist tracks cut completion with persistent progress; Manual overrides enable drag-drop stock assignment and position editing.
 
-**Plans:** 2 plans
-**Status:** COMPLETE (2026-01-29)
+**Plans:** 3 plans
 
 Plans:
-- [x] 20-01-PLAN.md — Guillotine algorithm + grain direction (BSSF+SAS, grainMatters toggle)
-- [x] 20-02-PLAN.md — Sheet cut diagram visualization (SVG component, integration)
+- [ ] 21-01-PLAN.md — BOM Integration (project selection, BOM multi-select, lumber filter, cut pre-population)
+- [ ] 21-02-PLAN.md — Shop Checklist (schema extension, checklist view, progress indicator, persistence)
+- [ ] 21-03-PLAN.md — Manual Overrides (drag-drop stock assignment, position editing, conflict detection)
 
 ## Dependencies
 
@@ -47,7 +47,7 @@ Phase 13: RBAC Foundation
 
 ## Next Action
 
-Run `/gsd:plan-phase 21` to plan BOM Integration & Shop Checklist.
+Run `/gsd:execute-phase 21` to begin BOM Integration & Shop Checklist implementation.
 
 ---
-*Updated: 2026-01-29 after phase 20 completion*
+*Updated: 2026-01-30 after phase 21 planning*
