@@ -160,6 +160,46 @@ export function validateRow(
 		});
 	}
 
+	// Dimensions are optional - only validate if present
+	const length = row.Length?.trim() || '';
+	const width = row.Width?.trim() || '';
+	const height = row.Height?.trim() || '';
+
+	// If any dimension is provided, validate it's a valid positive number
+	if (length) {
+		const parsed = parseFloat(length);
+		if (isNaN(parsed) || parsed <= 0) {
+			errors.push({
+				row: rowNumber,
+				field: 'Length',
+				message: `Invalid length: ${length}. Must be a positive number`,
+				code: 'INVALID_NUMBER'
+			});
+		}
+	}
+	if (width) {
+		const parsed = parseFloat(width);
+		if (isNaN(parsed) || parsed <= 0) {
+			errors.push({
+				row: rowNumber,
+				field: 'Width',
+				message: `Invalid width: ${width}. Must be a positive number`,
+				code: 'INVALID_NUMBER'
+			});
+		}
+	}
+	if (height) {
+		const parsed = parseFloat(height);
+		if (isNaN(parsed) || parsed <= 0) {
+			errors.push({
+				row: rowNumber,
+				field: 'Height',
+				message: `Invalid height: ${height}. Must be a positive number`,
+				code: 'INVALID_NUMBER'
+			});
+		}
+	}
+
 	return errors;
 }
 
@@ -171,6 +211,11 @@ export function rowToBOMItem(row: Record<string, string>, position: number): BOM
 	const description = row.Description?.trim() || undefined;
 	const notes = row.Notes?.trim() || undefined;
 
+	// Parse optional dimension fields
+	const length = row.Length?.trim() ? parseFloat(row.Length.trim()) : undefined;
+	const width = row.Width?.trim() ? parseFloat(row.Width.trim()) : undefined;
+	const height = row.Height?.trim() ? parseFloat(row.Height.trim()) : undefined;
+
 	return {
 		id: `csv-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 		name: row.Name.trim(),
@@ -179,7 +224,11 @@ export function rowToBOMItem(row: Record<string, string>, position: number): BOM
 		unit: row.Unit.trim(),
 		description: description && description.length > 0 ? description : undefined,
 		notes: notes && notes.length > 0 ? notes : undefined,
-		hidden: false
+		hidden: false,
+		// Include dimensions if provided and valid
+		...(length && !isNaN(length) && length > 0 ? { length } : {}),
+		...(width && !isNaN(width) && width > 0 ? { width } : {}),
+		...(height && !isNaN(height) && height > 0 ? { height } : {})
 	};
 }
 
