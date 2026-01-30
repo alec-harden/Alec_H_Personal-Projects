@@ -10,7 +10,7 @@ See: `.planning/milestones/v3.0-ROADMAP.md` for full roadmap details.
 |-------|------|--------------|--------|
 | 13 | RBAC Foundation | 6 | ✓ Complete |
 | 14 | User Management (Admin) | 6 | ✓ Complete |
-| 15 | Email Infrastructure & Password Reset | 3 | Pending |
+| 15 | Email Infrastructure & Password Reset | 3 | ✓ Complete |
 | 16 | Email Verification | 3 | Pending |
 | 17 | BOM Refinements | 6 | Pending |
 | 18 | Cut Optimizer Foundation | 10 | Pending |
@@ -36,7 +36,7 @@ Phase 13: RBAC Foundation
 
 ## Next Action
 
-Run `/gsd:discuss-phase 15` to gather context for Email Infrastructure & Password Reset.
+Run `/gsd:discuss-phase 16` to gather context for Email Verification.
 
 ---
-*Updated: 2026-01-29 after phase 14 completion*
+*Updated: 2026-01-29 after phase 15 completion*

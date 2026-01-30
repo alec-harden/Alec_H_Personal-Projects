@@ -27,9 +27,9 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 
 ### Email Flows
 
-- [ ] **EMAIL-01**: User can request password reset from login page
-- [ ] **EMAIL-02**: User receives email with password reset link
-- [ ] **EMAIL-03**: User can set new password via reset link (expires in 1 hour)
+- [x] **EMAIL-01**: User can request password reset from login page
+- [x] **EMAIL-02**: User receives email with password reset link
+- [x] **EMAIL-03**: User can set new password via reset link (expires in 1 hour)
 - [ ] **EMAIL-04**: New user receives email verification request after signup
 - [ ] **EMAIL-05**: User can verify email by clicking link in email
 - [ ] **EMAIL-06**: User profile shows email verification status
@@ -151,9 +151,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | USER-04 | 14 | Complete |
 | USER-05 | 14 | Complete |
 | USER-06 | 14 | Complete |
-| EMAIL-01 | 15 | Pending |
-| EMAIL-02 | 15 | Pending |
-| EMAIL-03 | 15 | Pending |
+| EMAIL-01 | 15 | Complete |
+| EMAIL-02 | 15 | Complete |
+| EMAIL-03 | 15 | Complete |
 | EMAIL-04 | 16 | Pending |
 | EMAIL-05 | 16 | Pending |
 | EMAIL-06 | 16 | Pending |
@@ -203,4 +203,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after phase 14 completion*
+*Last updated: 2026-01-29 after phase 15 completion*
