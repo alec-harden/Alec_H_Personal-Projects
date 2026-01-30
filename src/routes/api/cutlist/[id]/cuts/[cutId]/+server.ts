@@ -9,11 +9,13 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { requireAuth } from '$lib/server/auth';
 import { db } from '$lib/server/db';
-import { cutLists, cutListCuts } from '$lib/server/schema';
+import { cutLists, cutListCuts, cutListStock } from '$lib/server/schema';
 import { eq, and } from 'drizzle-orm';
 
 interface PatchRequest {
-	completed: boolean;
+	completed?: boolean;
+	assignedStockId?: string | null;
+	overridePosition?: number | null;
 }
 
 export const PATCH: RequestHandler = async (event) => {
@@ -24,8 +26,8 @@ export const PATCH: RequestHandler = async (event) => {
 		const { id: cutListId, cutId } = event.params;
 		const body = (await event.request.json()) as PatchRequest;
 
-		// Validate request body
-		if (typeof body.completed !== 'boolean') {
+		// Validate completed field if provided
+		if ('completed' in body && typeof body.completed !== 'boolean') {
 			return json({ error: 'completed must be a boolean' }, { status: 400 });
 		}
 
@@ -58,18 +60,49 @@ export const PATCH: RequestHandler = async (event) => {
 			return json({ error: 'You do not have permission to modify this cut list' }, { status: 403 });
 		}
 
-		// Update the cut completion status
-		await db
-			.update(cutListCuts)
-			.set({
-				completed: body.completed,
-				completedAt: body.completed ? new Date() : null
-			})
-			.where(eq(cutListCuts.id, cutId));
+		// Build update object conditionally
+		const updates: Record<string, unknown> = {};
 
-		return json({ success: true });
+		if (typeof body.completed === 'boolean') {
+			updates.completed = body.completed;
+			updates.completedAt = body.completed ? new Date() : null;
+		}
+
+		if ('assignedStockId' in body) {
+			// Validate stock exists and belongs to same cutList if not null
+			if (body.assignedStockId !== null) {
+				const stock = await db.query.cutListStock.findFirst({
+					where: and(
+						eq(cutListStock.id, body.assignedStockId),
+						eq(cutListStock.cutListId, cutListId)
+					)
+				});
+				if (!stock) {
+					return json({ error: 'Stock not found' }, { status: 404 });
+				}
+			}
+			updates.assignedStockId = body.assignedStockId;
+		}
+
+		if ('overridePosition' in body) {
+			// Validate position is non-negative if provided
+			if (body.overridePosition !== null && body.overridePosition < 0) {
+				return json({ error: 'Position must be non-negative' }, { status: 400 });
+			}
+			updates.overridePosition = body.overridePosition;
+		}
+
+		// Only update if there are changes
+		if (Object.keys(updates).length === 0) {
+			return json({ error: 'No valid fields to update' }, { status: 400 });
+		}
+
+		// Update the cut
+		await db.update(cutListCuts).set(updates).where(eq(cutListCuts.id, cutId));
+
+		return json({ success: true, updates });
 	} catch (error) {
-		console.error('Update cut completion error:', error);
-		return json({ error: 'Failed to update cut completion' }, { status: 500 });
+		console.error('Update cut error:', error);
+		return json({ error: 'Failed to update cut' }, { status: 500 });
 	}
 };
