@@ -163,23 +163,23 @@
 	<!-- Mode Selection -->
 	<ModeSelector bind:mode onModeChange={handleModeChange} />
 
+	<!-- Kerf Configuration -->
+	<div class="kerf-section">
+		<KerfConfig bind:kerf />
+	</div>
+
 	<!-- Input Forms -->
 	<div class="input-section">
 		<div class="input-grid">
-			<!-- Cuts Form -->
-			<div class="input-column">
-				<CutInputForm bind:cuts {mode} />
-			</div>
-
-			<!-- Stock Form -->
+			<!-- Stock Form (LEFT) -->
 			<div class="input-column">
 				<StockInputForm bind:stock {mode} />
 			</div>
-		</div>
 
-		<!-- Kerf Configuration -->
-		<div class="kerf-section">
-			<KerfConfig bind:kerf />
+			<!-- Cuts Form (RIGHT) -->
+			<div class="input-column">
+				<CutInputForm bind:cuts {mode} />
+			</div>
 		</div>
 	</div>
 
