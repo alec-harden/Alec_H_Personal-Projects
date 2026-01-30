@@ -3,20 +3,27 @@
 	// Modern Artisan aesthetic with refined item rows
 
 	import type { BOMItem } from '$lib/types/bom';
+	import { calculateBoardFeet, formatBoardFeet, parseFractionalInches, formatDimension } from '$lib/utils/board-feet';
 
 	interface Props {
 		item: BOMItem;
 		onQuantityChange?: (id: string, quantity: number) => void;
 		onToggleVisibility?: (id: string) => void;
+		onDimensionChange?: (id: string, dimensions: { length?: number; width?: number; height?: number }) => void;
 		editable?: boolean;
 	}
 
-	let { item, onQuantityChange, onToggleVisibility, editable = true }: Props = $props();
+	let { item, onQuantityChange, onToggleVisibility, onDimensionChange, editable = true }: Props = $props();
 
-	// Edit mode state
+	// Quantity edit mode state
 	let editing = $state(false);
 	let inputValue = $state('');
 	let inputRef: HTMLInputElement | null = $state(null);
+
+	// Dimension edit mode state
+	let editingDimension = $state<'length' | 'width' | 'height' | null>(null);
+	let dimensionInputValue = $state('');
+	let dimensionInputRef: HTMLInputElement | null = $state(null);
 
 	// Sync inputValue with item.quantity when not actively editing
 	$effect(() => {
@@ -62,6 +69,72 @@
 			cancelEdit();
 		}
 	}
+
+	// Dimension edit functions
+	function startDimensionEdit(dim: 'length' | 'width' | 'height') {
+		if (!editable || !onDimensionChange) return;
+		const currentValue = item[dim];
+		dimensionInputValue = currentValue !== undefined ? formatDimension(currentValue) : '';
+		editingDimension = dim;
+		requestAnimationFrame(() => {
+			dimensionInputRef?.focus();
+			dimensionInputRef?.select();
+		});
+	}
+
+	function commitDimensionEdit() {
+		if (!editingDimension || !onDimensionChange) {
+			editingDimension = null;
+			return;
+		}
+
+		const parsed = parseFractionalInches(dimensionInputValue);
+		const currentDim = editingDimension;
+
+		if (parsed === null || parsed <= 0) {
+			// Invalid or empty: clear the dimension
+			const newDimensions = {
+				length: item.length,
+				width: item.width,
+				height: item.height,
+				[currentDim]: undefined
+			};
+			onDimensionChange(item.id, newDimensions);
+		} else if (parsed !== item[currentDim]) {
+			// Valid and different: update
+			const newDimensions = {
+				length: item.length,
+				width: item.width,
+				height: item.height,
+				[currentDim]: parsed
+			};
+			onDimensionChange(item.id, newDimensions);
+		}
+
+		editingDimension = null;
+	}
+
+	function cancelDimensionEdit() {
+		editingDimension = null;
+	}
+
+	function handleDimensionKeydown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			commitDimensionEdit();
+		} else if (e.key === 'Escape') {
+			e.preventDefault();
+			cancelDimensionEdit();
+		}
+	}
+
+	// Calculate board feet for this item (if all dimensions present)
+	const itemBoardFeet = $derived(() => {
+		if (item.length && item.width && item.height) {
+			return calculateBoardFeet(item.length, item.width, item.height) * item.quantity;
+		}
+		return 0;
+	});
 </script>
 
 <div class="item-row" class:item-hidden={item.hidden}>
@@ -116,6 +189,99 @@
 		{/if}
 
 		<span class="item-name" class:item-name-hidden={item.hidden}>{item.name}</span>
+
+		{#if item.category === 'lumber'}
+			<div class="dimension-section">
+				<!-- Length input -->
+				<div class="dimension-field">
+					<span class="dimension-label">L</span>
+					{#if editingDimension === 'length'}
+						<input
+							bind:this={dimensionInputRef}
+							type="text"
+							bind:value={dimensionInputValue}
+							onblur={commitDimensionEdit}
+							onkeydown={handleDimensionKeydown}
+							class="dimension-input"
+							placeholder="0"
+						/>
+					{:else}
+						<button
+							type="button"
+							onclick={() => startDimensionEdit('length')}
+							disabled={!editable || !onDimensionChange}
+							class="dimension-value"
+							class:dimension-editable={editable && onDimensionChange}
+						>
+							{item.length !== undefined ? formatDimension(item.length) : '-'}"
+						</button>
+					{/if}
+				</div>
+
+				<span class="dimension-separator">x</span>
+
+				<!-- Width input -->
+				<div class="dimension-field">
+					<span class="dimension-label">W</span>
+					{#if editingDimension === 'width'}
+						<input
+							bind:this={dimensionInputRef}
+							type="text"
+							bind:value={dimensionInputValue}
+							onblur={commitDimensionEdit}
+							onkeydown={handleDimensionKeydown}
+							class="dimension-input"
+							placeholder="0"
+						/>
+					{:else}
+						<button
+							type="button"
+							onclick={() => startDimensionEdit('width')}
+							disabled={!editable || !onDimensionChange}
+							class="dimension-value"
+							class:dimension-editable={editable && onDimensionChange}
+						>
+							{item.width !== undefined ? formatDimension(item.width) : '-'}"
+						</button>
+					{/if}
+				</div>
+
+				<span class="dimension-separator">x</span>
+
+				<!-- Height/Thickness input -->
+				<div class="dimension-field">
+					<span class="dimension-label">T</span>
+					{#if editingDimension === 'height'}
+						<input
+							bind:this={dimensionInputRef}
+							type="text"
+							bind:value={dimensionInputValue}
+							onblur={commitDimensionEdit}
+							onkeydown={handleDimensionKeydown}
+							class="dimension-input"
+							placeholder="0"
+						/>
+					{:else}
+						<button
+							type="button"
+							onclick={() => startDimensionEdit('height')}
+							disabled={!editable || !onDimensionChange}
+							class="dimension-value"
+							class:dimension-editable={editable && onDimensionChange}
+						>
+							{item.height !== undefined ? formatDimension(item.height) : '-'}"
+						</button>
+					{/if}
+				</div>
+
+				<!-- Board feet display -->
+				{#if itemBoardFeet() > 0}
+					<span class="board-feet">
+						= {formatBoardFeet(itemBoardFeet())}
+					</span>
+				{/if}
+			</div>
+		{/if}
 	</div>
 
 	{#if item.notes}
@@ -272,6 +438,75 @@
 		white-space: nowrap;
 	}
 
+	/* Dimension Section (lumber items only) */
+	.dimension-section {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		margin-left: var(--space-md);
+		font-size: 0.8125rem;
+	}
+
+	.dimension-field {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.dimension-label {
+		font-size: 0.6875rem;
+		color: var(--color-ink-muted);
+		text-transform: uppercase;
+	}
+
+	.dimension-value {
+		padding: 2px 6px;
+		min-width: 36px;
+		text-align: center;
+		background: none;
+		border: none;
+		border-radius: var(--radius-sm);
+		cursor: default;
+		color: var(--color-ink);
+		font-size: 0.8125rem;
+		font-family: var(--font-display);
+	}
+
+	.dimension-editable {
+		cursor: pointer;
+	}
+
+	.dimension-editable:hover {
+		background: rgba(93, 64, 55, 0.08);
+	}
+
+	.dimension-separator {
+		color: var(--color-ink-muted);
+	}
+
+	.dimension-input {
+		width: 48px;
+		padding: 2px 4px;
+		border: 1px solid var(--color-walnut);
+		border-radius: var(--radius-sm);
+		font-size: 0.8125rem;
+		font-family: var(--font-display);
+		text-align: center;
+		background: var(--color-white);
+		color: var(--color-ink);
+		outline: none;
+		box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.1);
+	}
+
+	.board-feet {
+		margin-left: var(--space-sm);
+		padding: 2px 8px;
+		background: rgba(93, 64, 55, 0.06);
+		border-radius: var(--radius-sm);
+		color: var(--color-walnut);
+		font-weight: 500;
+	}
+
 	/* Mobile responsiveness */
 	@media (max-width: 640px) {
 		.item-row {
@@ -285,6 +520,12 @@
 			max-width: 100%;
 			text-align: left;
 			padding-left: calc(28px + var(--space-md) + 80px + var(--space-md));
+		}
+
+		.dimension-section {
+			flex-wrap: wrap;
+			margin-left: calc(28px + var(--space-md));
+			margin-top: var(--space-xs);
 		}
 	}
 </style>
