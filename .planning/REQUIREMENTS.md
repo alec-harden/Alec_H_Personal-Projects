@@ -93,6 +93,24 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **CUT-31**: User can drag-drop materials to assign stock to cuts
 - [x] **CUT-32**: User can manually override algorithm cut placement
 
+### UI Refinements & Cut List Fixes ✓
+
+- [x] **UI-01**: Account creation requires First and Last names (default to 'Wood' and 'Worker' if blank)
+- [x] **UI-02**: Logged-in dropdown displays user's First Name
+- [x] **UI-03**: User dropdown fixed to top-right corner (fixed position, no scroll)
+- [x] **NAV-01**: Left Side Panel reorganized: Dashboard, Projects, BOMs, Cut Lists
+- [x] **NAV-02**: 'TOOLS' heading added below navigation with 'Create BOM' and 'Create Cut List'
+- [x] **NAV-03**: All Wood Movement Calculator references removed
+- [x] **NAV-04**: Dashboard shows only last 6 projects (sorted by most recent)
+- [x] **NAV-05**: 'Start new build' icon and '+ New project' button remain active
+- [x] **CUT-33**: Blade Kerf section moved above 'Available Stock' and 'Required Cuts'
+- [x] **CUT-34**: Layout change: 'Available Stock' on left, 'Required Cuts' on right
+- [x] **CUT-35**: BOM import loads materials into 'Available Stock' (not 'Required Cuts')
+- [x] **CUT-36**: Mandatory 2.5-second loading screen after 'Optimize Cuts' click
+- [x] **CUT-37**: New results page with 'Go Back' and 'Save to Project' buttons
+- [x] **CUT-38**: New route/view for saved Cut Lists
+- [x] **CUT-39**: Fix bug where saved Cut Lists are not viewable
+
 ## v4.0+ Requirements (Deferred)
 
 Acknowledged but deferred to future milestones.
@@ -195,12 +213,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CUT-30 | 21 | Complete |
 | CUT-31 | 21 | Complete |
 | CUT-32 | 21 | Complete |
+| UI-01 | 22 | Complete |
+| UI-02 | 22 | Complete |
+| UI-03 | 22 | Complete |
+| NAV-01 | 22 | Complete |
+| NAV-02 | 22 | Complete |
+| NAV-03 | 22 | Complete |
+| NAV-04 | 22 | Complete |
+| NAV-05 | 22 | Complete |
+| CUT-33 | 22 | Complete |
+| CUT-34 | 22 | Complete |
+| CUT-35 | 22 | Complete |
+| CUT-36 | 22 | Complete |
+| CUT-37 | 22 | Complete |
+| CUT-38 | 22 | Complete |
+| CUT-39 | 22 | Complete |
 
 **Coverage:**
-- v3.0 requirements: 44 total
-- Mapped to phases: 44
+- v3.0 requirements: 59 total
+- Mapped to phases: 59
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-30 after phase 21 completion*
+*Last updated: 2026-01-30 after phase 22 completion — v3.0 MILESTONE COMPLETE*
