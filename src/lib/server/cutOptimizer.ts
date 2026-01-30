@@ -246,13 +246,192 @@ export function optimizeCuts1D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 }
 
 /**
- * 2D Sheet optimization - placeholder implementation
- * TODO: Replace with guillotine algorithm in Phase 20
+ * Helper interfaces for 2D guillotine bin packing
+ */
+interface FreeRectangle {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
+interface ExpandedCut2D {
+	id: string;
+	label: string;
+	length: number;
+	width: number;
+	originalId: string;
+	grainMatters: boolean;
+}
+
+interface PlacedCut2D {
+	cut: ExpandedCut2D;
+	x: number;
+	y: number;
+	rotated: boolean;
+}
+
+/**
+ * Best Short Side Fit (BSSF) scoring function
+ * Returns the minimum leftover space in either dimension
+ */
+function scoreBSSF(
+	freeWidth: number,
+	freeHeight: number,
+	itemWidth: number,
+	itemHeight: number
+): number {
+	const leftoverHoriz = freeWidth - itemWidth;
+	const leftoverVert = freeHeight - itemHeight;
+	return Math.min(leftoverHoriz, leftoverVert);
+}
+
+/**
+ * Shorter Axis Split (SAS) - splits free rectangle after placement
+ * Applies kerf to the used dimensions
+ */
+function splitSAS(
+	freeRect: FreeRectangle,
+	placedWidth: number,
+	placedHeight: number,
+	kerf: number
+): FreeRectangle[] {
+	// Account for kerf in split calculations
+	const usedWidth = placedWidth + kerf;
+	const usedHeight = placedHeight + kerf;
+
+	const leftoverWidth = freeRect.width - usedWidth;
+	const leftoverHeight = freeRect.height - usedHeight;
+
+	const newRects: FreeRectangle[] = [];
+
+	// Split on shorter leftover axis
+	if (leftoverWidth < leftoverHeight) {
+		// Horizontal split
+		// Rectangle above the placed item
+		if (leftoverHeight > 0) {
+			newRects.push({
+				x: freeRect.x,
+				y: freeRect.y + usedHeight,
+				width: freeRect.width,
+				height: leftoverHeight
+			});
+		}
+		// Rectangle to the right of the placed item
+		if (leftoverWidth > 0) {
+			newRects.push({
+				x: freeRect.x + usedWidth,
+				y: freeRect.y,
+				width: leftoverWidth,
+				height: placedHeight
+			});
+		}
+	} else {
+		// Vertical split
+		// Rectangle to the right of the placed item
+		if (leftoverWidth > 0) {
+			newRects.push({
+				x: freeRect.x + usedWidth,
+				y: freeRect.y,
+				width: leftoverWidth,
+				height: freeRect.height
+			});
+		}
+		// Rectangle above the placed item
+		if (leftoverHeight > 0) {
+			newRects.push({
+				x: freeRect.x,
+				y: freeRect.y + usedHeight,
+				width: placedWidth,
+				height: leftoverHeight
+			});
+		}
+	}
+
+	return newRects;
+}
+
+/**
+ * Guillotine bin packing algorithm with BSSF+SAS
+ * Returns placed cuts and remaining free rectangles
+ */
+function guillotinePack(
+	cuts: ExpandedCut2D[],
+	stockWidth: number,
+	stockHeight: number,
+	kerf: number,
+	existingFreeRects?: FreeRectangle[]
+): { placed: PlacedCut2D[]; freeRectangles: FreeRectangle[] } {
+	// Initialize with existing free rectangles or entire stock
+	const freeRectangles: FreeRectangle[] = existingFreeRects || [
+		{ x: 0, y: 0, width: stockWidth, height: stockHeight }
+	];
+
+	const placed: PlacedCut2D[] = [];
+
+	for (const cut of cuts) {
+		let bestScore = Infinity;
+		let bestFreeRect: FreeRectangle | null = null;
+		let bestRotated = false;
+
+		// Try each free rectangle
+		for (const freeRect of freeRectangles) {
+			// Try upright orientation
+			if (cut.length <= freeRect.width && cut.width <= freeRect.height) {
+				const score = scoreBSSF(freeRect.width, freeRect.height, cut.length, cut.width);
+				if (score < bestScore) {
+					bestScore = score;
+					bestFreeRect = freeRect;
+					bestRotated = false;
+				}
+			}
+
+			// Try rotated orientation (if allowed)
+			if (
+				!cut.grainMatters &&
+				cut.width <= freeRect.width &&
+				cut.length <= freeRect.height
+			) {
+				const score = scoreBSSF(freeRect.width, freeRect.height, cut.width, cut.length);
+				if (score < bestScore) {
+					bestScore = score;
+					bestFreeRect = freeRect;
+					bestRotated = true;
+				}
+			}
+		}
+
+		if (!bestFreeRect) {
+			// Cut doesn't fit - leave it unplaced
+			continue;
+		}
+
+		// Place the cut
+		const placedWidth = bestRotated ? cut.width : cut.length;
+		const placedHeight = bestRotated ? cut.length : cut.width;
+
+		placed.push({
+			cut,
+			x: bestFreeRect.x,
+			y: bestFreeRect.y,
+			rotated: bestRotated
+		});
+
+		// Remove used rectangle and add new free rectangles
+		const index = freeRectangles.indexOf(bestFreeRect);
+		freeRectangles.splice(index, 1);
+
+		const newRects = splitSAS(bestFreeRect, placedWidth, placedHeight, kerf);
+		freeRectangles.push(...newRects);
+	}
+
+	return { placed, freeRectangles };
+}
+
+/**
+ * 2D Sheet optimization using Guillotine BSSF+SAS algorithm
  */
 export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): OptimizationResult {
-	// For now, treat as 1D optimization on length only
-	// This is a simplified placeholder - proper 2D nesting comes in Phase 20
-
 	// Validation
 	if (cuts.length === 0) {
 		return {
@@ -289,13 +468,7 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 	}
 
 	// Expand cuts by quantity
-	const expandedCuts: Array<{
-		id: string;
-		label: string;
-		length: number;
-		width: number;
-		originalId: string;
-	}> = [];
+	const expandedCuts: ExpandedCut2D[] = [];
 	cuts.forEach((cut) => {
 		for (let i = 0; i < cut.quantity; i++) {
 			expandedCuts.push({
@@ -303,21 +476,27 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 				label: cut.label || `Cut ${cut.length}"x${cut.width}"`,
 				length: cut.length,
 				width: cut.width ?? 0,
-				originalId: cut.id
+				originalId: cut.id,
+				grainMatters: cut.grainMatters ?? false
 			});
 		}
 	});
 
-	// Sort cuts descending by area (placeholder heuristic)
+	// Sort cuts descending by area (heuristic: place larger first)
 	expandedCuts.sort((a, b) => b.length * b.width - a.length * a.width);
 
-	// Check if largest cut fits in largest stock
+	// Check if largest cut fits in largest stock (both orientations)
 	const maxCutLength = Math.max(...cuts.map((c) => c.length));
 	const maxCutWidth = Math.max(...cuts.map((c) => c.width ?? 0));
 	const maxStockLength = Math.max(...stock.map((s) => s.length));
 	const maxStockWidth = Math.max(...stock.map((s) => s.width ?? 0));
 
-	if (maxCutLength > maxStockLength || maxCutWidth > maxStockWidth) {
+	// Check both orientations
+	const largestFits =
+		(maxCutLength <= maxStockLength && maxCutWidth <= maxStockWidth) ||
+		(maxCutWidth <= maxStockLength && maxCutLength <= maxStockWidth);
+
+	if (!largestFits) {
 		return {
 			success: false,
 			error: `Largest cut (${maxCutLength}"x${maxCutWidth}") exceeds largest stock (${maxStockLength}"x${maxStockWidth}")`,
@@ -354,58 +533,114 @@ export function optimizeCuts2D(cuts: Cut[], stock: Stock[], kerf: number): Optim
 		}
 	});
 
-	// Very simple placeholder: one cut per stock (will be replaced in Phase 20)
-	const plans: StockPlan[] = [];
+	// Sort stock descending by area (use larger sheets first)
+	expandedStock.sort((a, b) => b.length * b.width - a.length * a.width);
+
+	// Guillotine packing algorithm
+	interface PlanWithFreeRects extends StockPlan {
+		freeRectangles: FreeRectangle[];
+	}
+
+	const plans: PlanWithFreeRects[] = [];
 	const unplacedCuts: string[] = [];
-	let totalCutsPlaced = 0;
-	let totalWasteArea = 0;
 
 	for (const cut of expandedCuts) {
-		const availableStock = expandedStock[plans.length];
-		if (
-			availableStock &&
-			cut.length <= availableStock.length &&
-			cut.width <= availableStock.width
-		) {
-			const stockArea = availableStock.length * availableStock.width;
-			const cutArea = cut.length * cut.width;
-			const wasteArea = stockArea - cutArea;
+		let placed = false;
 
-			plans.push({
-				stockId: availableStock.id,
-				stockLabel: availableStock.label,
-				stockLength: availableStock.length,
-				stockWidth: availableStock.width,
-				cuts: [
-					{
-						cutId: cut.id,
-						cutLabel: cut.label,
-						length: cut.length,
-						width: cut.width,
-						x: 0, // Placeholder position
-						y: 0, // Placeholder position
-						rotated: false // Placeholder
-					}
-				],
-				wasteLength: 0, // Not meaningful for 2D
-				wasteArea
-			});
-			totalCutsPlaced++;
-			totalWasteArea += wasteArea;
-		} else {
-			if (!unplacedCuts.includes(cut.originalId)) {
-				unplacedCuts.push(cut.originalId);
+		// Try to fit into existing plans (sheets already in use)
+		for (const plan of plans) {
+			const result = guillotinePack(
+				[cut],
+				plan.stockLength,
+				plan.stockWidth ?? 0,
+				kerf,
+				plan.freeRectangles
+			);
+
+			if (result.placed.length > 0) {
+				// Successfully placed in this plan
+				const placedCut = result.placed[0];
+				plan.cuts.push({
+					cutId: placedCut.cut.id,
+					cutLabel: placedCut.cut.label,
+					length: placedCut.rotated ? placedCut.cut.width : placedCut.cut.length,
+					width: placedCut.rotated ? placedCut.cut.length : placedCut.cut.width,
+					x: placedCut.x,
+					y: placedCut.y,
+					rotated: placedCut.rotated
+				});
+				plan.freeRectangles = result.freeRectangles;
+				placed = true;
+				break;
 			}
+		}
+
+		// If not placed, try a new stock sheet
+		if (!placed) {
+			const availableStock = expandedStock[plans.length];
+			if (availableStock) {
+				const result = guillotinePack(
+					[cut],
+					availableStock.length,
+					availableStock.width,
+					kerf
+				);
+
+				if (result.placed.length > 0) {
+					const placedCut = result.placed[0];
+					plans.push({
+						stockId: availableStock.id,
+						stockLabel: availableStock.label,
+						stockLength: availableStock.length,
+						stockWidth: availableStock.width,
+						cuts: [
+							{
+								cutId: placedCut.cut.id,
+								cutLabel: placedCut.cut.label,
+								length: placedCut.rotated ? placedCut.cut.width : placedCut.cut.length,
+								width: placedCut.rotated ? placedCut.cut.length : placedCut.cut.width,
+								x: placedCut.x,
+								y: placedCut.y,
+								rotated: placedCut.rotated
+							}
+						],
+						wasteLength: 0, // Not meaningful for 2D
+						wasteArea: 0, // Calculated below
+						freeRectangles: result.freeRectangles
+					});
+					placed = true;
+				}
+			}
+		}
+
+		// Track unplaced cuts
+		if (!placed && !unplacedCuts.includes(cut.originalId)) {
+			unplacedCuts.push(cut.originalId);
 		}
 	}
 
-	// Calculate total stock material area
+	// Calculate waste for each plan using 2D kerf formula
+	for (const plan of plans) {
+		const stockArea = plan.stockLength * (plan.stockWidth ?? 0);
+		const totalCutArea = plan.cuts.reduce(
+			(sum, c) => sum + (c.length ?? 0) * (c.width ?? 0),
+			0
+		);
+
+		// Conservative kerf estimate: each cut loses kerf in both dimensions
+		const kerfLossArea = plan.cuts.reduce((sum, cut) => {
+			return sum + (cut.length ?? 0) * kerf + (cut.width ?? 0) * kerf;
+		}, 0);
+
+		plan.wasteArea = Math.max(0, stockArea - totalCutArea - kerfLossArea);
+	}
+
+	// Calculate summary
 	const totalStockArea = plans.reduce(
-		(sum, plan) => sum + (plan.stockLength * (plan.stockWidth ?? 0)),
+		(sum, plan) => sum + plan.stockLength * (plan.stockWidth ?? 0),
 		0
 	);
-
-	// Calculate waste percentage
+	const totalWasteArea = plans.reduce((sum, plan) => sum + (plan.wasteArea ?? 0), 0);
 	const wastePercentage = totalStockArea > 0 ? (totalWasteArea / totalStockArea) * 100 : 0;
 
 	return {
