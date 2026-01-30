@@ -41,7 +41,9 @@ export const users = sqliteTable('users', {
 	passwordHash: text('password_hash').notNull(),
 	role: text('role', { enum: ['user', 'admin'] }).notNull().default('user'),
 	disabled: integer('disabled', { mode: 'boolean' }).notNull().default(false),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	emailVerified: integer('email_verified', { mode: 'boolean' }).notNull().default(false),
+	emailVerifiedAt: integer('email_verified_at', { mode: 'timestamp' })
 });
 
 // Sessions table for session management
@@ -65,11 +67,22 @@ export const passwordResetTokens = sqliteTable('password_reset_tokens', {
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 });
 
+// Email verification tokens table
+export const emailVerificationTokens = sqliteTable('email_verification_tokens', {
+	tokenHash: text('token_hash').primaryKey(), // SHA-256 hash of token
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+});
+
 // Drizzle relations for query API
 export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(sessions),
 	projects: many(projects),
-	passwordResetTokens: many(passwordResetTokens)
+	passwordResetTokens: many(passwordResetTokens),
+	emailVerificationTokens: many(emailVerificationTokens)
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -82,6 +95,13 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 export const passwordResetTokensRelations = relations(passwordResetTokens, ({ one }) => ({
 	user: one(users, {
 		fields: [passwordResetTokens.userId],
+		references: [users.id]
+	})
+}));
+
+export const emailVerificationTokensRelations = relations(emailVerificationTokens, ({ one }) => ({
+	user: one(users, {
+		fields: [emailVerificationTokens.userId],
 		references: [users.id]
 	})
 }));
