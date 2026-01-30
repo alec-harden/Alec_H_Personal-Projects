@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 15 - Email Infrastructure & Password Reset
-Plan: 01 of 3 complete
+Plan: 02 of 3 complete
 Status: In progress
-Last activity: 2026-01-29 — Completed 15-01-PLAN.md (Email Infrastructure)
+Last activity: 2026-01-30 — Completed 15-02-PLAN.md (Password Reset Flow)
 
 Progress: [======================--------] Phase 15 of 21
 
@@ -32,7 +32,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 |-------|------|--------------|--------|
 | 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
 | 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (3/3 plans) |
-| 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | IN PROGRESS (1/3 plans) |
+| 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | IN PROGRESS (2/3 plans) |
 | 16 | Email Verification | EMAIL-04 to EMAIL-06 | Pending |
 | 17 | BOM Refinements | BOM-05 to BOM-10 | Pending |
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | Pending |
@@ -95,6 +95,12 @@ v3.0 stack additions (from research):
 - Invalidate all sessions on password reset (OWASP recommendation)
 - Lazy Resend client initialization (only when API key exists)
 
+**Phase 15-02 decisions:**
+- Identical response on forgot-password regardless of email existence (prevents enumeration)
+- Disabled accounts silently skip email send (no indicator to attacker)
+- Token validated in load() before showing reset form
+- Hidden token field in form for action submission
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -125,15 +131,14 @@ Key research flags:
 
 ## Session Continuity
 
-Last session: 2026-01-29
-Stopped at: Completed 15-01-PLAN.md (Email Infrastructure)
+Last session: 2026-01-30
+Stopped at: Completed 15-02-PLAN.md (Password Reset Flow)
 Resume file: None
 
 ## Next Steps
 
-1. Execute Phase 15-02: Password Reset Flow (routes)
-2. Execute Phase 15-03: (if exists)
-3. Continue through v3.0 phases
+1. Execute Phase 15-03: (if exists)
+2. Continue through v3.0 phases
 
 ---
-*Last updated: 2026-01-29 after 15-01-PLAN.md completion*
+*Last updated: 2026-01-30 after 15-02-PLAN.md completion*
