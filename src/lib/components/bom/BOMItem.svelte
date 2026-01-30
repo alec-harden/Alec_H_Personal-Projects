@@ -67,22 +67,26 @@
 <div class="item-row" class:item-hidden={item.hidden}>
 	<div class="item-left">
 		{#if onToggleVisibility}
-			<label class="checkbox-wrapper">
-				<input
-					type="checkbox"
-					checked={!item.hidden}
-					onchange={() => onToggleVisibility(item.id)}
-					class="checkbox-input"
-					aria-label="Include in BOM"
-				/>
-				<span class="checkbox-custom">
-					{#if !item.hidden}
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-						</svg>
-					{/if}
-				</span>
-			</label>
+			<button
+				type="button"
+				onclick={() => onToggleVisibility(item.id)}
+				class="visibility-toggle"
+				aria-label={item.hidden ? 'Show item' : 'Hide item'}
+				title={item.hidden ? 'Show item' : 'Hide item'}
+			>
+				{#if item.hidden}
+					<!-- Eye off icon (closed/hidden) -->
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="eye-icon">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+					</svg>
+				{:else}
+					<!-- Eye open icon (visible) -->
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="eye-icon">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+						<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+					</svg>
+				{/if}
+			</button>
 		{/if}
 
 		{#if editing}
@@ -147,46 +151,40 @@
 		gap: var(--space-md);
 	}
 
-	/* Custom Checkbox */
-	.checkbox-wrapper {
-		position: relative;
-		display: flex;
-		align-items: center;
-		cursor: pointer;
-	}
-
-	.checkbox-input {
-		position: absolute;
-		opacity: 0;
-		width: 0;
-		height: 0;
-	}
-
-	.checkbox-custom {
-		width: 18px;
-		height: 18px;
-		border: 2px solid var(--color-paper-dark);
-		border-radius: var(--radius-sm);
+	/* Visibility Toggle - Eye Icon */
+	.visibility-toggle {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		background: none;
+		border: none;
+		border-radius: var(--radius-sm);
+		cursor: pointer;
 		transition: all var(--transition-fast);
-		background: var(--color-white);
+		color: var(--color-ink-muted);
 	}
 
-	.checkbox-input:checked + .checkbox-custom {
-		background: var(--color-walnut);
-		border-color: var(--color-walnut);
+	.visibility-toggle:hover {
+		background: rgba(93, 64, 55, 0.08);
+		color: var(--color-walnut);
 	}
 
-	.checkbox-custom svg {
-		width: 12px;
-		height: 12px;
-		color: var(--color-white);
+	.visibility-toggle:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.2);
 	}
 
-	.checkbox-input:focus + .checkbox-custom {
-		box-shadow: 0 0 0 3px rgba(93, 64, 55, 0.15);
+	.eye-icon {
+		width: 18px;
+		height: 18px;
+	}
+
+	.item-hidden .visibility-toggle {
+		color: var(--color-ink-muted);
+		opacity: 0.6;
 	}
 
 	/* Quantity Display */
@@ -286,7 +284,7 @@
 		.item-notes {
 			max-width: 100%;
 			text-align: left;
-			padding-left: calc(18px + var(--space-md) + 80px + var(--space-md));
+			padding-left: calc(28px + var(--space-md) + 80px + var(--space-md));
 		}
 	}
 </style>
