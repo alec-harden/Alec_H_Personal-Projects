@@ -8,7 +8,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { requireAuth } from '$lib/server/auth';
 import { db } from '$lib/server/db';
-import { cutLists, cutListCuts } from '$lib/server/schema';
+import { cutLists, cutListCuts, cutListStock } from '$lib/server/schema';
 import { eq, and, asc } from 'drizzle-orm';
 
 export const load: PageServerLoad = async (event) => {
@@ -17,12 +17,15 @@ export const load: PageServerLoad = async (event) => {
 
 	const { id } = event.params;
 
-	// Query cut list with nested cuts
+	// Query cut list with nested cuts and stock
 	const cutList = await db.query.cutLists.findFirst({
 		where: and(eq(cutLists.id, id), eq(cutLists.userId, user.id)),
 		with: {
 			cuts: {
 				orderBy: asc(cutListCuts.position)
+			},
+			stock: {
+				orderBy: asc(cutListStock.position)
 			}
 		}
 	});

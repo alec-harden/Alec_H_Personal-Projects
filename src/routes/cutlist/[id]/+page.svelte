@@ -1,8 +1,12 @@
 <script lang="ts">
 	import ShopChecklist from '$lib/components/cutlist/ShopChecklist.svelte';
+	import ManualPlacement from '$lib/components/cutlist/ManualPlacement.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	// Tab state
+	let activeTab = $state<'checklist' | 'manual'>('checklist');
 
 	// Format date for display
 	function formatDate(date: Date): string {
@@ -53,21 +57,50 @@
 		</div>
 	</header>
 
+	<!-- Tabs -->
+	<div class="tabs">
+		<button
+			type="button"
+			class="tab-button"
+			class:tab-active={activeTab === 'checklist'}
+			onclick={() => (activeTab = 'checklist')}
+		>
+			Checklist
+		</button>
+		<button
+			type="button"
+			class="tab-button"
+			class:tab-active={activeTab === 'manual'}
+			onclick={() => (activeTab = 'manual')}
+		>
+			Manual Placement
+		</button>
+	</div>
+
 	<!-- Main Content -->
 	<main class="page-content">
 		<div class="content-card sanded-surface">
-			<ShopChecklist
-				cuts={data.cutList.cuts}
-				cutListId={data.cutList.id}
-				mode={data.cutList.mode}
-			/>
+			{#if activeTab === 'checklist'}
+				<ShopChecklist
+					cuts={data.cutList.cuts}
+					cutListId={data.cutList.id}
+					mode={data.cutList.mode}
+				/>
+			{:else}
+				<ManualPlacement
+					cuts={data.cutList.cuts}
+					stock={data.cutList.stock}
+					cutListId={data.cutList.id}
+					mode={data.cutList.mode}
+				/>
+			{/if}
 		</div>
 	</main>
 </div>
 
 <style>
 	.page-container {
-		max-width: 900px;
+		max-width: 1200px;
 		margin: 0 auto;
 		padding: var(--space-xl);
 	}
@@ -77,7 +110,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-md);
-		margin-bottom: var(--space-2xl);
+		margin-bottom: var(--space-xl);
 	}
 
 	.header-nav {
@@ -132,6 +165,38 @@
 
 	.metadata-value {
 		font-family: var(--font-mono, monospace);
+	}
+
+	/* Tabs */
+	.tabs {
+		display: flex;
+		gap: var(--space-xs);
+		margin-bottom: var(--space-xl);
+		border-bottom: 2px solid var(--color-border-light);
+	}
+
+	.tab-button {
+		padding: var(--space-sm) var(--space-lg);
+		background: none;
+		border: none;
+		border-bottom: 3px solid transparent;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: var(--color-ink-muted);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		margin-bottom: -2px;
+	}
+
+	.tab-button:hover {
+		color: var(--color-walnut);
+		background: rgba(93, 64, 55, 0.04);
+	}
+
+	.tab-button.tab-active {
+		color: var(--color-walnut);
+		border-bottom-color: var(--color-walnut);
+		font-weight: 600;
 	}
 
 	/* Main Content */
