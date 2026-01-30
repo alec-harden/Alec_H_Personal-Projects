@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 19 complete (verified), ready for Phase 20
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 20 complete (verified), ready for Phase 21
 
 ## Current Position
 
-Phase: 20 - Sheet Optimizer (2D)
-Plan: 02 of 02 complete
-Status: Phase complete
-Last activity: 2026-01-30 — Completed 20-02-PLAN.md (Visual Cut Diagrams - 2D)
+Phase: 21 - BOM Integration & Shop Checklist
+Plan: Not started
+Status: Ready for planning
+Last activity: 2026-01-30 — Completed Phase 20: Sheet Optimizer (verified)
 
-Progress: [==============================-] Phase 20 of 21
+Progress: [================================] Phase 21 of 21
 
 ## Milestone History
 
@@ -211,7 +211,7 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 20-02-PLAN.md (Visual Cut Diagrams - 2D)
+Stopped at: Phase 20 complete (verified)
 Resume file: None
 
 ## Next Steps
@@ -221,4 +221,4 @@ Resume file: None
 3. Audit and ship v3.0 milestone
 
 ---
-*Last updated: 2026-01-30 after phase 20-02 completion (Phase 20 complete)*
+*Last updated: 2026-01-30 after phase 20 completion (verified)*

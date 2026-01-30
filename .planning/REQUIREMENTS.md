@@ -65,14 +65,14 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **CUT-15**: Linear mode visualizes unused portions of stock
 - [x] **CUT-16**: 1D bin packing algorithm (FFD) produces optimal-ish cuts
 
-### Cut List Optimizer - Sheet (2D)
+### Cut List Optimizer - Sheet (2D) ✓
 
-- [ ] **CUT-17**: Sheet mode accepts cut dimensions (L x W)
-- [ ] **CUT-18**: Sheet mode accepts sheet dimensions
-- [ ] **CUT-19**: Sheet mode supports grain direction toggle per cut
-- [ ] **CUT-20**: Sheet mode displays cut diagram visualization
-- [ ] **CUT-21**: Sheet mode displays number of sheets needed
-- [ ] **CUT-22**: 2D nesting algorithm (guillotine) produces optimal-ish placement
+- [x] **CUT-17**: Sheet mode accepts cut dimensions (L x W)
+- [x] **CUT-18**: Sheet mode accepts sheet dimensions
+- [x] **CUT-19**: Sheet mode supports grain direction toggle per cut
+- [x] **CUT-20**: Sheet mode displays cut diagram visualization
+- [x] **CUT-21**: Sheet mode displays number of sheets needed
+- [x] **CUT-22**: 2D nesting algorithm (guillotine) produces optimal-ish placement
 
 ### Cut List Optimizer - BOM Integration
 
@@ -179,12 +179,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CUT-14 | 19 | Complete |
 | CUT-15 | 19 | Complete |
 | CUT-16 | 19 | Complete |
-| CUT-17 | 20 | Pending |
-| CUT-18 | 20 | Pending |
-| CUT-19 | 20 | Pending |
-| CUT-20 | 20 | Pending |
-| CUT-21 | 20 | Pending |
-| CUT-22 | 20 | Pending |
+| CUT-17 | 20 | Complete |
+| CUT-18 | 20 | Complete |
+| CUT-19 | 20 | Complete |
+| CUT-20 | 20 | Complete |
+| CUT-21 | 20 | Complete |
+| CUT-22 | 20 | Complete |
 | CUT-23 | 21 | Pending |
 | CUT-24 | 21 | Pending |
 | CUT-25 | 21 | Pending |
@@ -203,4 +203,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after phase 17 completion*
+*Last updated: 2026-01-30 after phase 20 completion*
