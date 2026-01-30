@@ -169,7 +169,6 @@
 					description="Optimize your cuts to minimize waste and maximize material efficiency."
 					href="/cutlist"
 					icon="scissors"
-					disabled={true}
 				/>
 
 				<ToolCard
