@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 17 in progress
+**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 17 complete, ready for Phase 18
 
 ## Current Position
 
-Phase: 17 - BOM Refinements
-Plan: 03 of 3 complete
-Status: Phase complete
-Last activity: 2026-01-29 — Completed 17-03-PLAN.md (CSV Dimension Export/Import)
+Phase: 18 - Cut Optimizer Foundation
+Plan: Not started
+Status: Ready for planning
+Last activity: 2026-01-29 — Completed Phase 17: BOM Refinements (verified)
 
-Progress: [=========================-----] Phase 17 of 21
+Progress: [===========================---] Phase 18 of 21
 
 ## Milestone History
 
@@ -157,13 +157,13 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 17-03-PLAN.md (CSV Dimension Export/Import)
+Stopped at: Phase 17 complete (verified)
 Resume file: None
 
 ## Next Steps
 
-1. Begin Phase 18: Cut Optimizer Foundation
-2. Continue through v3.0 phases
+1. Plan and execute Phase 18: Cut Optimizer Foundation
+2. Continue through v3.0 phases (Linear/Sheet optimizers follow)
 
 ---
-*Last updated: 2026-01-29 after 17-03 completion*
+*Last updated: 2026-01-29 after phase 17 completion (verified)*

@@ -34,14 +34,14 @@ Requirements for v3.0 Multi-User & Cut Optimizer milestone. Grouped by feature a
 - [x] **EMAIL-05**: User can verify email by clicking link in email
 - [x] **EMAIL-06**: User profile shows email verification status
 
-### BOM Refinements
+### BOM Refinements ✓
 
-- [ ] **BOM-05**: Visibility toggle uses eye icon (not checkbox)
-- [ ] **BOM-06**: Lumber items have dimension fields (length, width, height)
-- [ ] **BOM-07**: Lumber items display board feet (calculated from dimensions)
-- [ ] **BOM-08**: Lumber category shows total board feet
-- [ ] **BOM-09**: CSV export includes dimension columns for lumber
-- [ ] **BOM-10**: CSV import parses dimension columns for lumber
+- [x] **BOM-05**: Visibility toggle uses eye icon (not checkbox)
+- [x] **BOM-06**: Lumber items have dimension fields (length, width, height)
+- [x] **BOM-07**: Lumber items display board feet (calculated from dimensions)
+- [x] **BOM-08**: Lumber category shows total board feet
+- [x] **BOM-09**: CSV export includes dimension columns for lumber
+- [x] **BOM-10**: CSV import parses dimension columns for lumber
 
 ### Cut List Optimizer - Core
 
@@ -157,12 +157,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EMAIL-04 | 16 | Complete |
 | EMAIL-05 | 16 | Complete |
 | EMAIL-06 | 16 | Complete |
-| BOM-05 | 17 | Pending |
-| BOM-06 | 17 | Pending |
-| BOM-07 | 17 | Pending |
-| BOM-08 | 17 | Pending |
-| BOM-09 | 17 | Pending |
-| BOM-10 | 17 | Pending |
+| BOM-05 | 17 | Complete |
+| BOM-06 | 17 | Complete |
+| BOM-07 | 17 | Complete |
+| BOM-08 | 17 | Complete |
+| BOM-09 | 17 | Complete |
+| BOM-10 | 17 | Complete |
 | CUT-01 | 18 | Pending |
 | CUT-02 | 18 | Pending |
 | CUT-03 | 18 | Pending |
@@ -203,4 +203,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after phase 16 completion*
+*Last updated: 2026-01-29 after phase 17 completion*
