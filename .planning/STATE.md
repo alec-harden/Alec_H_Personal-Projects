@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 20 - Sheet Optimizer (2D)
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-01-29 — Completed Phase 19: Linear Optimizer (verified)
+Plan: 01 of 02 complete
+Status: In progress
+Last activity: 2026-01-30 — Completed 20-01-PLAN.md (Guillotine 2D Bin Packing)
 
 Progress: [==============================-] Phase 20 of 21
 
@@ -37,7 +37,7 @@ See `.planning/MILESTONES.md` for full milestone details.
 | 17 | BOM Refinements | BOM-05 to BOM-10 | COMPLETE (3/3 plans) |
 | 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | COMPLETE (4/4 plans) |
 | 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | COMPLETE (2/2 plans) |
-| 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | Pending |
+| 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | IN PROGRESS (1/2 plans) |
 | 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | Pending |
 
 ## Accumulated Context
@@ -166,6 +166,13 @@ v3.0 stack additions (from research):
 - Diagrams section placed between summary and plans for logical flow
 - $derived.by() used for complex computed values with multiple steps in Svelte 5
 
+**Phase 20-01 decisions:**
+- Grain toggle defaults to unchecked (rotation allowed) for maximum packing efficiency
+- BSSF+SAS chosen over MaxRects for guaranteed guillotine separability
+- Conservative kerf estimate: each cut loses kerf in both dimensions
+- Grain toggle only visible in sheet mode (not applicable to linear cuts)
+- Free rectangles tracked per plan for multi-cut placement on single sheet
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -196,15 +203,15 @@ Key research flags:
 
 ## Session Continuity
 
-Last session: 2026-01-29
-Stopped at: Phase 19 complete (verified)
+Last session: 2026-01-30
+Stopped at: Completed 20-01-PLAN.md (Guillotine 2D Bin Packing with Grain Direction)
 Resume file: None
 
 ## Next Steps
 
-1. Plan and execute Phase 20: Sheet Optimizer (2D) - Guillotine algorithm
-2. Continue to Phase 21: BOM Integration & Shop Checklist
+1. Continue Phase 20: Plan 20-02 - Visual Cut Diagrams (2D SVG visualization)
+2. Complete Phase 20 and continue to Phase 21: BOM Integration & Shop Checklist
 3. Audit and ship v3.0 milestone
 
 ---
-*Last updated: 2026-01-29 after phase 19 completion (verified)*
+*Last updated: 2026-01-30 after phase 20-01 completion*
