@@ -25,6 +25,10 @@ export interface BOMItem {
 	category: BOMCategory;
 	notes?: string;
 	hidden?: boolean; // Phase 4: visibility toggle support (EDIT-03)
+	// Lumber dimensions (for lumber category items only)
+	length?: number; // inches
+	width?: number; // inches
+	height?: number; // inches (thickness)
 }
 
 /**

@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 import { relations } from 'drizzle-orm';
 
 // =============================================================================
@@ -154,7 +154,11 @@ export const bomItems = sqliteTable('bom_items', {
 	category: text('category').notNull(),
 	notes: text('notes'),
 	hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
-	position: integer('position').notNull()
+	position: integer('position').notNull(),
+	// Lumber dimensions (nullable, for lumber items only)
+	length: real('length'), // inches
+	width: real('width'), // inches
+	height: real('height') // inches (thickness)
 });
 
 // BOMs relations
