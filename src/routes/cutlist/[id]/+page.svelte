@@ -27,7 +27,7 @@
 	<!-- Header -->
 	<header class="page-header">
 		<div class="header-nav">
-			<a href="/cutlist" class="back-link">
+			<a href="/cutlists" class="back-link">
 				<svg
 					viewBox="0 0 24 24"
 					fill="none"
