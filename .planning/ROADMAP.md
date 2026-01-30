@@ -17,10 +17,11 @@ See: `.planning/milestones/v3.0-ROADMAP.md` for full roadmap details.
 | 19 | Linear Optimizer (1D) | 6 | Complete |
 | 20 | Sheet Optimizer (2D) | 6 | Complete |
 | 21 | BOM Integration & Shop Checklist | 10 | Complete |
+| 22 | UI Refinements & Cut List Fixes | 15 | Ready |
 
-**Total:** 9 phases, 56 requirements
+**Total:** 10 phases, 71 requirements
 
-## Phase 21: BOM Integration & Shop Checklist ✓
+## Phase 21: BOM Integration & Shop Checklist (Complete)
 
 **Goal:** BOM Integration allows pre-populating cuts from project lumber; Shop Checklist tracks cut completion with persistent progress; Manual overrides enable drag-drop stock assignment and position editing.
 
@@ -32,6 +33,21 @@ Plans:
 - [x] 21-02-PLAN.md — Shop Checklist (schema extension, checklist view, progress indicator, persistence)
 - [x] 21-03-PLAN.md — Manual Overrides (drag-drop stock assignment, position editing, conflict detection)
 
+## Phase 22: UI Refinements & Cut List Fixes
+
+**Goal:** Polish user account handling and header UI, reorganize navigation sidebar, improve cut list optimizer layout and BOM loading logic, and fix saved cut list viewing.
+
+**Plans:** 4 plans in 2 waves
+**Status:** Ready for execution
+
+Wave 1 (parallel):
+- [ ] 22-01-PLAN.md — Account Logic & Header UI (schema migration, name fields, fixed dropdown)
+- [ ] 22-02-PLAN.md — Sidebar Restructure & Dashboard Logic (navigation sections, project limit)
+- [ ] 22-03-PLAN.md — Cut List Optimizer UI & Logic (kerf first, stock/cuts layout, BOM fix, loading screen)
+
+Wave 2 (depends on 22-03):
+- [ ] 22-04-PLAN.md — Optimization Results & Data Persistence (results page, cut lists listing, viewing fix)
+
 ## Dependencies
 
 ```
@@ -42,13 +58,14 @@ Phase 13: RBAC Foundation
     +-- Phase 17: BOM Refinements
             +-- Phase 18: Cut Optimizer Foundation
                     +-- Phase 19: Linear Optimizer (1D)
-                            +-- Phase 20: Sheet Optimizer (2D) ✓
-                                    +-- Phase 21: BOM Integration & Shop Checklist ✓
+                            +-- Phase 20: Sheet Optimizer (2D)
+                                    +-- Phase 21: BOM Integration & Shop Checklist
+                                            +-- Phase 22: UI Refinements & Cut List Fixes
 ```
 
 ## Next Action
 
-All phases complete. Run `/gsd:audit-milestone` to verify v3.0 milestone completion.
+Run `/gsd:execute-phase 22` to implement the UI refinements and cut list fixes.
 
 ---
-*Updated: 2026-01-30 after phase 21 execution complete*
+*Updated: 2026-01-30 after planning phase 22*
