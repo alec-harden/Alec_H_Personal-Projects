@@ -9,34 +9,47 @@
 		href: string;
 		icon: string;
 		description?: string;
-		disabled?: boolean;
 	}
 
-	const navItems: NavItem[] = [
+	const navigationItems: NavItem[] = [
 		{
 			label: 'Dashboard',
 			href: '/',
 			icon: 'home',
-			description: 'Overview & projects'
+			description: 'Overview & recent projects'
 		},
 		{
-			label: 'BOM Generator',
-			href: '/bom/new',
+			label: 'Projects',
+			href: '/projects',
+			icon: 'folder',
+			description: 'View all projects'
+		},
+		{
+			label: 'BOMs',
+			href: '/projects',
 			icon: 'clipboard',
-			description: 'Create bill of materials'
+			description: 'View all bills of materials'
 		},
 		{
-			label: 'Cut List',
+			label: 'Cut Lists',
 			href: '/cutlist',
 			icon: 'scissors',
-			description: 'Optimize material cuts'
+			description: 'View all cut lists'
+		}
+	];
+
+	const toolItems: NavItem[] = [
+		{
+			label: 'Create BOM',
+			href: '/bom/new',
+			icon: 'clipboard-plus',
+			description: 'New bill of materials'
 		},
 		{
-			label: 'Calculator',
-			href: '/calculator',
-			icon: 'ruler',
-			description: 'Wood movement calc',
-			disabled: true
+			label: 'Create Cut List',
+			href: '/cutlist',
+			icon: 'scissors-plus',
+			description: 'New cut optimizer'
 		}
 	];
 
@@ -48,9 +61,11 @@
 	// SVG icon paths
 	const icons: Record<string, string> = {
 		home: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+		folder: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z',
 		clipboard: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+		'clipboard-plus': 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
 		scissors: 'M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z',
-		ruler: 'M14 5.76l-5 5V18a2 2 0 002 2h6a2 2 0 002-2V9a2 2 0 00-.586-1.414l-4-4A2 2 0 0014 3H9a2 2 0 00-2 2v.76'
+		'scissors-plus': 'M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z'
 	};
 </script>
 
@@ -77,49 +92,64 @@
 
 	<!-- Navigation -->
 	<nav class="sidebar-nav">
-		<div class="nav-section-label">Tools</div>
+		<!-- NAVIGATION Section -->
+		<div class="nav-section-label">NAVIGATION</div>
 		<ul class="nav-list">
-			{#each navItems as item}
+			{#each navigationItems as item}
 				{@const active = isActive(item.href, $page.url.pathname)}
 				<li>
-					{#if item.disabled}
-						<div class="nav-item nav-item-disabled" aria-disabled="true">
-							<div class="nav-item-icon">
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-									<path d={icons[item.icon]} />
-								</svg>
-							</div>
-							<div class="nav-item-content">
-								<span class="nav-item-label">{item.label}</span>
-								{#if item.description}
-									<span class="nav-item-description">{item.description}</span>
-								{/if}
-							</div>
-							<span class="badge badge-neutral">Soon</span>
+					<a
+						href={item.href}
+						class="nav-item sanded-surface"
+						class:nav-item-active={active}
+						aria-current={active ? 'page' : undefined}
+					>
+						<div class="nav-item-icon" class:nav-item-icon-active={active}>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+								<path d={icons[item.icon]} />
+							</svg>
 						</div>
-					{:else}
-						<a
-							href={item.href}
-							class="nav-item sanded-surface"
-							class:nav-item-active={active}
-							aria-current={active ? 'page' : undefined}
-						>
-							<div class="nav-item-icon" class:nav-item-icon-active={active}>
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-									<path d={icons[item.icon]} />
-								</svg>
-							</div>
-							<div class="nav-item-content">
-								<span class="nav-item-label">{item.label}</span>
-								{#if item.description}
-									<span class="nav-item-description">{item.description}</span>
-								{/if}
-							</div>
-							{#if active}
-								<div class="nav-item-indicator"></div>
+						<div class="nav-item-content">
+							<span class="nav-item-label">{item.label}</span>
+							{#if item.description}
+								<span class="nav-item-description">{item.description}</span>
 							{/if}
-						</a>
-					{/if}
+						</div>
+						{#if active}
+							<div class="nav-item-indicator"></div>
+						{/if}
+					</a>
+				</li>
+			{/each}
+		</ul>
+
+		<!-- TOOLS Section -->
+		<div class="nav-section-label nav-section-label-spaced">TOOLS</div>
+		<ul class="nav-list">
+			{#each toolItems as item}
+				{@const active = isActive(item.href, $page.url.pathname)}
+				<li>
+					<a
+						href={item.href}
+						class="nav-item sanded-surface"
+						class:nav-item-active={active}
+						aria-current={active ? 'page' : undefined}
+					>
+						<div class="nav-item-icon" class:nav-item-icon-active={active}>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+								<path d={icons[item.icon]} />
+							</svg>
+						</div>
+						<div class="nav-item-content">
+							<span class="nav-item-label">{item.label}</span>
+							{#if item.description}
+								<span class="nav-item-description">{item.description}</span>
+							{/if}
+						</div>
+						{#if active}
+							<div class="nav-item-indicator"></div>
+						{/if}
+					</a>
 				</li>
 			{/each}
 		</ul>
@@ -229,6 +259,10 @@
 		margin-bottom: var(--space-xs);
 	}
 
+	.nav-section-label-spaced {
+		margin-top: var(--space-lg);
+	}
+
 	.nav-list {
 		list-style: none;
 		padding: 0;
@@ -248,11 +282,6 @@
 		color: var(--color-ink);
 		position: relative;
 		overflow: hidden;
-	}
-
-	.nav-item-disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
 	}
 
 	.nav-item-icon {
