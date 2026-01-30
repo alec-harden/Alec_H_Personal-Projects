@@ -32,7 +32,7 @@
 		},
 		{
 			label: 'Cut Lists',
-			href: '/cutlist',
+			href: '/cutlists',
 			icon: 'scissors',
 			description: 'View all cut lists'
 		}
