@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Phase: 22 - UI Refinements & Cut List Fixes
-Plan: 2 of 4 (Completed 22-01)
+Plan: 3 of 4 (Completed 22-03)
 Status: In progress
-Last activity: 2026-01-30 — Completed 22-01-PLAN.md (User names and UI fixes)
+Last activity: 2026-01-30 — Completed 22-03-PLAN.md (Cut list UI refinements)
 
-Progress: [████████████████████████████████░] Phase 22 of 22 (97%)
+Progress: [████████████████████████████████░] Phase 22 of 22 (98%)
 
 ## Milestone History
 
@@ -213,6 +213,12 @@ v3.0 stack additions (from research):
 - Dashboard shows maximum 6 most recent projects (already implemented)
 - Icon variants (clipboard-plus, scissors-plus) differentiate creation from viewing
 
+**Phase 22-03 decisions:**
+- Kerf configuration moved above input forms for logical flow (configure before entering data)
+- Stock displayed on left, Cuts on right (what you have vs what you need)
+- BOM lumber items are available stock, not required cuts (semantically correct)
+- Loading screen only delays on success; errors show immediately
+
 See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
 
 ### Pending Todos
@@ -244,16 +250,17 @@ Key research flags:
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 22-01-PLAN.md (User names and UI fixes)
+Stopped at: Completed 22-03-PLAN.md (Cut list UI refinements)
 Resume file: None
 
 ## Next Steps
 
 1. **Phase 22-01 complete** - User profiles with firstName/lastName, personalized UI
 2. **Phase 22-02 complete** - Sidebar reorganized with NAVIGATION/TOOLS sections
-3. Continue with remaining Phase 22 plans (22-03, 22-04)
-4. Requirements covered: UI-01 to UI-03 ✓, NAV-01 to NAV-05 ✓
-5. Remaining: CUT-33 to CUT-39
+3. **Phase 22-03 complete** - Cut list UI refinements (kerf first, stock/cuts layout, BOM import fix)
+4. Continue with final Phase 22 plan (22-04)
+5. Requirements covered: UI-01 to UI-03 ✓, NAV-01 to NAV-05 ✓, CUT-33 to CUT-36 ✓
+6. Remaining: CUT-37 to CUT-39
 
 ---
-*Last updated: 2026-01-30 after completing 22-01-PLAN.md*
+*Last updated: 2026-01-30 after completing 22-03-PLAN.md*
