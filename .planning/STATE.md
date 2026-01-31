@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-29)
+See: .planning/PROJECT.md (updated 2026-01-30)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** v3.0 Multi-User & Cut Optimizer — Phase 22 added (UI Refinements & Cut List Fixes)
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 22 - UI Refinements & Cut List Fixes
-Plan: 4 of 4 (COMPLETE)
-Status: Phase complete
-Last activity: 2026-01-30 — Completed 22-04-PLAN.md (Cut list results & navigation)
+Phase: N/A (between milestones)
+Plan: N/A
+Status: Ready to plan
+Last activity: 2026-01-30 — v3.0 milestone complete
 
-Progress: [█████████████████████████████████] Phase 22 of 22 (100%)
+Progress: [█████████████████████████████████] v3.0 shipped!
 
 ## Milestone History
 
@@ -22,30 +22,15 @@ Progress: [███████████████████████
 |-----------|--------|--------|---------|
 | v1.0 MVP | 1-7 | SHIPPED | 2026-01-23 |
 | v2.0 Persistence | 8-12 | SHIPPED | 2026-01-28 |
-| v3.0 Multi-User & Cut Optimizer | 13-21 | IN PROGRESS | — |
+| v3.0 Multi-User & Cut Optimizer | 13-22 | SHIPPED | 2026-01-30 |
 
 See `.planning/MILESTONES.md` for full milestone details.
-
-## v3.0 Phase Overview
-
-| Phase | Name | Requirements | Status |
-|-------|------|--------------|--------|
-| 13 | RBAC Foundation | RBAC-01 to RBAC-06 | COMPLETE (2/2 plans) |
-| 14 | User Management (Admin) | USER-01 to USER-06 | COMPLETE (3/3 plans) |
-| 15 | Email Infrastructure & Password Reset | EMAIL-01 to EMAIL-03 | COMPLETE (2/2 plans) |
-| 16 | Email Verification | EMAIL-04 to EMAIL-06 | COMPLETE (2/2 plans) |
-| 17 | BOM Refinements | BOM-05 to BOM-10 | COMPLETE (3/3 plans) |
-| 18 | Cut Optimizer Foundation | CUT-01 to CUT-10 | COMPLETE (4/4 plans) |
-| 19 | Linear Optimizer (1D) | CUT-11 to CUT-16 | COMPLETE (2/2 plans) |
-| 20 | Sheet Optimizer (2D) | CUT-17 to CUT-22 | COMPLETE (2/2 plans) |
-| 21 | BOM Integration & Shop Checklist | CUT-23 to CUT-32 | COMPLETE (3/3 plans) |
-| 22 | UI Refinements & Cut List Fixes | UI-01 to CUT-39 | COMPLETE (4/4 plans) |
 
 ## Accumulated Context
 
 ### Decisions
 
-Tech stack and patterns established in v1.0-v2.0:
+Tech stack and patterns established across v1.0-v3.0:
 - SvelteKit + Drizzle + Turso + Vercel AI SDK
 - Tailwind v4 with @tailwindcss/vite plugin
 - Provider factory pattern for AI (createAnthropic/createOpenAI)
@@ -56,175 +41,13 @@ Tech stack and patterns established in v1.0-v2.0:
 - Sessions stored in Turso database
 - Optimistic UI for BOM edits
 - Cascade delete patterns (user -> projects -> boms -> items)
-
-v3.0 stack additions (from research):
 - resend (^6.9.1) — Transactional email API
 - svelte-dnd-action (^0.9.69) — Drag-drop for cut assignment
-- Custom optimizer algorithms (not external bin-packing libraries)
+- Custom optimizer algorithms (FFD 1D, Guillotine 2D)
+- Native HTML5 drag-drop for manual overrides
+- Navigation state passing via SvelteKit goto()
 
-**Phase 13-01 decisions:**
-- Role stored as text enum ('user' | 'admin') with 'user' default
-- Authorization guard pattern: requireAuth/requireAdmin return user object
-- requireAdmin() composes with requireAuth() internally
-
-**Phase 13-02 decisions:**
-- requireAdmin() called in both load() and all form actions (actions bypass load guards)
-- First-admin via count=0 check before insert (acceptable race condition for hobby app)
-- Data isolation enforced at route level with userId ownership chains
-
-**Phase 14-01 decisions:**
-- Disabled message shown after password verified (user needs to know why they cannot log in)
-- Session deletion on disabled check in hooks (immediate logout effect)
-- Check order: password first, then account status (prevents user enumeration)
-- Account state validation in hooks middleware for real-time enforcement
-
-**Phase 14-02 decisions:**
-- Email normalized to lowercase before storage for consistent duplicate checking
-- Role defaults to 'user' when not specified in create form
-- Redirect to /admin/users/{id} after creation (PRG pattern)
-- Passwords excluded from query results using Drizzle columns option
-
-**Phase 14-03 decisions:**
-- Self-disable prevention via adminUser.id comparison
-- Confirmation checkbox required for toggle disabled action
-- isOwnAccount derived from $page.data.user?.id for UI disable
-
-**Phase 15-01 decisions:**
-- SHA-256 hash tokens before storage (never store plaintext)
-- 1-hour token expiry (OWASP standard)
-- Single active token per user (delete existing before creating new)
-- Invalidate all sessions on password reset (OWASP recommendation)
-- Lazy Resend client initialization (only when API key exists)
-
-**Phase 15-02 decisions:**
-- Identical response on forgot-password regardless of email existence (prevents enumeration)
-- Disabled accounts silently skip email send (no indicator to attacker)
-- Token validated in load() before showing reset form
-- Hidden token field in form for action submission
-
-**Phase 16-01 decisions:**
-- 24-hour token expiry for email verification (longer than 1-hour password reset)
-- Single active token per user (delete existing before creating new)
-- markEmailAsVerified consumes token atomically when email marked verified
-
-**Phase 16-02 decisions:**
-- Rate limiting: 3 resends per 15-minute window using in-memory Map
-- Signup email send is non-blocking (errors logged, signup continues)
-- Verification happens in load() for immediate result display
-
-**Phase 17-01 decisions:**
-- Nullable real columns for dimensions (only lumber items need them)
-- Eye icon button replacing checkbox (open=visible, slashed=hidden)
-
-**Phase 17-02 decisions:**
-- Fractional inch parsing supports 3/4, 1-1/2, and 1 1/2 formats
-- Board feet formula: (L x W x H) / 144
-- Common fractions converted back from decimals for display
-- Total board feet only counts visible items
-
-**Phase 17-03 decisions:**
-- Dimension columns placed after Notes column (natural extension of existing format)
-- Non-lumber items export empty strings for dimensions
-- Dimensions are optional in import validation (backward compatibility with old CSVs)
-
-**Phase 18-01 decisions:**
-- Cut lists can exist independently or be associated with projects (nullable projectId)
-- Mode selection (Linear vs Sheet) determines which optimization algorithm and input forms to use
-- Default kerf width set to 0.125 inches (standard 1/8 inch table saw blade)
-- Tool works without authentication, but save functionality requires login
-
-**Phase 18-02 decisions:**
-- Cut and Stock use width: number | null pattern (null for linear mode, number for sheet mode)
-- Kerf presets include four common blade widths: 1/8", 3/32", 5/32", and No Kerf
-- Factory helpers (createCut, createStock) generate crypto.randomUUID() for unique IDs
-- Grid layout with responsive mobile stacking (vertical with inline labels)
-- Float comparison tolerance (0.0001) for kerf preset active state detection
-
-**Phase 18-03 decisions:**
-- Placeholder algorithms implement simple greedy FFD to validate data flow (will be replaced in Phases 19-20)
-- Waste percentage color coding: green <10%, yellow <25%, red ≥25%
-- Kerf accounted for in cut placement using formula: usedLength = sum(cuts) + (count-1) * kerf
-- 2D optimization placeholder treats as 1D on length only (proper guillotine comes in Phase 20)
-- Cut/stock expansion by quantity before optimization (each qty=2 becomes 2 separate entries)
-
-**Phase 18-04 decisions:**
-- Clear All requires confirmation if multiple cuts/stock entries exist (prevents accidental data loss)
-- Save to Project button only shown when authenticated with projects available
-- Success banner auto-dismisses after 5 seconds
-- API validates project ownership before allowing save (data isolation via requireAuth)
-- Transaction ensures cutList, cuts, and stock created atomically
-
-**Phase 19-01 decisions:**
-- Enhanced FFD sorts stock descending by length (try largest stock first for better fit)
-- Linear feet tracking uses expandedStock array (represents all available stock after quantity expansion)
-- Stock sorting improves waste percentage by ~5-10% on typical workloads
-- Placeholder 2D optimizer returns 0 for linear feet (not applicable to sheet mode)
-
-**Phase 19-02 decisions:**
-- Cut labels only display when cut width exceeds 30px (prevents cramped text)
-- Waste label displays when waste region exceeds 40px width
-- Linear feet displayed in feet (inches/12) with 1 decimal place
-- Diagrams section placed between summary and plans for logical flow
-- $derived.by() used for complex computed values with multiple steps in Svelte 5
-
-**Phase 20-01 decisions:**
-- Grain toggle defaults to unchecked (rotation allowed) for maximum packing efficiency
-- BSSF+SAS chosen over MaxRects for guaranteed guillotine separability
-- Conservative kerf estimate: each cut loses kerf in both dimensions
-- Grain toggle only visible in sheet mode (not applicable to linear cuts)
-- Free rectangles tracked per plan for multi-cut placement on single sheet
-
-**Phase 20-02 decisions:**
-- Fixed viewBox 600x400 for consistent horizontal sheet orientation
-- Aspect ratio maintained using min(scaleX, scaleY) for both axes
-- Cut labels shown only when rect >40x20px to prevent cramped text
-- Rotation indicator (⟳) displayed when cut is rotated and width >30px
-- Waste color coding matches existing thresholds: green <10%, amber <25%, red ≥25%
-
-**Phase 21-01 decisions:**
-- BOM filtering requires both category='lumber' AND length IS NOT NULL (incomplete items excluded)
-- Mode detection: sheet mode if ANY item has width, otherwise linear
-- State passing via goto({ state }) rather than URL params (cleaner UX)
-- $effect for one-time state population from $page.state on navigation
-- formData.getAll('selectedBoms') for proper multi-select handling
-
-**Phase 21-02 decisions:**
-- completed column defaults to false, completedAt nullable (only set when completed)
-- Optimistic updates in UI for snappier checkbox interactions
-- Ownership validation chain: user -> cutList -> cut for security
-
-**Phase 21-03 decisions:**
-- Native HTML5 drag-drop chosen over svelte-dnd-action for simplicity
-- Conflict detection calculates overlaps but allows them (UI shows warning)
-- assignedStockId references cutListStock with SET NULL on delete
-- Optimistic UI updates with rollback on API errors
-- Tab interface for switching between Checklist and Manual Placement views
-
-**Phase 22-01 decisions:**
-- Name fields nullable for backward compatibility with existing users
-- Default to 'Wood' and 'Worker' for blank names during signup
-- Display name falls back to email prefix when firstName unavailable
-- Dropdown uses fixed positioning (right-4) instead of absolute
-
-**Phase 22-02 decisions:**
-- NAVIGATION section for viewing content (Dashboard, Projects, BOMs, Cut Lists)
-- TOOLS section for creating content (Create BOM, Create Cut List)
-- Wood Movement Calculator removed from all navigation and dashboard
-- Dashboard shows maximum 6 most recent projects (already implemented)
-- Icon variants (clipboard-plus, scissors-plus) differentiate creation from viewing
-
-**Phase 22-03 decisions:**
-- Kerf configuration moved above input forms for logical flow (configure before entering data)
-- Stock displayed on left, Cuts on right (what you have vs what you need)
-- BOM lumber items are available stock, not required cuts (semantically correct)
-- Loading screen only delays on success; errors show immediately
-
-**Phase 22-04 decisions:**
-- Results page navigation uses goto() with state (cleaner UX than query params)
-- /cutlists (plural) for listing, /cutlist/[id] for individual (RESTful convention)
-- Go Back preserves all form data for iterative refinement
-
-See `.planning/milestones/v2.0-ROADMAP.md` for full v2.0 decision log.
+See `.planning/milestones/v3.0-ROADMAP.md` for full v3.0 decision log.
 
 ### Pending Todos
 
@@ -248,33 +71,27 @@ v3.0 research completed — see `.planning/research/v3-SUMMARY.md`:
 - Drag-drop: svelte-dnd-action
 - Security: RBAC retrofit, token handling
 
-Key research flags:
-- Phase 20 (Sheet Optimizer): 2D nesting algorithm needs prototyping
-- Phase 15 (Email): Domain verification (SPF/DKIM) is operational setup
-
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 22-04-PLAN.md (Cut list results & navigation) - PHASE 22 COMPLETE
+Stopped at: v3.0 milestone completed and archived
 Resume file: None
 
 ## Next Steps
 
-**ALL 22 PHASES COMPLETE!** 🎉
+**v3.0 SHIPPED!**
 
-1. **Phase 22-01 complete** - User profiles with firstName/lastName, personalized UI
-2. **Phase 22-02 complete** - Sidebar reorganized with NAVIGATION/TOOLS sections
-3. **Phase 22-03 complete** - Cut list UI refinements (kerf first, stock/cuts layout, BOM import fix)
-4. **Phase 22-04 complete** - Cut list results & navigation (dedicated results page, listing page)
-5. **All requirements covered:** UI-01 to UI-03 ✓, NAV-01 to NAV-05 ✓, CUT-33 to CUT-39 ✓
+Run `/gsd:new-milestone` to start next milestone (v4.0 or v3.1):
+1. Questioning -> gather goals and scope
+2. Research -> investigate domain and implementation
+3. Requirements -> define traceable requirements
+4. Roadmap -> create phases and plans
 
-**v3.0 Multi-User & Cut Optimizer milestone ready for deployment!**
-
-Next actions:
-- Final testing and QA
-- Production deployment
-- User documentation
-- v4.0 planning (if needed)
+Possible v4.0 features (from deferred requirements):
+- Admin differentiators (invite email, last login, search/filter)
+- BOM presets for standard lumber dimensions
+- Cut list PDF export and labels
+- Optimization history/comparison
 
 ---
-*Last updated: 2026-01-30 after completing 22-04-PLAN.md - PHASE 22 COMPLETE*
+*Last updated: 2026-01-30 after v3.0 milestone completion*

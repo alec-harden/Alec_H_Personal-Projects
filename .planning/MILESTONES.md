@@ -1,5 +1,36 @@
 # Project Milestones: WoodShop Toolbox
 
+## v3.0 Multi-User & Cut Optimizer (Shipped: 2026-01-30)
+
+**Delivered:** Multi-user platform with RBAC, email flows (password reset, verification), admin user management, enhanced BOM with lumber dimensions/board feet, and a complete Cut List Optimizer tool with 1D/2D algorithms, BOM integration, and shop checklist.
+
+**Phases completed:** 13-22 (27 plans total)
+
+**Key accomplishments:**
+
+- Role-based access control with admin/user roles and complete data isolation
+- Admin user management — create, disable, reset passwords, view details
+- Email infrastructure with Resend API for password reset and email verification
+- Lumber dimension fields (L/W/H) with board feet calculation and category totals
+- Cut List Optimizer with Linear (FFD) and Sheet (Guillotine) optimization algorithms
+- BOM integration for pre-populating cuts, shop checklist with completion tracking
+- Manual overrides with drag-drop stock assignment and position editing
+- UI refinements: user names, reorganized navigation, dedicated results page
+
+**Stats:**
+
+- 142 files modified
+- 27,617 lines added (17,599 total LOC)
+- 10 phases, 27 plans, ~120 tasks
+- 2 days from start to ship (2026-01-29 to 2026-01-30)
+- 134 commits
+
+**Git range:** `docs(13)` to `docs(22)`
+
+**What's next:** v4.0 — Admin differentiators, BOM presets, cut list PDF export
+
+---
+
 ## v2.0 Persistence & Project Management (Shipped: 2026-01-28)
 
 **Delivered:** Authentication, project management, BOM persistence, template admin panel, and CSV import — transforming the single-session MVP into a fully persistent, manageable application.
