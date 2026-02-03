@@ -3,7 +3,7 @@
 	// Modern Artisan aesthetic with refined item rows
 
 	import type { BOMItem } from '$lib/types/bom';
-	import { calculateBoardFeet, formatBoardFeet, parseFractionalInches, formatDimension } from '$lib/utils/board-feet';
+	import { parseFractionalInches, formatDimension } from '$lib/utils/board-feet';
 
 	interface Props {
 		item: BOMItem;
@@ -128,13 +128,7 @@
 		}
 	}
 
-	// Calculate board feet for this item (if all dimensions present)
-	const itemBoardFeet = $derived(() => {
-		if (item.length && item.width && item.height) {
-			return calculateBoardFeet(item.length, item.width, item.height) * item.quantity;
-		}
-		return 0;
-	});
+	// Board feet calculation removed in v4.0 - will be replaced with piece counts in Phase 24
 </script>
 
 <div class="item-row" class:item-hidden={item.hidden}>
@@ -273,13 +267,6 @@
 						</button>
 					{/if}
 				</div>
-
-				<!-- Board feet display -->
-				{#if itemBoardFeet() > 0}
-					<span class="board-feet">
-						= {formatBoardFeet(itemBoardFeet())}
-					</span>
-				{/if}
 			</div>
 		{/if}
 	</div>

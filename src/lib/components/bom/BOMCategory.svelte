@@ -5,7 +5,6 @@
 	import type { BOMCategory, BOMItem as BOMItemType } from '$lib/types/bom';
 	import BOMItem from './BOMItem.svelte';
 	import AddItemForm from './AddItemForm.svelte';
-	import { calculateBoardFeet, formatBoardFeet } from '$lib/utils/board-feet';
 
 	interface Props {
 		category: BOMCategory;
@@ -32,13 +31,7 @@
 	const totalCount = $derived(items.length);
 	const hasHidden = $derived(visibleCount < totalCount);
 
-	// Calculate total board feet for visible lumber items
-	const totalBoardFeet = $derived(() => {
-		if (category !== 'lumber') return 0;
-		return items
-			.filter(i => !i.hidden && i.length && i.width && i.height)
-			.reduce((sum, i) => sum + calculateBoardFeet(i.length!, i.width!, i.height!) * i.quantity, 0);
-	});
+	// Board feet calculation removed in v4.0 - will be replaced with piece counts in Phase 24
 
 	// Category display configuration with artisan colors
 	const categoryConfig: Record<BOMCategory, { label: string; color: string; bgColor: string }> = {
@@ -73,9 +66,6 @@
 				{totalCount}
 			{/if}
 			{totalCount === 1 ? 'item' : 'items'}
-			{#if category === 'lumber' && totalBoardFeet() > 0}
-				<span class="board-feet-total">({formatBoardFeet(totalBoardFeet())})</span>
-			{/if}
 		</span>
 	</button>
 
