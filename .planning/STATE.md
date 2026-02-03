@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-30)
+See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Generate accurate, complete bills of materials for woodworking projects through intelligent guided questioning — reducing planning time and ensuring nothing is forgotten.
-**Current focus:** Planning next milestone
+**Current focus:** v4.0 BOM Lumber Categorization
 
 ## Current Position
 
-Phase: N/A (between milestones)
-Plan: N/A
+Phase: 23 (Schema Foundation)
+Plan: Not yet created
 Status: Ready to plan
-Last activity: 2026-01-30 — v3.0 milestone complete
+Last activity: 2026-02-03 — v4.0 milestone started
 
-Progress: [█████████████████████████████████] v3.0 shipped!
+Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0/7 phases
 
 ## Milestone History
 
@@ -23,6 +23,7 @@ Progress: [███████████████████████
 | v1.0 MVP | 1-7 | SHIPPED | 2026-01-23 |
 | v2.0 Persistence | 8-12 | SHIPPED | 2026-01-28 |
 | v3.0 Multi-User & Cut Optimizer | 13-22 | SHIPPED | 2026-01-30 |
+| v4.0 BOM Lumber Categorization | 23-29 | IN PROGRESS | — |
 
 See `.planning/MILESTONES.md` for full milestone details.
 
@@ -46,6 +47,12 @@ Tech stack and patterns established across v1.0-v3.0:
 - Custom optimizer algorithms (FFD 1D, Guillotine 2D)
 - Native HTML5 drag-drop for manual overrides
 - Navigation state passing via SvelteKit goto()
+
+**v4.0 Design Decisions:**
+- Fractional thickness prefix format ("3/4 Oak")
+- Dimension validation warns but allows save (user override)
+- Existing lumber items migrate to hardwood category
+- Category assignment: Hardwood (Oak, Maple, etc.), Common (Pine, etc.), Sheet (Plywood, MDF, etc.)
 
 See `.planning/milestones/v3.0-ROADMAP.md` for full v3.0 decision log.
 
@@ -73,25 +80,19 @@ v3.0 research completed — see `.planning/research/v3-SUMMARY.md`:
 
 ## Session Continuity
 
-Last session: 2026-01-30
-Stopped at: v3.0 milestone completed and archived
+Last session: 2026-02-03
+Stopped at: v4.0 milestone created, ready to plan Phase 23
 Resume file: None
 
 ## Next Steps
 
-**v3.0 SHIPPED!**
+**v4.0 STARTED!**
 
-Run `/gsd:new-milestone` to start next milestone (v4.0 or v3.1):
-1. Questioning -> gather goals and scope
-2. Research -> investigate domain and implementation
-3. Requirements -> define traceable requirements
-4. Roadmap -> create phases and plans
-
-Possible v4.0 features (from deferred requirements):
-- Admin differentiators (invite email, last login, search/filter)
-- BOM presets for standard lumber dimensions
-- Cut list PDF export and labels
-- Optimization history/comparison
+Run `/gsd:plan-phase 23` to plan Phase 23 (Schema Foundation):
+1. Update schema with new categories and cutItem flag
+2. Add thickness field (rename from height)
+3. Remove board feet utilities
+4. Add dimension validation constants
 
 ---
-*Last updated: 2026-01-30 after v3.0 milestone completion*
+*Last updated: 2026-02-03 after v4.0 milestone creation*
