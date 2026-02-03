@@ -17,9 +17,13 @@ export const bomItemSchema = z.object({
 	quantity: z.number().describe('Amount needed'),
 	unit: z.string().describe('Unit of measurement (pcs, bf, oz, each, etc.)'),
 	category: z
-		.enum(['lumber', 'hardware', 'finishes', 'consumables'])
+		.enum(['hardwood', 'common', 'sheet', 'hardware', 'finishes', 'consumables'])
 		.describe('Classification category'),
-	notes: z.string().optional().describe('Special instructions or considerations')
+	notes: z.string().optional().describe('Special instructions or considerations'),
+	// v4.0: Lumber dimensions for cut list generation
+	length: z.number().optional().describe('Length in inches'),
+	width: z.number().optional().describe('Width in inches'),
+	thickness: z.number().optional().describe('Thickness in inches')
 });
 
 /**
