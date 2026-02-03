@@ -10,8 +10,39 @@
 
 /**
  * Categories for organizing BOM items
+ * v4.0: lumber split into hardwood/common/sheet for better material organization
  */
-export type BOMCategory = 'lumber' | 'hardware' | 'finishes' | 'consumables';
+export type BOMCategory =
+	| 'hardwood' // Premium hardwoods: Oak, Maple, Walnut, Cherry, etc.
+	| 'common' // Dimensional lumber: Pine, Fir, SPF, etc.
+	| 'sheet' // Sheet goods: Plywood, MDF, Particle board, etc.
+	| 'hardware'
+	| 'finishes'
+	| 'consumables';
+
+/**
+ * Lumber categories (items with dimensions, eligible for cut list)
+ */
+export type LumberCategory = 'hardwood' | 'common' | 'sheet';
+
+/**
+ * Category display order for UI
+ */
+export const CATEGORY_ORDER: BOMCategory[] = [
+	'hardwood',
+	'common',
+	'sheet',
+	'hardware',
+	'finishes',
+	'consumables'
+];
+
+/**
+ * Check if a category is a lumber category (has dimensions)
+ */
+export function isLumberCategory(category: BOMCategory): category is LumberCategory {
+	return category === 'hardwood' || category === 'common' || category === 'sheet';
+}
 
 /**
  * Individual item in a Bill of Materials
@@ -25,10 +56,15 @@ export interface BOMItem {
 	category: BOMCategory;
 	notes?: string;
 	hidden?: boolean; // Phase 4: visibility toggle support (EDIT-03)
+	/** Whether this item goes to cut list optimizer */
+	cutItem?: boolean;
 	// Lumber dimensions (for lumber category items only)
 	length?: number; // inches
 	width?: number; // inches
-	height?: number; // inches (thickness)
+	/** Thickness in inches (v4.0: renamed from height for clarity) */
+	thickness?: number; // inches
+	/** @deprecated Use thickness instead. Kept for migration compatibility. */
+	height?: number; // inches
 }
 
 /**
