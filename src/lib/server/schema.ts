@@ -159,10 +159,13 @@ export const bomItems = sqliteTable('bom_items', {
 	notes: text('notes'),
 	hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
 	position: integer('position').notNull(),
+	cutItem: integer('cut_item', { mode: 'boolean' }).default(false),
 	// Lumber dimensions (nullable, for lumber items only)
 	length: real('length'), // inches
 	width: real('width'), // inches
-	height: real('height') // inches (thickness)
+	// DEPRECATED: Use thickness instead. Kept for Phase 28 migration.
+	height: real('height'), // inches (thickness)
+	thickness: real('thickness') // inches - v4.0: renamed from height
 });
 
 // BOMs relations
