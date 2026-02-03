@@ -4,7 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-WoodShop Toolbox is a modular web application for personal woodworking tools. The flagship tool is a BOM (Bill of Materials) generator that uses AI-powered guided prompts to help plan woodworking projects. The platform is designed for plug-and-play addition of new tools via a dashboard interface.
+WoodShop Toolbox is a modular web application for personal woodworking tools with multi-user support. Features include:
+- **BOM Generator** (flagship) - AI-powered guided prompts for material list generation
+- **Cut List Optimizer** - 1D (FFD) and 2D (Guillotine) algorithms for minimizing material waste
+
+The platform is designed for plug-and-play addition of new tools via a dashboard interface.
 
 ## Commands
 
@@ -29,6 +33,8 @@ npm run db:studio        # Open Drizzle Studio (database UI)
 - **Styling**: Tailwind CSS v4 with @tailwindcss/vite plugin (CSS-first approach)
 - **Database**: Drizzle ORM + LibSQL/Turso (SQLite - `file:local.db` for dev, Turso for prod)
 - **AI**: Vercel AI SDK with multi-provider support (Anthropic/OpenAI, configurable via `AI_PROVIDER` env)
+- **Auth**: Custom auth with oslo utilities + Argon2; sessions stored in database
+- **Email**: Resend API for transactional email (password reset, verification)
 - **Deployment**: Serverless (Vercel/Cloudflare) via SvelteKit adapter-auto
 
 ## Architecture
@@ -48,6 +54,12 @@ npm run db:studio        # Open Drizzle Studio (database UI)
 - **Message Handling**: Use `message.parts` for Vercel AI SDK v4 text extraction
 - **Icons**: HTML entities preferred over Unicode emoji for encoding reliability
 - **Color Theme**: Amber (`amber-700`, `amber-800`) for woodworking branding
+- **Auth**: Custom session management with SHA-256 hashed tokens, 1-hour expiry for resets
+- **RBAC**: Binary admin/user roles; first registered user becomes admin
+- **Optimistic UI**: Instant feedback for BOM edits (quantities, visibility)
+- **Cascade Deletes**: user → projects → boms → items; cut lists follow same pattern
+- **Drag-Drop**: svelte-dnd-action for cut assignment, native HTML5 for manual overrides
+- **Navigation State**: Use SvelteKit `goto()` with state option for passing data between routes
 
 ### Environment Variables
 
@@ -58,6 +70,7 @@ TURSO_AUTH_TOKEN=your-auth-token
 AI_PROVIDER=anthropic|openai  # Optional, defaults to anthropic
 ANTHROPIC_API_KEY=
 OPENAI_API_KEY=
+RESEND_API_KEY=              # For password reset and email verification
 ```
 
 ## Project Management
@@ -65,12 +78,17 @@ OPENAI_API_KEY=
 This project uses a GSD (Get Shit Done) methodology with structured planning documents in `.planning/`:
 
 - `PROJECT.md` - Core project definition and requirements
-- `ROADMAP.md` - Phase-based roadmap (6 phases)
+- `ROADMAP.md` - Phase-based roadmap (current milestone)
 - `STATE.md` - Current progress, velocity metrics, accumulated decisions
-- `REQUIREMENTS.md` - Traceable requirements with v1/v2 scope
+- `milestones/` - Archived milestone roadmaps (v1.0, v2.0, v3.0)
 - `phases/` - Per-phase planning with PLAN.md files
 
-**Current state**: Phase 3 of 6 (BOM Core Flow). Phases 1-2 complete (Foundation, AI Integration).
+**Current state**: v3.0 shipped (2026-01-30). Between milestones - run `/gsd:new-milestone` to start v4.0.
+
+**Milestone history**:
+- v1.0 MVP (shipped 2026-01-23) - Dashboard, AI BOM generator, templates, CSV export
+- v2.0 Persistence (shipped 2026-01-28) - Auth, projects, BOM persistence, admin panel
+- v3.0 Multi-User & Cut Optimizer (shipped 2026-01-30) - RBAC, email flows, cut list optimizer
 
 ## Code Conventions
 
