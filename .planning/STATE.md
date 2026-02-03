@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 23 (Schema Foundation) - 1 of 7 phases
-Plan: 01 of 01 complete
+Plan: 02 of 02 complete
 Status: Phase complete
-Last activity: 2026-02-03 — Completed 23-01-PLAN.md
+Last activity: 2026-02-03 — Completed 23-02-PLAN.md
 
 Progress: [████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 1/7 phases (14%)
 
@@ -59,6 +59,9 @@ Tech stack and patterns established across v1.0-v3.0:
 - thickness field added, height preserved for Phase 28 data migration
 - Dimension validation uses 1/64 inch tolerance for floating point comparison
 - LumberCategory as derived union type for type narrowing
+- Removed calculateBoardFeet and formatBoardFeet functions (v4.0 uses piece counts)
+- Kept board-feet.ts filename for backward compatibility with imports
+- Board feet display removed from UI (Phase 24 adds piece counts)
 
 See `.planning/milestones/v3.0-ROADMAP.md` for full v3.0 decision log.
 
@@ -86,8 +89,8 @@ v3.0 research completed — see `.planning/research/v3-SUMMARY.md`:
 
 ## Session Continuity
 
-Last session: 2026-02-03 20:59 UTC
-Stopped at: Completed 23-01-PLAN.md (Phase 23 complete)
+Last session: 2026-02-03 21:06 UTC
+Stopped at: Completed 23-02-PLAN.md (Phase 23 complete)
 Resume file: None
 
 ## Next Steps
