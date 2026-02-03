@@ -6,7 +6,7 @@
 
 | Phase | Name | Goal | Requirements | Status |
 |-------|------|------|--------------|--------|
-| 23 | Schema Foundation | Update schema and types for new categories and cutItem flag | CAT-01 to CAT-04, DIM-01, DIM-02 | ○ Pending |
+| 23 | Schema Foundation | Update schema and types for new categories and cutItem flag | CAT-01 to CAT-04, DIM-01, DIM-02 | ✓ Complete |
 | 24 | Display Updates | Update UI for 6 categories, remove board feet, add thickness prefix | UI-01 to UI-05 | ○ Pending |
 | 25 | API Validation | Add dimension validation and CSV updates | VAL-01 to VAL-04, DIM-03, DIM-04 | ○ Pending |
 | 26 | AI & Wizard | Update AI prompts and add consumables toggle | AI-01 to AI-03, WIZ-01 to WIZ-03 | ○ Pending |
@@ -27,8 +27,8 @@
 **Plans:** 2 plans
 
 Plans:
-- [ ] 23-01-PLAN.md — Update TypeScript types, Zod schemas, Drizzle schema, create dimension validation
-- [ ] 23-02-PLAN.md — Remove board feet calculation functions
+- [x] 23-01-PLAN.md — Update TypeScript types, Zod schemas, Drizzle schema, create dimension validation
+- [x] 23-02-PLAN.md — Remove board feet calculation functions
 
 **Requirements:**
 - CAT-01: Replace `lumber` category with `hardwood`, `common`, `sheet` in all type definitions
@@ -212,4 +212,4 @@ Plans:
 - **v1.0 MVP** — Phases 1-7 (shipped 2026-01-23) — [Archive](milestones/v1.0-ROADMAP.md)
 
 ---
-*Updated: 2026-02-03 after Phase 23 planning*
+*Updated: 2026-02-03 after Phase 23 execution*
