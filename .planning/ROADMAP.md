@@ -24,6 +24,12 @@
 
 **Goal:** Update database schema and TypeScript types for new category structure and Cut_Item flag.
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — Update TypeScript types, Zod schemas, Drizzle schema, create dimension validation
+- [ ] 23-02-PLAN.md — Remove board feet calculation functions
+
 **Requirements:**
 - CAT-01: Replace `lumber` category with `hardwood`, `common`, `sheet` in all type definitions
 - CAT-02: Add `cutItem` boolean field to bomItems table schema
@@ -206,4 +212,4 @@
 - **v1.0 MVP** — Phases 1-7 (shipped 2026-01-23) — [Archive](milestones/v1.0-ROADMAP.md)
 
 ---
-*Updated: 2026-02-03 after v4.0 milestone created*
+*Updated: 2026-02-03 after Phase 23 planning*
