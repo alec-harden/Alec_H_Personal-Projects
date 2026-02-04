@@ -63,13 +63,13 @@ export const actions = {
 			return fail(400, { error: 'Invalid BOM selection' });
 		}
 
-		// Query lumber items from selected BOMs
-		const lumberItems = await db.query.bomItems.findMany({
+		// Query all items from selected BOMs
+		const allItems = await db.query.bomItems.findMany({
 			where: inArray(bomItems.bomId, selectedBomIds)
 		});
 
 		// Filter to cut items with valid length dimension
-		const validCutItems = lumberItems.filter(
+		const validCutItems = allItems.filter(
 			(item) => item.cutItem === true && item.length !== null
 		);
 
