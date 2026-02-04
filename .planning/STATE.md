@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 
 ## Current Position
 
-Phase: 23 (Schema Foundation) - 1 of 7 phases
-Plan: 02 of 02 complete
+Phase: 27 (Cut List Integration) - 5 of 7 phases
+Plan: 01 of 01 complete
 Status: Phase complete
-Last activity: 2026-02-03 — Completed 23-02-PLAN.md
+Last activity: 2026-02-04 — Completed Phase 27 (cutItem filter + sheet mode detection)
 
-Progress: [████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 1/7 phases (14%)
+Progress: [████████████████████░░░░░░░░░░░░] 5/7 phases (71%)
 
 ## Milestone History
 
@@ -63,6 +63,39 @@ Tech stack and patterns established across v1.0-v3.0:
 - Kept board-feet.ts filename for backward compatibility with imports
 - Board feet display removed from UI (Phase 24 adds piece counts)
 
+**Phase 24 (Display Updates):**
+- 6 categories displayed: hardwood, common, sheet, hardware, finishes, consumables
+- Category labels: "Hardwood Lumber", "Common Boards", "Sheet Goods"
+- Color scheme: walnut (hardwood), oak-dark (common), slate (sheet)
+- Thickness prefix on lumber names via isLumberCategory() + formatDimension()
+- Lumber categories force 'pcs' unit only in AddItemForm
+- Removed orphaned .board-feet and .board-feet-total CSS
+
+**Phase 25 (API Validation):**
+- BOM save auto-sets cutItem=true for lumber categories (hardwood/common/sheet)
+- Dimension validation returns warnings (does not block save)
+- API responses include optional `warnings` array for validation feedback
+- CSV export includes CutItem column (Yes/No) and uses Thickness header
+- CSV import fixed to accept all 6 categories (was only accepting 4)
+- CSV import supports both Height and Thickness columns for backward compatibility
+- bom-validation.ts helper created for server-side validation
+
+**Phase 26 (AI & Wizard Updates):**
+- AI prompt updated to use 6 categories (hardwood, common, sheet, hardware, finishes, consumables)
+- Category assignment guidance added based on wood species (hardwood vs softwood vs sheet)
+- Dimension requirements (length, width, thickness) required for all lumber items
+- AI uses actual dimensions (not nominal): "2x4" = width 3.5, thickness 1.5
+- Consumables toggle added to ProjectTypeStep (Step 1 of wizard)
+- includeConsumables field added to ProjectDetails type (optional, defaults true)
+- Prompt generation conditional: excludes consumables section when toggle is off
+
+**Phase 27 (Cut List Integration):**
+- Cut list filter changed from category === 'lumber' to cutItem === true
+- Mode detection uses category === 'sheet' (not width-based heuristic)
+- Thickness prefix added to stock labels: '0.75" Oak' format
+- BomSelector displays "cut item" counts (not "lumber item")
+- Strict equality cutItem === true (not truthy check - field is nullable)
+
 See `.planning/milestones/v3.0-ROADMAP.md` for full v3.0 decision log.
 
 ### Pending Todos
@@ -89,20 +122,24 @@ v3.0 research completed — see `.planning/research/v3-SUMMARY.md`:
 
 ## Session Continuity
 
-Last session: 2026-02-03 21:06 UTC
-Stopped at: Completed 23-02-PLAN.md (Phase 23 complete)
+Last session: 2026-02-04
+Stopped at: Completed Phase 27 (Cut List Integration)
 Resume file: None
 
 ## Next Steps
 
-**Phase 23 complete!** Ready for Phase 24 (UI Updates).
+**Phase 27 complete!** Ready for Phase 28 (Height-to-Thickness Migration).
 
-Run `/gsd:execute-phase 24` when ready to update UI components:
-1. Update category badges and labels in BOMCategory.svelte
-2. Update AddItemForm.svelte with new categories
-3. Update BOMItem.svelte dimension display
-4. Update CSV export with new category order
-5. Remove board feet calculations
+v4.0 progress: 5/7 phases complete (71%)
+- ✅ Phase 23: Schema Foundation
+- ✅ Phase 24: Display Updates
+- ✅ Phase 25: API Validation
+- ✅ Phase 26: AI & Wizard Updates
+- ✅ Phase 27: Cut List Integration
+- ⏳ Phase 28: Height-to-Thickness Migration
+- ⏳ Phase 29: Testing & Documentation
+
+Next: Run `/gsd:plan-phase 28` to migrate existing data from height to thickness field.
 
 ---
-*Last updated: 2026-02-03 after completing Phase 23*
+*Last updated: 2026-02-04 after completing Phase 26*
