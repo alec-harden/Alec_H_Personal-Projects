@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 
 ## Current Position
 
-Phase: 27 (Cut List Integration) - 5 of 7 phases
-Plan: 01 of 01 complete
-Status: Phase complete
-Last activity: 2026-02-04 — Completed Phase 27 (cutItem filter + sheet mode detection)
+Phase: 29 (Admin Dimension Management) - 7 of 7 phases
+Plan: 01 of ?? in progress
+Status: In progress
+Last activity: 2026-02-04 — Completed 29-01-PLAN.md (Database Schema & Validation Logic)
 
-Progress: [████████████████████░░░░░░░░░░░░] 5/7 phases (71%)
+Progress: [██████████████████████████████░░] 6.5/7 phases (~93%)
 
 ## Milestone History
 
@@ -96,6 +96,21 @@ Tech stack and patterns established across v1.0-v3.0:
 - BomSelector displays "cut item" counts (not "lumber item")
 - Strict equality cutItem === true (not truthy check - field is nullable)
 
+**Phase 28 (Data Migration):**
+- Standalone migration script: `scripts/migrate-v4-data.ts` following seed-templates.ts pattern
+- MIG-01: All 'lumber' category items → 'hardwood' (4 items migrated)
+- MIG-02: cutItem=true backfilled for all lumber categories (hardwood/common/sheet)
+- MIG-03: height values copied to thickness field using raw SQL (libsql client.execute)
+- Idempotent design: script safe to re-run
+- Production migration: Set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN before running
+
+**Phase 29 (Admin Dimension Management):**
+- dimensionValues table: category, dimensionType, value, isDefault, timestamps
+- Startup seeding: 41 default values on first request if table empty
+- 1-minute TTL cache for dimension validation queries
+- invalidateDimensionCache() for admin updates
+- Validation functions now async (validateThickness, validateWidth, validateLength)
+
 See `.planning/milestones/v3.0-ROADMAP.md` for full v3.0 decision log.
 
 ### Pending Todos
@@ -123,23 +138,23 @@ v3.0 research completed — see `.planning/research/v3-SUMMARY.md`:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed Phase 27 (Cut List Integration)
+Stopped at: Completed 29-01-PLAN.md (Database Schema & Validation Logic)
 Resume file: None
 
 ## Next Steps
 
-**Phase 27 complete!** Ready for Phase 28 (Height-to-Thickness Migration).
+**Plan 29-01 complete!** Continue with remaining Phase 29 plans.
 
-v4.0 progress: 5/7 phases complete (71%)
-- ✅ Phase 23: Schema Foundation
-- ✅ Phase 24: Display Updates
-- ✅ Phase 25: API Validation
-- ✅ Phase 26: AI & Wizard Updates
-- ✅ Phase 27: Cut List Integration
-- ⏳ Phase 28: Height-to-Thickness Migration
-- ⏳ Phase 29: Testing & Documentation
+v4.0 progress: ~93% complete
+- Phase 23: Schema Foundation
+- Phase 24: Display Updates
+- Phase 25: API Validation
+- Phase 26: AI & Wizard Updates
+- Phase 27: Cut List Integration
+- Phase 28: Data Migration
+- Phase 29: Admin Dimension Management (Plan 01 of ?? complete)
 
-Next: Run `/gsd:plan-phase 28` to migrate existing data from height to thickness field.
+Next: Execute remaining Phase 29 plans for admin UI.
 
 ---
-*Last updated: 2026-02-04 after completing Phase 27*
+*Last updated: 2026-02-04 after completing 29-01-PLAN.md*
