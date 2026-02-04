@@ -51,7 +51,7 @@
 		<div class="header-content">
 			<h1 class="page-title">Import from BOM</h1>
 			<p class="page-subtitle">
-				Select a project and BOMs to load lumber items as available stock
+				Select a project and BOMs to load cut items as available stock
 			</p>
 		</div>
 		<a href="/cutlist" class="btn-ghost">Back to Cut List</a>

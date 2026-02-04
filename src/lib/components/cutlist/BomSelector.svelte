@@ -10,7 +10,7 @@
 		items: Array<{
 			id: string;
 			category: string;
-			cutItem?: boolean;
+			cutItem?: boolean | null;
 			length: number | null;
 			width: number | null;
 		}>;
