@@ -18,39 +18,39 @@ Requirements for BOM Lumber Categorization & Cut Item Integration milestone.
 
 - [ ] **DIM-01**: Rename `height` field to `thickness` for clarity (schema migration)
 - [ ] **DIM-02**: Add dimensional validation with admin-managed allowed values
-- [ ] **DIM-03**: Validate dimensions are present when saving items with cutItem=true
-- [ ] **DIM-04**: Display warning (not block) for non-standard dimension values
+- [x] **DIM-03**: Validate dimensions are present when saving items with cutItem=true
+- [x] **DIM-04**: Display warning (not block) for non-standard dimension values
 
 ### BOM Display
 
-- [ ] **UI-01**: Update category order and color configuration for 6 categories
-- [ ] **UI-02**: Remove board feet calculations from BOMItem and BOMCategory components
-- [ ] **UI-03**: Display lumber item names with fractional thickness prefix ("3/4 Oak")
-- [ ] **UI-04**: Force `unit = 'pcs'` for all lumber categories in AddItemForm
-- [ ] **UI-05**: Update category header labels (Hardwood Lumber, Common Boards, Sheet Goods)
+- [x] **UI-01**: Update category order and color configuration for 6 categories
+- [x] **UI-02**: Remove board feet calculations from BOMItem and BOMCategory components
+- [x] **UI-03**: Display lumber item names with fractional thickness prefix ("3/4 Oak")
+- [x] **UI-04**: Force `unit = 'pcs'` for all lumber categories in AddItemForm
+- [x] **UI-05**: Update category header labels (Hardwood Lumber, Common Boards, Sheet Goods)
 
 ### AI & Wizard
 
-- [ ] **AI-01**: Update AI system prompt to use new lumber categories
-- [ ] **AI-02**: AI assigns correct category (hardwood/common/sheet) based on material type
-- [ ] **AI-03**: AI includes dimensions (L/W/T) for all lumber items with actual measurements
-- [ ] **WIZ-01**: Add "Include Consumable Items" toggle at BOM wizard start
-- [ ] **WIZ-02**: Modify prompt generation based on consumables toggle setting
-- [ ] **WIZ-03**: Update ProjectDetails type for consumables flag
+- [x] **AI-01**: Update AI system prompt to use new lumber categories
+- [x] **AI-02**: AI assigns correct category (hardwood/common/sheet) based on material type
+- [x] **AI-03**: AI includes dimensions (L/W/T) for all lumber items with actual measurements
+- [x] **WIZ-01**: Add "Include Consumable Items" toggle at BOM wizard start
+- [x] **WIZ-02**: Modify prompt generation based on consumables toggle setting
+- [x] **WIZ-03**: Update ProjectDetails type for consumables flag
 
 ### API & Validation
 
-- [ ] **VAL-01**: Validate dimensions are present when saving items with cutItem=true
-- [ ] **VAL-02**: Validate dimension values against allowed lists (warn, don't block)
-- [ ] **VAL-03**: Auto-set `cutItem` based on category when saving BOM items
-- [ ] **VAL-04**: Update CSV import/export for new categories and cutItem field
+- [x] **VAL-01**: Validate dimensions are present when saving items with cutItem=true
+- [x] **VAL-02**: Validate dimension values against allowed lists (warn, don't block)
+- [x] **VAL-03**: Auto-set `cutItem` based on category when saving BOM items
+- [x] **VAL-04**: Update CSV import/export for new categories and cutItem field
 
 ### Cut List Integration
 
-- [ ] **CUT-01**: Change BOM filter from `category === 'lumber'` to `cutItem === true`
-- [ ] **CUT-02**: Use `thickness` field (formerly `height`) in optimization calculations
-- [ ] **CUT-03**: Update BomSelector component to show cutItem count
-- [ ] **CUT-04**: Update mode detection logic (sheet category → sheet mode)
+- [x] **CUT-01**: Change BOM filter from `category === 'lumber'` to `cutItem === true`
+- [x] **CUT-02**: Use `thickness` field (formerly `height`) in optimization calculations
+- [x] **CUT-03**: Update BomSelector component to show cutItem count
+- [x] **CUT-04**: Update mode detection logic (sheet category → sheet mode)
 
 ### Admin Dimension Management
 
@@ -107,30 +107,30 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-04 | Phase 23 | Complete |
 | DIM-01 | Phase 23 | Complete |
 | DIM-02 | Phase 23 | Complete |
-| UI-01 | Phase 24 | Pending |
-| UI-02 | Phase 24 | Pending |
-| UI-03 | Phase 24 | Pending |
-| UI-04 | Phase 24 | Pending |
-| UI-05 | Phase 24 | Pending |
-| VAL-01 | Phase 25 | Pending |
-| VAL-02 | Phase 25 | Pending |
-| VAL-03 | Phase 25 | Pending |
-| VAL-04 | Phase 25 | Pending |
-| AI-01 | Phase 26 | Pending |
-| AI-02 | Phase 26 | Pending |
-| AI-03 | Phase 26 | Pending |
-| WIZ-01 | Phase 26 | Pending |
-| WIZ-02 | Phase 26 | Pending |
-| WIZ-03 | Phase 26 | Pending |
-| CUT-01 | Phase 27 | Pending |
-| CUT-02 | Phase 27 | Pending |
-| CUT-03 | Phase 27 | Pending |
-| CUT-04 | Phase 27 | Pending |
+| UI-01 | Phase 24 | Complete |
+| UI-02 | Phase 24 | Complete |
+| UI-03 | Phase 24 | Complete |
+| UI-04 | Phase 24 | Complete |
+| UI-05 | Phase 24 | Complete |
+| VAL-01 | Phase 25 | Complete |
+| VAL-02 | Phase 25 | Complete |
+| VAL-03 | Phase 25 | Complete |
+| VAL-04 | Phase 25 | Complete |
+| AI-01 | Phase 26 | Complete |
+| AI-02 | Phase 26 | Complete |
+| AI-03 | Phase 26 | Complete |
+| WIZ-01 | Phase 26 | Complete |
+| WIZ-02 | Phase 26 | Complete |
+| WIZ-03 | Phase 26 | Complete |
+| CUT-01 | Phase 27 | Complete |
+| CUT-02 | Phase 27 | Complete |
+| CUT-03 | Phase 27 | Complete |
+| CUT-04 | Phase 27 | Complete |
 | MIG-01 | Phase 28 | Pending |
 | MIG-02 | Phase 28 | Pending |
 | MIG-03 | Phase 28 | Pending |
-| DIM-03 | Phase 25 | Pending |
-| DIM-04 | Phase 25 | Pending |
+| DIM-03 | Phase 25 | Complete |
+| DIM-04 | Phase 25 | Complete |
 | ADM-01 | Phase 29 | Pending |
 | ADM-02 | Phase 29 | Pending |
 | ADM-03 | Phase 29 | Pending |
@@ -147,4 +147,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after Phase 23 execution*
+*Last updated: 2026-02-04 after Phase 27 execution*

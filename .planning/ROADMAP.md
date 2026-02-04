@@ -7,10 +7,10 @@
 | Phase | Name | Goal | Requirements | Status |
 |-------|------|------|--------------|--------|
 | 23 | Schema Foundation | Update schema and types for new categories and cutItem flag | CAT-01 to CAT-04, DIM-01, DIM-02 | ✓ Complete |
-| 24 | Display Updates | Update UI for 6 categories, remove board feet, add thickness prefix | UI-01 to UI-05 | ○ Pending |
-| 25 | API Validation | Add dimension validation and CSV updates | VAL-01 to VAL-04, DIM-03, DIM-04 | ○ Pending |
-| 26 | AI & Wizard | Update AI prompts and add consumables toggle | AI-01 to AI-03, WIZ-01 to WIZ-03 | ○ Pending |
-| 27 | Cut List Integration | Update optimizer to filter by cutItem flag | CUT-01 to CUT-04 | ○ Pending |
+| 24 | Display Updates | Update UI for 6 categories, remove board feet, add thickness prefix | UI-01 to UI-05 | ✓ Complete |
+| 25 | API Validation | Add dimension validation and CSV updates | VAL-01 to VAL-04, DIM-03, DIM-04 | ✓ Complete |
+| 26 | AI & Wizard | Update AI prompts and add consumables toggle | AI-01 to AI-03, WIZ-01 to WIZ-03 | ✓ Complete |
+| 27 | Cut List Integration | Update optimizer to filter by cutItem flag | CUT-01 to CUT-04 | ✓ Complete |
 | 28 | Data Migration | Migrate existing data and verify all flows | MIG-01 to MIG-03 | ○ Pending |
 | 29 | Admin Dimensions | Admin management of accepted dimension values | ADM-01 to ADM-08 | ○ Pending |
 
@@ -57,6 +57,11 @@ Plans:
 
 **Goal:** Update UI components to handle new categories, remove board feet display, add thickness prefix to names.
 
+**Plans:** 1 plan
+
+Plans:
+- [x] 24-01-PLAN.md — Update category configuration, labels, colors, thickness prefix, unit options
+
 **Requirements:**
 - UI-01: Update category order and color configuration for 6 categories
 - UI-02: Remove board feet calculations from BOMItem and BOMCategory components
@@ -82,6 +87,12 @@ Plans:
 
 **Goal:** Update API endpoints to validate dimensions for lumber items and enforce constraints.
 
+**Plans:** 2 plans
+
+Plans:
+- [x] 25-01-PLAN.md — API validation core: bom-validation.ts helper, save/update endpoints
+- [x] 25-02-PLAN.md — CSV updates: export with CutItem/Thickness, import 6-category fix
+
 **Requirements:**
 - VAL-01: Validate dimensions are present when saving items with cutItem=true
 - VAL-02: Validate dimension values against allowed lists (warn, don't block)
@@ -98,6 +109,7 @@ Plans:
 5. CSV import parses new format correctly
 
 **Key Files:**
+- `src/lib/server/bom-validation.ts` (NEW)
 - `src/routes/api/bom/save/+server.ts`
 - `src/routes/api/bom/[id]/items/[itemId]/+server.ts`
 - `src/lib/utils/csv-import.ts`
@@ -108,6 +120,12 @@ Plans:
 ### Phase 26: AI & Wizard Updates
 
 **Goal:** Update AI prompts for new categories and add consumables toggle to wizard.
+
+**Plans:** 2 plans
+
+Plans:
+- [x] 26-01-PLAN.md — Wizard consumables toggle (WIZ-01, WIZ-03)
+- [x] 26-02-PLAN.md — AI prompt updates for 6 categories and dimensions (AI-01, AI-02, AI-03, WIZ-02)
 
 **Requirements:**
 - AI-01: Update AI system prompt to use new lumber categories
@@ -212,4 +230,4 @@ Plans:
 - **v1.0 MVP** — Phases 1-7 (shipped 2026-01-23) — [Archive](milestones/v1.0-ROADMAP.md)
 
 ---
-*Updated: 2026-02-03 after Phase 23 execution*
+*Updated: 2026-02-04 after Phase 27 execution*
