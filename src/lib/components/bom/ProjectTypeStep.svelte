@@ -6,10 +6,14 @@
 
 	interface Props {
 		templates: ProjectTemplate[];
-		onSelect: (template: ProjectTemplate) => void;
+		includeConsumables?: boolean;
+		onSelect: (template: ProjectTemplate, includeConsumables: boolean) => void;
 	}
 
-	let { templates, onSelect }: Props = $props();
+	let { templates, includeConsumables = true, onSelect }: Props = $props();
+
+	// Local state for consumables toggle
+	let consumablesEnabled = $state(includeConsumables);
 </script>
 
 <div class="step-container animate-fade-in">
@@ -18,11 +22,17 @@
 		<p class="step-description">Select a project type to get started with customized options.</p>
 	</div>
 
+	<label class="consumables-toggle">
+		<input type="checkbox" bind:checked={consumablesEnabled} class="toggle-checkbox" />
+		<span class="toggle-label">Include Consumable Items</span>
+		<span class="toggle-description">Sandpaper, glue, tape, and other shop supplies</span>
+	</label>
+
 	<div class="template-grid stagger-children">
 		{#each templates as template}
 			<button
 				type="button"
-				onclick={() => onSelect(template)}
+				onclick={() => onSelect(template, consumablesEnabled)}
 				class="template-card artisan-card sanded-surface"
 			>
 				<!-- Schematic-style icon placeholder -->
@@ -156,5 +166,43 @@
 	.template-card:hover .template-arrow {
 		opacity: 1;
 		transform: translateX(0);
+	}
+
+	/* Consumables Toggle */
+	.consumables-toggle {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-md);
+		background: var(--color-paper);
+		border: 1px solid var(--color-walnut-light);
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		transition: border-color var(--transition-fast);
+	}
+
+	.consumables-toggle:hover {
+		border-color: var(--color-walnut);
+	}
+
+	.toggle-checkbox {
+		width: 18px;
+		height: 18px;
+		accent-color: var(--color-walnut);
+		cursor: pointer;
+	}
+
+	.toggle-label {
+		font-family: var(--font-display);
+		font-size: 0.9375rem;
+		color: var(--color-ink);
+	}
+
+	.toggle-description {
+		flex-basis: 100%;
+		padding-left: calc(18px + var(--space-sm));
+		font-size: 0.8125rem;
+		color: var(--color-ink-muted);
 	}
 </style>

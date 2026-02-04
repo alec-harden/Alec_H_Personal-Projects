@@ -33,12 +33,14 @@
 
 	// Board feet calculation removed in v4.0 - will be replaced with piece counts in Phase 24
 
-	// Category display configuration with artisan colors
+	// Category display configuration with artisan colors (v4.0: 6 categories)
 	const categoryConfig: Record<BOMCategory, { label: string; color: string; bgColor: string }> = {
-		lumber: { label: 'Lumber', color: 'var(--color-walnut)', bgColor: 'rgba(93, 64, 55, 0.08)' },
+		hardwood: { label: 'Hardwood Lumber', color: 'var(--color-walnut)', bgColor: 'rgba(93, 64, 55, 0.08)' },
+		common: { label: 'Common Boards', color: 'var(--color-oak-dark)', bgColor: 'rgba(184, 149, 106, 0.10)' },
+		sheet: { label: 'Sheet Goods', color: '#5a6872', bgColor: 'rgba(90, 104, 114, 0.08)' },
 		hardware: { label: 'Hardware', color: 'var(--color-ink-muted)', bgColor: 'rgba(92, 92, 92, 0.08)' },
 		finishes: { label: 'Finishes', color: 'var(--color-success)', bgColor: 'var(--color-success-soft)' },
-		consumables: { label: 'Consumables', color: 'var(--color-oak-dark)', bgColor: 'rgba(184, 149, 106, 0.12)' }
+		consumables: { label: 'Consumables', color: '#8b7355', bgColor: 'rgba(139, 115, 85, 0.10)' }
 	};
 
 	const config = $derived(categoryConfig[category]);
@@ -161,12 +163,6 @@
 		padding: var(--space-xs) var(--space-sm);
 		background: var(--color-white);
 		border-radius: var(--radius-full);
-	}
-
-	.board-feet-total {
-		margin-left: var(--space-xs);
-		color: var(--color-walnut);
-		font-weight: 500;
 	}
 
 	/* Content */

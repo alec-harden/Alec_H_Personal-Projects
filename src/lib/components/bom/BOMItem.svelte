@@ -3,6 +3,7 @@
 	// Modern Artisan aesthetic with refined item rows
 
 	import type { BOMItem } from '$lib/types/bom';
+	import { isLumberCategory } from '$lib/types/bom';
 	import { parseFractionalInches, formatDimension } from '$lib/utils/board-feet';
 
 	interface Props {
@@ -182,9 +183,9 @@
 			</button>
 		{/if}
 
-		<span class="item-name" class:item-name-hidden={item.hidden}>{item.name}</span>
+		<span class="item-name" class:item-name-hidden={item.hidden}>{#if isLumberCategory(item.category) && item.thickness}{formatDimension(item.thickness)} {/if}{item.name}</span>
 
-		{#if item.category === 'lumber'}
+		{#if isLumberCategory(item.category)}
 			<div class="dimension-section">
 				<!-- Length input -->
 				<div class="dimension-field">
@@ -483,15 +484,6 @@
 		color: var(--color-ink);
 		outline: none;
 		box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.1);
-	}
-
-	.board-feet {
-		margin-left: var(--space-sm);
-		padding: 2px 8px;
-		background: rgba(93, 64, 55, 0.06);
-		border-radius: var(--radius-sm);
-		color: var(--color-walnut);
-		font-weight: 500;
 	}
 
 	/* Mobile responsiveness */

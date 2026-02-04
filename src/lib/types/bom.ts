@@ -93,4 +93,6 @@ export interface ProjectDetails {
 	woodSpecies: string;
 	finish: string;
 	additionalNotes?: string;
+	/** Whether to include consumable items (sandpaper, glue, etc.) in AI-generated BOM */
+	includeConsumables?: boolean;
 }

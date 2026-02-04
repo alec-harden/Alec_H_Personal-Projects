@@ -6,6 +6,7 @@
  */
 
 import type { BOM, BOMCategory } from '$lib/types/bom';
+import { isLumberCategory } from '$lib/types/bom';
 
 /**
  * Escape a field for CSV according to RFC 4180
@@ -23,12 +24,12 @@ export function escapeCSVField(field: string): string {
 /**
  * Generate a CSV string from a BOM
  * - Filters out hidden items
- * - Sorts by category order: lumber, hardware, finishes, consumables
- * - Includes headers: Category, Name, Quantity, Unit, Description, Notes, Length, Width, Height
+ * - Sorts by category order (v4.0: 6 categories)
+ * - Includes headers: Category, Name, Quantity, Unit, Description, Notes, CutItem, Length, Width, Thickness
  */
 export function generateBOMCSV(bom: BOM): string {
-	const headers = ['Category', 'Name', 'Quantity', 'Unit', 'Description', 'Notes', 'Length', 'Width', 'Height'];
-	const categoryOrder: BOMCategory[] = ['lumber', 'hardware', 'finishes', 'consumables'];
+	const headers = ['Category', 'Name', 'Quantity', 'Unit', 'Description', 'Notes', 'CutItem', 'Length', 'Width', 'Thickness'];
+	const categoryOrder: BOMCategory[] = ['hardwood', 'common', 'sheet', 'hardware', 'finishes', 'consumables'];
 
 	// Filter visible items and sort by category
 	const visibleItems = bom.items
@@ -44,6 +45,13 @@ export function generateBOMCSV(bom: BOM): string {
 		// Capitalize category for display
 		const categoryDisplay = item.category.charAt(0).toUpperCase() + item.category.slice(1);
 
+		// Determine cutItem value - explicit or derived from category
+		const cutItemValue =
+			item.cutItem !== undefined ? item.cutItem : isLumberCategory(item.category);
+
+		// Use thickness, fallback to height for migration compatibility
+		const thickness = item.thickness ?? item.height;
+
 		return [
 			escapeCSVField(categoryDisplay),
 			escapeCSVField(item.name),
@@ -51,10 +59,11 @@ export function generateBOMCSV(bom: BOM): string {
 			escapeCSVField(item.unit),
 			escapeCSVField(item.description ?? ''),
 			escapeCSVField(item.notes ?? ''),
+			escapeCSVField(cutItemValue ? 'Yes' : 'No'),
 			// Dimension columns - only for lumber, empty string otherwise
 			escapeCSVField(item.length != null ? String(item.length) : ''),
 			escapeCSVField(item.width != null ? String(item.width) : ''),
-			escapeCSVField(item.height != null ? String(item.height) : '')
+			escapeCSVField(thickness != null ? String(thickness) : '')
 		].join(',');
 	});
 

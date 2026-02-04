@@ -19,8 +19,8 @@
 
 	let { bom, onStartOver, onQuantityChange, onToggleVisibility, onDimensionChange, onAddItem, onSave, showSaveButton }: Props = $props();
 
-	// Category order for consistent display
-	const categoryOrder: BOMCategoryType[] = ['lumber', 'hardware', 'finishes', 'consumables'];
+	// Category order for consistent display (v4.0: 6 categories)
+	const categoryOrder: BOMCategoryType[] = ['hardwood', 'common', 'sheet', 'hardware', 'finishes', 'consumables'];
 
 	// Group items by category
 	function groupByCategory(items: BOMItem[]): Map<BOMCategoryType, BOMItem[]> {

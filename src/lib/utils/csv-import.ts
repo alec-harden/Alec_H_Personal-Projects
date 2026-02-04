@@ -7,6 +7,7 @@
 
 import Papa from 'papaparse';
 import type { BOMItem, BOMCategory } from '$lib/types/bom';
+import { isLumberCategory } from '$lib/types/bom';
 
 /**
  * CSV validation error with row, field, message, and error code
@@ -117,12 +118,13 @@ export function validateRow(
 			code: 'REQUIRED_FIELD'
 		});
 	} else {
-		const validCategories = ['lumber', 'hardware', 'finishes', 'consumables'];
+		// v4.0: Support all 6 categories (hardwood/common/sheet replaced lumber)
+		const validCategories = ['hardwood', 'common', 'sheet', 'hardware', 'finishes', 'consumables'];
 		if (!validCategories.includes(category)) {
 			errors.push({
 				row: rowNumber,
 				field: 'Category',
-				message: `Invalid category: ${category}. Must be one of: lumber, hardware, finishes, consumables`,
+				message: `Invalid category: ${category}. Must be one of: hardwood, common, sheet, hardware, finishes, consumables`,
 				code: 'INVALID_CATEGORY'
 			});
 		}
@@ -163,7 +165,8 @@ export function validateRow(
 	// Dimensions are optional - only validate if present
 	const length = row.Length?.trim() || '';
 	const width = row.Width?.trim() || '';
-	const height = row.Height?.trim() || '';
+	// Support both Height and Thickness columns for backward compatibility
+	const thickness = row.Thickness?.trim() || row.Height?.trim() || '';
 
 	// If any dimension is provided, validate it's a valid positive number
 	if (length) {
@@ -188,16 +191,27 @@ export function validateRow(
 			});
 		}
 	}
-	if (height) {
-		const parsed = parseFloat(height);
+	if (thickness) {
+		const parsed = parseFloat(thickness);
 		if (isNaN(parsed) || parsed <= 0) {
 			errors.push({
 				row: rowNumber,
-				field: 'Height',
-				message: `Invalid height: ${height}. Must be a positive number`,
+				field: 'Thickness',
+				message: `Invalid thickness: ${thickness}. Must be a positive number`,
 				code: 'INVALID_NUMBER'
 			});
 		}
+	}
+
+	// CutItem validation - optional, must be Yes/No/True/False if provided
+	const cutItem = row.CutItem?.trim().toLowerCase() || '';
+	if (cutItem && !['yes', 'no', 'true', 'false', '1', '0'].includes(cutItem)) {
+		errors.push({
+			row: rowNumber,
+			field: 'CutItem',
+			message: `Invalid CutItem value: ${row.CutItem}. Must be Yes, No, True, or False`,
+			code: 'INVALID_VALUE'
+		});
 	}
 
 	return errors;
@@ -211,24 +225,43 @@ export function rowToBOMItem(row: Record<string, string>, position: number): BOM
 	const description = row.Description?.trim() || undefined;
 	const notes = row.Notes?.trim() || undefined;
 
-	// Parse optional dimension fields
+	// Parse optional dimension fields - support both Thickness and Height
 	const length = row.Length?.trim() ? parseFloat(row.Length.trim()) : undefined;
 	const width = row.Width?.trim() ? parseFloat(row.Width.trim()) : undefined;
-	const height = row.Height?.trim() ? parseFloat(row.Height.trim()) : undefined;
+	const thickness = row.Thickness?.trim()
+		? parseFloat(row.Thickness.trim())
+		: row.Height?.trim()
+			? parseFloat(row.Height.trim())
+			: undefined;
+
+	// Parse CutItem - defaults based on category if not provided
+	const cutItemRaw = row.CutItem?.trim().toLowerCase() || '';
+	const category = row.Category.trim().toLowerCase() as BOMCategory;
+	let cutItem: boolean;
+
+	if (cutItemRaw === 'yes' || cutItemRaw === 'true' || cutItemRaw === '1') {
+		cutItem = true;
+	} else if (cutItemRaw === 'no' || cutItemRaw === 'false' || cutItemRaw === '0') {
+		cutItem = false;
+	} else {
+		// Default based on category
+		cutItem = isLumberCategory(category);
+	}
 
 	return {
 		id: `csv-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 		name: row.Name.trim(),
-		category: row.Category.trim().toLowerCase() as BOMCategory,
+		category,
 		quantity: parseFloat(row.Quantity.trim()),
 		unit: row.Unit.trim(),
 		description: description && description.length > 0 ? description : undefined,
 		notes: notes && notes.length > 0 ? notes : undefined,
 		hidden: false,
+		cutItem,
 		// Include dimensions if provided and valid
 		...(length && !isNaN(length) && length > 0 ? { length } : {}),
 		...(width && !isNaN(width) && width > 0 ? { width } : {}),
-		...(height && !isNaN(height) && height > 0 ? { height } : {})
+		...(thickness && !isNaN(thickness) && thickness > 0 ? { thickness } : {})
 	};
 }
 

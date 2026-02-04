@@ -20,6 +20,7 @@ import type { RequestHandler } from './$types';
 /**
  * Build a detailed prompt for BOM generation
  * Includes project context, dimensions, materials, and woodworking-specific guidance
+ * v4.0: Updated for 6 categories, dimension requirements, and consumables toggle
  */
 function buildBOMPrompt(details: ProjectDetails, template: ProjectTemplate | null): string {
 	const templateName = template?.name ?? details.templateId;
@@ -41,6 +42,18 @@ function buildBOMPrompt(details: ProjectDetails, template: ProjectTemplate | nul
 					.join(', ')
 			: 'basic joinery';
 
+	// Consumables section (conditional based on user toggle)
+	const includeConsumables = details.includeConsumables ?? true;
+	const consumablesSection = includeConsumables
+		? `
+CONSUMABLES (category: "consumables")
+- Sandpaper in multiple grits (80, 120, 180, 220 minimum)
+- Wood glue (estimate based on joint surface area)
+- Rags, tack cloths, applicators for finishing
+- Masking tape if needed`
+		: `
+CONSUMABLES: Do NOT include any consumable items (sandpaper, glue, tape, rags, etc.) - the user has opted out.`;
+
 	return `You are an expert woodworker creating a Bill of Materials for a woodworking project.
 
 PROJECT DETAILS:
@@ -52,31 +65,57 @@ PROJECT DETAILS:
 - Finish: ${details.finish}
 ${details.additionalNotes ? `- Additional Notes: ${details.additionalNotes}` : ''}
 
+CATEGORY ASSIGNMENT RULES:
+The user specified "${details.woodSpecies}" as the wood species. Use this to determine lumber categories:
+- HARDWOOD species (Oak, Maple, Walnut, Cherry, Ash, Mahogany, Hickory, Birch): use category "hardwood"
+- SOFTWOOD/construction lumber (Pine, Fir, SPF, Cedar, Poplar, Douglas Fir): use category "common"
+- SHEET materials (Plywood, MDF, Particle board, Hardboard, Melamine, OSB): use category "sheet"
+- When species is ambiguous or mixed, default to "hardwood" for primary wood parts
+
+DIMENSION REQUIREMENTS:
+For ALL lumber items (hardwood, common, sheet), you MUST include these fields:
+- length: actual length in inches (e.g., 48, 72, 96)
+- width: actual width in inches (e.g., 4, 6, 8, 11.25)
+- thickness: actual thickness in inches as decimal (e.g., 0.75, 1, 1.5)
+
+Use ACTUAL measurements, not nominal:
+- "3/4 stock" = thickness: 0.75
+- "4/4 rough lumber" = thickness: 1
+- "2x4 Pine" = width: 3.5, thickness: 1.5
+- "3/4 Plywood" = thickness: 0.75
+
 INSTRUCTIONS:
-Generate a complete Bill of Materials with items in ALL FOUR categories:
+Generate a complete Bill of Materials with items in the following categories:
 
-1. LUMBER - All wood components needed:
-   - Use standard lumber yard dimensions (1x4, 2x4, 4/4, 8/4, etc.)
-   - Add 1/4" extra length for milling/squaring on dimensional lumber
-   - Specify board feet (bf) for rough lumber, linear feet or pieces for dimensional
-   - Consider wood movement and grain orientation
+HARDWOOD LUMBER (category: "hardwood")
+- Premium hardwoods: Oak, Maple, Walnut, Cherry, Ash, Mahogany, etc.
+- Include length, width, thickness in inches (REQUIRED)
+- Use fractional thickness (0.75 for 3/4", 1 for 4/4, 1.5 for 6/4, etc.)
+- Unit: always "pcs" (pieces)
 
-2. HARDWARE - Fasteners and mechanical components:
-   - Specific screw sizes (e.g., #8 x 1-1/4" wood screws)
-   - Exact quantities (round up to standard box sizes)
-   ${templateHardware.length > 0 ? `- Consider typical hardware for ${templateName.toLowerCase()}: ${templateHardware.join(', ')}` : ''}
-   - Include any specialty fasteners for the joinery methods selected
+COMMON BOARDS (category: "common")
+- Construction lumber: Pine, Fir, SPF, Poplar, Cedar, etc.
+- Include length, width, thickness in inches (REQUIRED)
+- Use actual dimensions (2x4 = width 3.5, thickness 1.5)
+- Unit: always "pcs" (pieces)
 
-3. FINISHES - Surface treatments:
-   - Base the quantities on project surface area
-   - Include all stages (sealer/primer if needed, topcoat)
-   - Specify finish type matching "${details.finish}"
+SHEET GOODS (category: "sheet")
+- Plywood, MDF, Particle board, Hardboard, Melamine
+- Include length, width, thickness in inches (REQUIRED)
+- Common sizes: 48x96, 24x48, etc.
+- Unit: always "pcs" (pieces)
 
-4. CONSUMABLES - Expendable supplies:
-   - Sandpaper in multiple grits (80, 120, 180, 220 minimum)
-   - Wood glue (estimate based on joint surface area)
-   - Rags, tack cloths, applicators for finishing
-   - Masking tape if needed
+HARDWARE (category: "hardware")
+- Specific screw sizes (e.g., #8 x 1-1/4" wood screws)
+- Exact quantities (round up to standard box sizes)
+${templateHardware.length > 0 ? `- Consider typical hardware for ${templateName.toLowerCase()}: ${templateHardware.join(', ')}` : ''}
+- Include any specialty fasteners for the joinery methods selected
+
+FINISHES (category: "finishes")
+- Base the quantities on project surface area
+- Include all stages (sealer/primer if needed, topcoat)
+- Specify finish type matching "${details.finish}"
+${consumablesSection}
 
 Be specific and practical. A woodworker should be able to take this list directly to the lumber yard and hardware store.
 
