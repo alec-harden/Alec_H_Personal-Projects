@@ -1,113 +1,102 @@
 /**
- * Dimension Validation Constants
+ * Dimension Validation
  *
  * Standard values for woodworking dimensions.
- * Used for validation warnings (not blocking).
+ * Reads from database with caching. Used for validation warnings (not blocking).
  */
 
 import type { LumberCategory } from '$lib/types/bom';
+import { db } from '$lib/server/db';
+import { dimensionValues } from '$lib/server/schema';
+import { eq, and } from 'drizzle-orm';
 
 // Tolerance for floating point comparison (1/64")
 export const DIMENSION_TOLERANCE = 0.015625;
 
-/**
- * Standard hardwood thickness values (surfaced and rough)
- * Based on NHLA quarter-sawn system
- */
-export const HARDWOOD_THICKNESS_VALUES = [
-	0.75, // 3/4" (thin)
-	0.8125, // 13/16" (surfaced 4/4)
-	1.0, // 1" (rough 4/4)
-	1.0625, // 1-1/16" (surfaced 5/4)
-	1.25, // 1-1/4" (surfaced 6/4 / rough 5/4)
-	1.5, // 1-1/2" (rough 6/4)
-	1.75, // 1-3/4" (surfaced 8/4)
-	2.0, // 2" (rough 8/4)
-	2.75, // 2-3/4" (surfaced 12/4)
-	3.0, // 3" (rough 12/4)
-	3.75, // 3-3/4" (surfaced 16/4)
-	4.0 // 4" (rough 16/4)
-] as const;
+// Cache for dimension values
+let dimensionCache: Map<string, number[]> | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 60000; // 1 minute
 
 /**
- * Standard common board thickness values
- * Based on dimensional lumber standards (actual sizes)
+ * Generate cache key for a dimension lookup
  */
-export const COMMON_THICKNESS_VALUES = [
-	0.75, // 3/4" (actual 1x nominal)
-	1.5 // 1-1/2" (actual 2x nominal)
-] as const;
+function getCacheKey(category: LumberCategory, dimensionType: 'thickness' | 'width' | 'length'): string {
+	return `${category}:${dimensionType}`;
+}
 
 /**
- * Standard sheet goods thickness values
- * Based on plywood industry standards
+ * Check if cache is valid
  */
-export const SHEET_THICKNESS_VALUES = [
-	0.125, // 1/8"
-	0.1875, // 3/16"
-	0.25, // 1/4"
-	0.3125, // 5/16"
-	0.34375, // 11/32" (actual 3/8")
-	0.375, // 3/8"
-	0.46875, // 15/32" (actual 1/2")
-	0.5, // 1/2"
-	0.59375, // 19/32" (actual 5/8")
-	0.625, // 5/8"
-	0.71875, // 23/32" (actual 3/4")
-	0.75, // 3/4"
-	1.0, // 1"
-	1.125 // 1-1/8"
-] as const;
+function isCacheValid(): boolean {
+	return dimensionCache !== null && Date.now() - cacheTimestamp < CACHE_TTL;
+}
 
 /**
- * Standard common board widths (actual sizes)
+ * Invalidate the dimension cache (call after admin updates)
  */
-export const COMMON_WIDTH_VALUES = [
-	1.5, // 2x2
-	2.5, // 1x3
-	3.5, // 1x4, 2x4
-	5.5, // 1x6, 2x6
-	7.25, // 1x8, 2x8
-	9.25, // 1x10, 2x10
-	11.25 // 1x12, 2x12
-] as const;
+export function invalidateDimensionCache(): void {
+	dimensionCache = null;
+	cacheTimestamp = 0;
+}
 
 /**
- * Standard sheet widths (inches)
+ * Load all dimension values into cache
  */
-export const SHEET_WIDTH_VALUES = [
-	24, // 2'
-	48, // 4' (standard)
-	60 // 5' (utility)
-] as const;
+async function loadCache(): Promise<void> {
+	const values = await db.select().from(dimensionValues);
+
+	dimensionCache = new Map();
+	for (const row of values) {
+		const key = getCacheKey(row.category as LumberCategory, row.dimensionType as 'thickness' | 'width' | 'length');
+		if (!dimensionCache.has(key)) {
+			dimensionCache.set(key, []);
+		}
+		dimensionCache.get(key)!.push(row.value);
+	}
+	cacheTimestamp = Date.now();
+}
 
 /**
- * Standard sheet lengths (inches)
+ * Get dimension values from cache or database
  */
-export const SHEET_LENGTH_VALUES = [
-	48, // 4'
-	96, // 8' (standard)
-	120 // 10' (utility)
-] as const;
+async function getDimensionValues(
+	category: LumberCategory,
+	dimensionType: 'thickness' | 'width' | 'length'
+): Promise<number[]> {
+	if (!isCacheValid()) {
+		await loadCache();
+	}
+
+	const key = getCacheKey(category, dimensionType);
+	return dimensionCache?.get(key) || [];
+}
 
 /**
  * Get allowed thickness values for a lumber category
  */
-export function getThicknessValues(category: LumberCategory): readonly number[] {
-	switch (category) {
-		case 'hardwood':
-			return HARDWOOD_THICKNESS_VALUES;
-		case 'common':
-			return COMMON_THICKNESS_VALUES;
-		case 'sheet':
-			return SHEET_THICKNESS_VALUES;
-	}
+export async function getThicknessValues(category: LumberCategory): Promise<number[]> {
+	return getDimensionValues(category, 'thickness');
+}
+
+/**
+ * Get allowed width values for a lumber category
+ */
+export async function getWidthValues(category: LumberCategory): Promise<number[]> {
+	return getDimensionValues(category, 'width');
+}
+
+/**
+ * Get allowed length values for a lumber category
+ */
+export async function getLengthValues(category: LumberCategory): Promise<number[]> {
+	return getDimensionValues(category, 'length');
 }
 
 /**
  * Check if a value is within tolerance of any standard value
  */
-export function isStandardValue(value: number, standards: readonly number[]): boolean {
+export function isStandardValue(value: number, standards: readonly number[] | number[]): boolean {
 	return standards.some((std) => Math.abs(value - std) <= DIMENSION_TOLERANCE);
 }
 
@@ -115,10 +104,42 @@ export function isStandardValue(value: number, standards: readonly number[]): bo
  * Validate a thickness value against category standards
  * Returns null if valid, or a warning message if non-standard
  */
-export function validateThickness(value: number, category: LumberCategory): string | null {
-	const standards = getThicknessValues(category);
+export async function validateThickness(value: number, category: LumberCategory): Promise<string | null> {
+	const standards = await getThicknessValues(category);
 	if (isStandardValue(value, standards)) {
 		return null;
 	}
 	return `Non-standard thickness: ${value}" is not a common ${category} thickness`;
+}
+
+/**
+ * Validate a width value against category standards
+ * Returns null if valid, or a warning message if non-standard
+ */
+export async function validateWidth(value: number, category: LumberCategory): Promise<string | null> {
+	const standards = await getWidthValues(category);
+	// Only validate if there are width standards for this category
+	if (standards.length === 0) {
+		return null;
+	}
+	if (isStandardValue(value, standards)) {
+		return null;
+	}
+	return `Non-standard width: ${value}" is not a common ${category} width`;
+}
+
+/**
+ * Validate a length value against category standards
+ * Returns null if valid, or a warning message if non-standard
+ */
+export async function validateLength(value: number, category: LumberCategory): Promise<string | null> {
+	const standards = await getLengthValues(category);
+	// Only validate if there are length standards for this category
+	if (standards.length === 0) {
+		return null;
+	}
+	if (isStandardValue(value, standards)) {
+		return null;
+	}
+	return `Non-standard length: ${value}" is not a common ${category} length`;
 }
