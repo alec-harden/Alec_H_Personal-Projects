@@ -59,6 +59,13 @@
 				>
 					Manage Templates
 				</a>
+				<a
+					href="/admin/dimensions"
+					class="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-100"
+					onclick={() => (open = false)}
+				>
+					Manage Dimensions
+				</a>
 			{/if}
 
 			<form method="POST" action="/auth/logout" use:enhance>
