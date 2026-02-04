@@ -1,7 +1,7 @@
 <script lang="ts">
 	/**
 	 * Component for multi-selecting BOMs from a project
-	 * Shows lumber item count for each BOM to help user understand what will be imported
+	 * Shows cut item count for each BOM to help user understand what will be imported
 	 */
 
 	interface BOM {
@@ -10,6 +10,7 @@
 		items: Array<{
 			id: string;
 			category: string;
+			cutItem?: boolean;
 			length: number | null;
 			width: number | null;
 		}>;
@@ -24,16 +25,16 @@
 
 	let { boms, selectedBomIds, onToggle, disabled = false }: Props = $props();
 
-	// Calculate lumber count for each BOM
-	function getLumberCount(bom: BOM): number {
-		return bom.items.filter((item) => item.category === 'lumber' && item.length !== null)
+	// Calculate cut item count for each BOM
+	function getCutItemCount(bom: BOM): number {
+		return bom.items.filter((item) => item.cutItem === true && item.length !== null)
 			.length;
 	}
 </script>
 
 <div class="bom-list">
 	{#each boms as bom (bom.id)}
-		{@const lumberCount = getLumberCount(bom)}
+		{@const cutItemCount = getCutItemCount(bom)}
 		<button
 			type="button"
 			class="bom-card"
@@ -53,8 +54,8 @@
 			<div class="bom-content">
 				<span class="bom-name">{bom.name}</span>
 				<span class="bom-count">
-					{lumberCount}
-					{lumberCount === 1 ? 'lumber item' : 'lumber items'}
+					{cutItemCount}
+					{cutItemCount === 1 ? 'cut item' : 'cut items'}
 				</span>
 			</div>
 			<!-- Hidden input for form submission -->
