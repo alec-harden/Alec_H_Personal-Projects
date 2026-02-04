@@ -43,13 +43,16 @@
 	let currentStep = $state(1);
 	let selectedTemplate = $state<ProjectTemplate | null>(null);
 	let projectDetails = $state<Partial<ProjectDetails>>({});
+	let includeConsumables = $state(true);
 
 	// Step handlers
-	function handleTemplateSelect(template: ProjectTemplate) {
+	function handleTemplateSelect(template: ProjectTemplate, consumables: boolean) {
 		selectedTemplate = template;
+		includeConsumables = consumables;
 		projectDetails = {
 			...projectDetails,
-			templateId: template.id
+			templateId: template.id,
+			includeConsumables: consumables
 		};
 		currentStep = 2;
 	}
@@ -94,7 +97,8 @@
 			joinery: projectDetails.joinery!,
 			woodSpecies: materials.woodSpecies,
 			finish: materials.finish,
-			additionalNotes: materials.additionalNotes || undefined
+			additionalNotes: materials.additionalNotes || undefined,
+			includeConsumables: projectDetails.includeConsumables ?? true
 		};
 		onComplete(completeDetails);
 	}
@@ -120,7 +124,7 @@
 	<WizardProgress {currentStep} />
 
 	{#if currentStep === 1}
-		<ProjectTypeStep {templates} onSelect={handleTemplateSelect} />
+		<ProjectTypeStep {templates} {includeConsumables} onSelect={handleTemplateSelect} />
 	{:else if currentStep === 2 && selectedTemplate}
 		<DimensionsStep
 			template={selectedTemplate}

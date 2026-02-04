@@ -18,9 +18,11 @@
 	let unit = $state('pcs');
 	let notes = $state('');
 
-	// Unit options based on category
+	// Unit options based on category (v4.0: 6 categories, lumber uses 'pcs' only)
 	const unitOptions: Record<BOMCategory, string[]> = {
-		lumber: ['bf', 'pcs', 'lf', 'sq ft'],
+		hardwood: ['pcs'],
+		common: ['pcs'],
+		sheet: ['pcs'],
 		hardware: ['pcs', 'each', 'set', 'box'],
 		finishes: ['qt', 'gal', 'oz', 'can'],
 		consumables: ['pcs', 'sheet', 'roll', 'box']

@@ -3,6 +3,11 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { bomItems, boms } from '$lib/server/schema';
 import { eq } from 'drizzle-orm';
+import type { BOMCategory } from '$lib/types/bom';
+import {
+	validateBOMItemDimensions,
+	type ValidationWarning
+} from '$lib/server/bom-validation';
 
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	if (!locals.user) {
@@ -31,6 +36,10 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	if (typeof body.hidden === 'boolean') {
 		updates.hidden = body.hidden;
 	}
+	// cutItem update support
+	if (typeof body.cutItem === 'boolean') {
+		updates.cutItem = body.cutItem;
+	}
 	// Dimension updates (lumber items)
 	if ('length' in body) {
 		updates.length = typeof body.length === 'number' && body.length > 0 ? body.length : null;
@@ -38,16 +47,44 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	if ('width' in body) {
 		updates.width = typeof body.width === 'number' && body.width > 0 ? body.width : null;
 	}
+	// Support both height and thickness (sync both fields)
 	if ('height' in body) {
-		updates.height = typeof body.height === 'number' && body.height > 0 ? body.height : null;
+		const val = typeof body.height === 'number' && body.height > 0 ? body.height : null;
+		updates.height = val;
+		updates.thickness = val;
+	}
+	if ('thickness' in body) {
+		const val = typeof body.thickness === 'number' && body.thickness > 0 ? body.thickness : null;
+		updates.thickness = val;
+		updates.height = val;
 	}
 
 	// Apply updates if any
+	let warnings: ValidationWarning[] = [];
 	if (Object.keys(updates).length > 0) {
 		await db.update(bomItems).set(updates).where(eq(bomItems.id, params.itemId));
 		// Update BOM's updatedAt timestamp
 		await db.update(boms).set({ updatedAt: new Date() }).where(eq(boms.id, params.id));
+
+		// Validate updated dimensions
+		const updatedItem = await db.query.bomItems.findFirst({
+			where: eq(bomItems.id, params.itemId)
+		});
+
+		if (updatedItem) {
+			warnings = await validateBOMItemDimensions(
+				updatedItem.id,
+				updatedItem.name,
+				updatedItem.category as BOMCategory,
+				updatedItem.length ?? undefined,
+				updatedItem.width ?? undefined,
+				updatedItem.thickness ?? updatedItem.height ?? undefined
+			);
+		}
 	}
 
-	return json({ success: true });
+	return json({
+		success: true,
+		warnings: warnings.length > 0 ? warnings : undefined
+	});
 };

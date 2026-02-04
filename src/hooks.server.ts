@@ -1,9 +1,30 @@
 import { type Handle } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { sessions } from '$lib/server/schema';
-import { eq } from 'drizzle-orm';
+import { sessions, dimensionValues } from '$lib/server/schema';
+import { eq, sql } from 'drizzle-orm';
+import { seedDefaultDimensions } from '$lib/server/seed-dimensions';
+
+let dimensionsSeeded = false;
 
 export const handle: Handle = async ({ event, resolve }) => {
+	// 0. Seed default dimension values on first request (if table empty)
+	if (!dimensionsSeeded) {
+		try {
+			const result = await db
+				.select({ count: sql<number>`count(*)` })
+				.from(dimensionValues);
+
+			if (result[0].count === 0) {
+				console.log('Seeding default dimension values...');
+				await seedDefaultDimensions(db);
+				console.log('Dimension values seeded successfully');
+			}
+			dimensionsSeeded = true;
+		} catch (error) {
+			console.error('Failed to seed dimension values:', error);
+		}
+	}
+
 	// 1. Extract session token from cookie
 	const sessionToken = event.cookies.get('session_token');
 

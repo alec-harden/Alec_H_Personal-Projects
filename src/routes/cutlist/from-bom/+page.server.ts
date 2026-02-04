@@ -63,33 +63,33 @@ export const actions = {
 			return fail(400, { error: 'Invalid BOM selection' });
 		}
 
-		// Query lumber items from selected BOMs
-		const lumberItems = await db.query.bomItems.findMany({
+		// Query all items from selected BOMs
+		const allItems = await db.query.bomItems.findMany({
 			where: inArray(bomItems.bomId, selectedBomIds)
 		});
 
-		// Filter to lumber items with valid length dimension
-		const validLumberItems = lumberItems.filter(
-			(item) => item.category === 'lumber' && item.length !== null
+		// Filter to cut items with valid length dimension
+		const validCutItems = allItems.filter(
+			(item) => item.cutItem === true && item.length !== null
 		);
 
-		if (validLumberItems.length === 0) {
+		if (validCutItems.length === 0) {
 			return fail(400, {
-				error: 'No lumber items with valid dimensions found in selected BOMs'
+				error: 'No cut items with valid dimensions found in selected BOMs'
 			});
 		}
 
-		// Detect mode based on width presence
-		const hasWidth = validLumberItems.some((item) => item.width !== null);
-		const mode = hasWidth ? 'sheet' : 'linear';
+		// Detect mode based on sheet category presence
+		const hasSheetItems = validCutItems.some((item) => item.category === 'sheet');
+		const mode = hasSheetItems ? 'sheet' : 'linear';
 
-		// Transform lumber items to Stock format (what you have available)
-		const stock = validLumberItems.map((item) => ({
+		// Transform cut items to Stock format (what you have available)
+		const stock = validCutItems.map((item) => ({
 			id: crypto.randomUUID(),
 			length: item.length!,
 			width: item.width,
 			quantity: item.quantity,
-			label: item.name,
+			label: item.thickness ? `${item.thickness}" ${item.name}` : item.name,
 			grainMatters: false
 		}));
 

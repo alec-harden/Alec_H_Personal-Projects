@@ -159,10 +159,13 @@ export const bomItems = sqliteTable('bom_items', {
 	notes: text('notes'),
 	hidden: integer('hidden', { mode: 'boolean' }).notNull().default(false),
 	position: integer('position').notNull(),
+	cutItem: integer('cut_item', { mode: 'boolean' }).default(false),
 	// Lumber dimensions (nullable, for lumber items only)
 	length: real('length'), // inches
 	width: real('width'), // inches
-	height: real('height') // inches (thickness)
+	// DEPRECATED: Use thickness instead. Kept for Phase 28 migration.
+	height: real('height'), // inches (thickness)
+	thickness: real('thickness') // inches - v4.0: renamed from height
 });
 
 // BOMs relations
@@ -284,3 +287,21 @@ export const cutListStockRelations = relations(cutListStock, ({ one }) => ({
 		references: [cutLists.id]
 	})
 }));
+
+// =============================================================================
+// Dimension Values Table (Admin-managed standard dimensions)
+// =============================================================================
+
+// Dimension values table - admin-configurable standard dimension values
+export const dimensionValues = sqliteTable('dimension_values', {
+	id: text('id').primaryKey(),
+	category: text('category', { enum: ['hardwood', 'common', 'sheet'] }).notNull(),
+	dimensionType: text('dimension_type', { enum: ['thickness', 'width', 'length'] }).notNull(),
+	value: real('value').notNull(),
+	isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// Dimension values relations (standalone - no foreign keys)
+export const dimensionValuesRelations = relations(dimensionValues, () => ({}));

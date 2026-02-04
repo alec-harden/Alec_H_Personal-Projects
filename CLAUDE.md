@@ -90,6 +90,25 @@ This project uses a GSD (Get Shit Done) methodology with structured planning doc
 - v2.0 Persistence (shipped 2026-01-28) - Auth, projects, BOM persistence, admin panel
 - v3.0 Multi-User & Cut Optimizer (shipped 2026-01-30) - RBAC, email flows, cut list optimizer
 
+## Codebase Documentation
+
+The `.planning/codebase/` directory contains detailed analysis files that document the codebase. These files should be kept current as the codebase evolves.
+
+**Files:**
+- `ARCHITECTURE.md` - Application layers, data flows, entry points, error handling patterns
+- `STACK.md` - Technology stack, dependencies, environment variables
+- `STRUCTURE.md` - Source directory organization and file purposes
+- `CONVENTIONS.md` - Code conventions and established patterns
+- `INTEGRATIONS.md` - External service integrations (AI, database, email)
+- `CONCERNS.md` - Tech debt, known bugs, security considerations, performance bottlenecks
+- `TESTING.md` - Testing approach and coverage gaps
+
+**Maintenance:**
+- Run `/gsd:map-codebase` to regenerate all files after significant architectural changes
+- Update individual files manually when making focused changes (e.g., adding a new integration)
+- Review `CONCERNS.md` when fixing bugs or addressing tech debt
+- Keep `STACK.md` current when updating dependencies or adding new packages
+
 ## Code Conventions
 
 - Svelte 5 syntax: Use `$props()` for component props, `$state()` for reactive state

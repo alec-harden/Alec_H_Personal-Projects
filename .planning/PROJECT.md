@@ -4,6 +4,19 @@
 
 A modular web application hosting personal woodworking tools with multi-user support. Features include an AI-powered Bill of Materials generator with guided prompts and a Cut List Optimizer for minimizing material waste. Designed as a plug-and-play platform where new tools can be easily added via a dashboard interface.
 
+## Current Milestone: v4.0 BOM Lumber Categorization
+
+**Goal:** Refactor BOM system with specialized lumber categories, Cut_Item flag for optimizer integration, required dimensions, and admin-managed validation values.
+
+**Target features:**
+- Split "Lumber" into Hardwood Lumber, Common Boards, Sheet Goods categories
+- Add Cut_Item boolean flag for cut list optimizer integration
+- Require dimensions (L/W/T) for all lumber items with actual measurements
+- Remove board feet calculations entirely
+- Display thickness prefix on lumber names ("3/4 Oak")
+- Add consumables toggle to BOM wizard
+- Admin management of accepted dimension values
+
 ## Current State
 
 **Version:** v3.0 Multi-User & Cut Optimizer (shipped 2026-01-30)
@@ -180,7 +193,53 @@ Generate accurate, complete bills of materials for woodworking projects through 
 
 ### Active
 
-(No active requirements — define in next milestone with `/gsd:new-milestone`)
+**Lumber Categorization (v4.0)**
+- [ ] CAT-01: Replace `lumber` category with `hardwood`, `common`, `sheet` in all type definitions
+- [ ] CAT-02: Add `cutItem` boolean field to bomItems table schema
+- [ ] CAT-03: Set `cutItem = true` automatically for hardwood/common/sheet categories
+- [ ] CAT-04: Remove board feet utility functions and calculations
+
+**Dimensional Requirements (v4.0)**
+- [ ] DIM-01: Rename `height` field to `thickness` for clarity (schema migration)
+- [ ] DIM-02: Add dimensional validation with admin-managed allowed values
+- [ ] DIM-03: Validate dimensions are present when saving items with cutItem=true
+- [ ] DIM-04: Display warning (not block) for non-standard dimension values
+
+**BOM Display Updates (v4.0)**
+- [ ] UI-01: Update category order and color configuration for 6 categories
+- [ ] UI-02: Remove board feet calculations from BOMItem and BOMCategory components
+- [ ] UI-03: Display lumber item names with fractional thickness prefix ("3/4 Oak")
+- [ ] UI-04: Force `unit = 'pcs'` for all lumber categories
+- [ ] UI-05: Update category header labels (Hardwood Lumber, Common Boards, Sheet Goods)
+
+**AI & Wizard Updates (v4.0)**
+- [ ] AI-01: Update AI system prompt to use new lumber categories
+- [ ] AI-02: AI assigns correct category (hardwood/common/sheet) based on material type
+- [ ] AI-03: AI includes dimensions (L/W/T) for all lumber items
+- [ ] WIZ-01: Add "Include Consumable Items" toggle at wizard start
+- [ ] WIZ-02: Modify prompt generation based on consumables toggle setting
+
+**Cut List Integration (v4.0)**
+- [ ] CUT-01: Change BOM filter from `category === 'lumber'` to `cutItem === true`
+- [ ] CUT-02: Use `thickness` field (formerly `height`) in optimization
+- [ ] CUT-03: Update BomSelector component to show cutItem count
+- [ ] CUT-04: Update mode detection logic (sheet category → sheet mode)
+
+**Admin Dimension Management (v4.0)**
+- [ ] ADM-01: Create `dimensionValues` database table
+- [ ] ADM-02: Seed default dimension values on first run
+- [ ] ADM-03: Create `/admin/dimensions` route for dimension management UI
+- [ ] ADM-04: Admin can view/add/remove accepted values per category
+- [ ] ADM-05: Admin can reset dimension values to defaults
+
+**Data Migration (v4.0)**
+- [ ] MIG-01: Migrate existing lumber items to hardwood category
+- [ ] MIG-02: Backfill cutItem=true for existing lumber items
+- [ ] MIG-03: Rename height → thickness in existing data
+
+**CSV Updates (v4.0)**
+- [ ] CSV-01: Update CSV import/export for new categories
+- [ ] CSV-02: Add cutItem column to CSV format
 
 ### Out of Scope
 
@@ -252,4 +311,4 @@ Generate accurate, complete bills of materials for woodworking projects through 
 | Navigation state passing | Cleaner UX than URL params for results page | ✓ v3.0 |
 
 ---
-*Last updated: 2026-01-30 after v3.0 milestone*
+*Last updated: 2026-02-03 after v4.0 milestone started*

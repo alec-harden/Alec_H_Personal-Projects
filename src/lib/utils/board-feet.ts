@@ -1,11 +1,8 @@
 /**
- * Board Feet Calculation Utilities
+ * Dimension Utilities for Woodworking
  *
- * Utilities for calculating board feet from lumber dimensions
- * and parsing fractional inch inputs commonly used in woodworking.
- *
- * Board feet formula: (L x W x H) / 144 where all dimensions are in inches
- * 1 board foot = 144 cubic inches (12" x 12" x 1")
+ * Utilities for parsing fractional inch inputs and formatting dimensions
+ * commonly used in woodworking measurements.
  */
 
 /**
@@ -57,48 +54,6 @@ export function parseFractionalInches(input: string): number | null {
 	}
 
 	return num;
-}
-
-/**
- * Calculate board feet from lumber dimensions.
- *
- * Formula: (L x W x H) / 144
- * All dimensions must be in inches.
- *
- * @param length - Length in inches
- * @param width - Width in inches
- * @param height - Height/thickness in inches
- * @returns Board feet as a decimal, or 0 for invalid inputs
- */
-export function calculateBoardFeet(length: number, width: number, height: number): number {
-	// Handle zero, negative, or invalid inputs gracefully
-	if (length <= 0 || width <= 0 || height <= 0) {
-		return 0;
-	}
-
-	if (!isFinite(length) || !isFinite(width) || !isFinite(height)) {
-		return 0;
-	}
-
-	return (length * width * height) / 144;
-}
-
-/**
- * Format board feet for display.
- *
- * @param bf - Board feet value
- * @returns Formatted string like "1.5 bf" or "12.33 bf"
- */
-export function formatBoardFeet(bf: number): string {
-	if (bf === 0 || !isFinite(bf)) {
-		return '0 bf';
-	}
-
-	// Round to 2 decimal places, then remove trailing zeros
-	const rounded = Math.round(bf * 100) / 100;
-	const formatted = rounded.toFixed(2).replace(/\.?0+$/, '');
-
-	return `${formatted} bf`;
 }
 
 /**
