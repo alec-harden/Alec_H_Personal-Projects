@@ -4,6 +4,11 @@ import { db } from '$lib/server/db';
 import { boms, bomItems, projects } from '$lib/server/schema';
 import { eq } from 'drizzle-orm';
 import type { BOM } from '$lib/types/bom';
+import { isLumberCategory } from '$lib/types/bom';
+import {
+	validateBOMItemDimensions,
+	type ValidationWarning
+} from '$lib/server/bom-validation';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	// Validate user is authenticated
@@ -36,6 +41,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		if (project.userId !== locals.user.id) {
 			return json({ error: 'Project not owned by user' }, { status: 403 });
+		}
+
+		// Collect validation warnings (VAL-01, VAL-02, DIM-03, DIM-04)
+		const warnings: ValidationWarning[] = [];
+		for (const item of bom.items) {
+			const itemWarnings = await validateBOMItemDimensions(
+				item.id,
+				item.name,
+				item.category,
+				item.length,
+				item.width,
+				item.thickness ?? item.height // Support both for migration compatibility
+			);
+			warnings.push(...itemWarnings);
 		}
 
 		// Use Drizzle transaction to atomically save BOM and items
@@ -74,7 +93,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 						category: item.category,
 						notes: item.notes || null,
 						hidden: item.hidden || false,
-						position: index
+						position: index,
+						// VAL-03: Auto-set cutItem based on category
+						cutItem: isLumberCategory(item.category),
+						// Save dimensions (support both thickness and height for migration)
+						length: item.length ?? null,
+						width: item.width ?? null,
+						thickness: item.thickness ?? item.height ?? null,
+						height: item.height ?? item.thickness ?? null
 					}))
 				);
 			}
@@ -82,7 +108,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			return newBomId;
 		});
 
-		return json({ success: true, bomId });
+		// Return success with optional warnings
+		return json({
+			success: true,
+			bomId,
+			warnings: warnings.length > 0 ? warnings : undefined
+		});
 	} catch (error) {
 		console.error('Error saving BOM:', error);
 		return json(
