@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 ## Current Position
 
 Phase: 29 (Admin Dimension Management) - 7 of 7 phases
-Plan: 01 of ?? in progress
-Status: In progress
-Last activity: 2026-02-04 — Completed 29-01-PLAN.md (Database Schema & Validation Logic)
+Plan: 02 of 02 complete
+Status: Phase complete
+Last activity: 2026-02-04 — Completed 29-02-PLAN.md (Admin UI)
 
-Progress: [██████████████████████████████░░] 6.5/7 phases (~93%)
+Progress: [████████████████████████████████] 7/7 phases (100%)
 
 ## Milestone History
 
@@ -110,6 +110,8 @@ Tech stack and patterns established across v1.0-v3.0:
 - 1-minute TTL cache for dimension validation queries
 - invalidateDimensionCache() for admin updates
 - Validation functions now async (validateThickness, validateWidth, validateLength)
+- Admin UI at /admin/dimensions with view, add, remove, reset functionality
+- UserMenu includes "Manage Dimensions" link for admins
 
 See `.planning/milestones/v3.0-ROADMAP.md` for full v3.0 decision log.
 
@@ -138,23 +140,23 @@ v3.0 research completed — see `.planning/research/v3-SUMMARY.md`:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 29-01-PLAN.md (Database Schema & Validation Logic)
+Stopped at: Completed 29-02-PLAN.md (Admin UI)
 Resume file: None
 
 ## Next Steps
 
-**Plan 29-01 complete!** Continue with remaining Phase 29 plans.
+**Phase 29 complete!** v4.0 milestone is ready for final review and shipping.
 
-v4.0 progress: ~93% complete
+v4.0 progress: 100% complete
 - Phase 23: Schema Foundation
 - Phase 24: Display Updates
 - Phase 25: API Validation
 - Phase 26: AI & Wizard Updates
 - Phase 27: Cut List Integration
 - Phase 28: Data Migration
-- Phase 29: Admin Dimension Management (Plan 01 of ?? complete)
+- Phase 29: Admin Dimension Management (Plans 01, 02 complete)
 
-Next: Execute remaining Phase 29 plans for admin UI.
+Next: Ship v4.0 milestone.
 
 ---
-*Last updated: 2026-02-04 after completing 29-01-PLAN.md*
+*Last updated: 2026-02-04 after completing 29-02-PLAN.md*
