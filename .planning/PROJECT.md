@@ -4,39 +4,30 @@
 
 A modular web application hosting personal woodworking tools with multi-user support. Features include an AI-powered Bill of Materials generator with guided prompts and a Cut List Optimizer for minimizing material waste. Designed as a plug-and-play platform where new tools can be easily added via a dashboard interface.
 
-## Current Milestone: v4.0 BOM Lumber Categorization
-
-**Goal:** Refactor BOM system with specialized lumber categories, Cut_Item flag for optimizer integration, required dimensions, and admin-managed validation values.
-
-**Target features:**
-- Split "Lumber" into Hardwood Lumber, Common Boards, Sheet Goods categories
-- Add Cut_Item boolean flag for cut list optimizer integration
-- Require dimensions (L/W/T) for all lumber items with actual measurements
-- Remove board feet calculations entirely
-- Display thickness prefix on lumber names ("3/4 Oak")
-- Add consumables toggle to BOM wizard
-- Admin management of accepted dimension values
-
 ## Current State
 
-**Version:** v3.0 Multi-User & Cut Optimizer (shipped 2026-01-30)
+**Version:** v4.0 BOM Lumber Categorization (shipped 2026-02-04)
 
 **What's working:**
 - Dashboard home page with tool navigation
-- AI-powered BOM generator with 4-step guided wizard
+- AI-powered BOM generator with 4-step guided wizard and consumables toggle
 - 6 woodworking project templates (database-backed, admin-manageable)
-- Comprehensive BOM with lumber dimensions and board feet calculation
+- 6 BOM categories: Hardwood Lumber, Common Boards, Sheet Goods, Hardware, Finishes, Consumables
+- Lumber items with cutItem flag for optimizer integration
+- Dimension validation with admin-managed allowed values
+- Admin /admin/dimensions panel for dimension standards management
+- Thickness prefix display on lumber names ("3/4 Oak")
 - Full editing: inline quantity editing, add items, eye icon visibility toggle
-- CSV export/import with dimension columns for lumber
+- CSV export/import with 6 categories, cutItem column, thickness field
 - Responsive design for desktop and tablet
 - Email/password authentication with session management
 - Project organization with full CRUD
 - BOM persistence (save/load/edit/delete within projects)
 - Role-based access control (admin/user roles)
-- Admin panel for template and user management
+- Admin panel for template, user, and dimension management
 - Password reset and email verification flows
 - Cut List Optimizer with 1D (FFD) and 2D (Guillotine) algorithms
-- BOM integration for pre-populating cuts from lumber items
+- BOM integration using cutItem flag for pre-populating cuts
 - Shop checklist with completion tracking and progress indicators
 - Manual overrides with drag-drop stock assignment
 
@@ -48,7 +39,7 @@ A modular web application hosting personal woodworking tools with multi-user sup
 - oslo + Argon2 for authentication
 - Resend API for transactional email
 
-**Codebase:** ~75 source files, 17,599 lines TypeScript/Svelte
+**Codebase:** ~80 source files, ~24,000 lines TypeScript/Svelte
 
 ## Core Value
 
@@ -191,55 +182,57 @@ Generate accurate, complete bills of materials for woodworking projects through 
 - [x] NAV-05: Start new build icon and New project button active — v3.0
 - [x] CUT-33 to CUT-39: Cut list UI refinements and navigation — v3.0
 
-### Active
-
 **Lumber Categorization (v4.0)**
-- [ ] CAT-01: Replace `lumber` category with `hardwood`, `common`, `sheet` in all type definitions
-- [ ] CAT-02: Add `cutItem` boolean field to bomItems table schema
-- [ ] CAT-03: Set `cutItem = true` automatically for hardwood/common/sheet categories
-- [ ] CAT-04: Remove board feet utility functions and calculations
+- [x] CAT-01: Replace `lumber` category with `hardwood`, `common`, `sheet` in all type definitions — v4.0
+- [x] CAT-02: Add `cutItem` boolean field to bomItems table schema — v4.0
+- [x] CAT-03: Set `cutItem = true` automatically for hardwood/common/sheet categories — v4.0
+- [x] CAT-04: Remove board feet utility functions and calculations — v4.0
 
 **Dimensional Requirements (v4.0)**
-- [ ] DIM-01: Rename `height` field to `thickness` for clarity (schema migration)
-- [ ] DIM-02: Add dimensional validation with admin-managed allowed values
-- [ ] DIM-03: Validate dimensions are present when saving items with cutItem=true
-- [ ] DIM-04: Display warning (not block) for non-standard dimension values
+- [x] DIM-01: Rename `height` field to `thickness` for clarity (schema migration) — v4.0
+- [x] DIM-02: Add dimensional validation with admin-managed allowed values — v4.0
+- [x] DIM-03: Validate dimensions are present when saving items with cutItem=true — v4.0
+- [x] DIM-04: Display warning (not block) for non-standard dimension values — v4.0
 
 **BOM Display Updates (v4.0)**
-- [ ] UI-01: Update category order and color configuration for 6 categories
-- [ ] UI-02: Remove board feet calculations from BOMItem and BOMCategory components
-- [ ] UI-03: Display lumber item names with fractional thickness prefix ("3/4 Oak")
-- [ ] UI-04: Force `unit = 'pcs'` for all lumber categories
-- [ ] UI-05: Update category header labels (Hardwood Lumber, Common Boards, Sheet Goods)
+- [x] UI-06: Update category order and color configuration for 6 categories — v4.0
+- [x] UI-07: Remove board feet calculations from BOMItem and BOMCategory components — v4.0
+- [x] UI-08: Display lumber item names with fractional thickness prefix ("3/4 Oak") — v4.0
+- [x] UI-09: Force `unit = 'pcs'` for all lumber categories — v4.0
+- [x] UI-10: Update category header labels (Hardwood Lumber, Common Boards, Sheet Goods) — v4.0
 
 **AI & Wizard Updates (v4.0)**
-- [ ] AI-01: Update AI system prompt to use new lumber categories
-- [ ] AI-02: AI assigns correct category (hardwood/common/sheet) based on material type
-- [ ] AI-03: AI includes dimensions (L/W/T) for all lumber items
-- [ ] WIZ-01: Add "Include Consumable Items" toggle at wizard start
-- [ ] WIZ-02: Modify prompt generation based on consumables toggle setting
+- [x] AI-01: Update AI system prompt to use new lumber categories — v4.0
+- [x] AI-02: AI assigns correct category (hardwood/common/sheet) based on material type — v4.0
+- [x] AI-03: AI includes dimensions (L/W/T) for all lumber items — v4.0
+- [x] WIZ-01: Add "Include Consumable Items" toggle at wizard start — v4.0
+- [x] WIZ-02: Modify prompt generation based on consumables toggle setting — v4.0
 
 **Cut List Integration (v4.0)**
-- [ ] CUT-01: Change BOM filter from `category === 'lumber'` to `cutItem === true`
-- [ ] CUT-02: Use `thickness` field (formerly `height`) in optimization
-- [ ] CUT-03: Update BomSelector component to show cutItem count
-- [ ] CUT-04: Update mode detection logic (sheet category → sheet mode)
+- [x] CUT-40: Change BOM filter from `category === 'lumber'` to `cutItem === true` — v4.0
+- [x] CUT-41: Use `thickness` field (formerly `height`) in optimization — v4.0
+- [x] CUT-42: Update BomSelector component to show cutItem count — v4.0
+- [x] CUT-43: Update mode detection logic (sheet category → sheet mode) — v4.0
 
 **Admin Dimension Management (v4.0)**
-- [ ] ADM-01: Create `dimensionValues` database table
-- [ ] ADM-02: Seed default dimension values on first run
-- [ ] ADM-03: Create `/admin/dimensions` route for dimension management UI
-- [ ] ADM-04: Admin can view/add/remove accepted values per category
-- [ ] ADM-05: Admin can reset dimension values to defaults
+- [x] ADM-01: Create `dimensionValues` database table — v4.0
+- [x] ADM-02: Seed default dimension values on first run — v4.0
+- [x] ADM-03: Create `/admin/dimensions` route for dimension management UI — v4.0
+- [x] ADM-04: Admin can view/add/remove accepted values per category — v4.0
+- [x] ADM-05: Admin can reset dimension values to defaults — v4.0
 
 **Data Migration (v4.0)**
-- [ ] MIG-01: Migrate existing lumber items to hardwood category
-- [ ] MIG-02: Backfill cutItem=true for existing lumber items
-- [ ] MIG-03: Rename height → thickness in existing data
+- [x] MIG-01: Migrate existing lumber items to hardwood category — v4.0
+- [x] MIG-02: Backfill cutItem=true for existing lumber items — v4.0
+- [x] MIG-03: Rename height → thickness in existing data — v4.0
 
 **CSV Updates (v4.0)**
-- [ ] CSV-01: Update CSV import/export for new categories
-- [ ] CSV-02: Add cutItem column to CSV format
+- [x] CSV-05: Update CSV import/export for new categories — v4.0
+- [x] CSV-06: Add cutItem column to CSV format — v4.0
+
+### Active
+
+(Next milestone requirements will be defined via `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -309,6 +302,12 @@ Generate accurate, complete bills of materials for woodworking projects through 
 | Custom optimizer over library | Full control, no dependency; algorithms are straightforward | ✓ v3.0 |
 | Native HTML5 drag-drop | Simpler than svelte-dnd-action for manual overrides | ✓ v3.0 |
 | Navigation state passing | Cleaner UX than URL params for results page | ✓ v3.0 |
+| Split lumber into 3 categories | Hardwood/Common/Sheet matches real purchasing patterns | ✓ v4.0 |
+| cutItem flag over category check | Explicit flag decouples optimizer from category logic | ✓ v4.0 |
+| Dimension validation warns, allows save | Non-blocking validation respects user judgment | ✓ v4.0 |
+| Admin-managed dimension values | Database-backed for flexibility; 41 defaults seeded | ✓ v4.0 |
+| Consumables toggle in wizard | User controls scope of AI generation | ✓ v4.0 |
+| Actual dimensions only | Real measurements (not nominal) for accuracy | ✓ v4.0 |
 
 ---
-*Last updated: 2026-02-03 after v4.0 milestone started*
+*Last updated: 2026-02-04 after v4.0 milestone completion*

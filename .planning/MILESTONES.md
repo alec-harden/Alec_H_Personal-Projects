@@ -1,5 +1,35 @@
 # Project Milestones: WoodShop Toolbox
 
+## v4.0 BOM Lumber Categorization (Shipped: 2026-02-04)
+
+**Delivered:** Refactored BOM system with specialized lumber categories (Hardwood, Common, Sheet), cutItem flag for optimizer integration, dimension validation with admin management, and consumables toggle.
+
+**Phases completed:** 23-29 (11 plans total)
+
+**Key accomplishments:**
+
+- Split "Lumber" category into Hardwood Lumber, Common Boards, Sheet Goods with distinct colors
+- Added cutItem boolean flag for cut list optimizer integration (replaces category filter)
+- Implemented dimension validation with admin-managed allowed values (41 defaults)
+- Created /admin/dimensions UI for viewing, adding, removing, resetting dimension standards
+- Added consumables toggle to BOM wizard for excluding consumable items
+- Updated AI prompts to generate BOMs with 6 categories and actual dimensions
+- Created data migration script for existing BOMs (lumber → hardwood, backfill cutItem)
+
+**Stats:**
+
+- 55 files modified
+- 6,380 lines added, 210 deleted
+- 7 phases, 11 plans, ~80 tasks
+- 2 days from start to ship (2026-02-03 to 2026-02-04)
+- 35 commits
+
+**Git range:** `173dca6` → `d87de81`
+
+**What's next:** v5.0 — BOM presets, cost estimation, cut list PDF export
+
+---
+
 ## v3.0 Multi-User & Cut Optimizer (Shipped: 2026-01-30)
 
 **Delivered:** Multi-user platform with RBAC, email flows (password reset, verification), admin user management, enhanced BOM with lumber dimensions/board feet, and a complete Cut List Optimizer tool with 1D/2D algorithms, BOM integration, and shop checklist.
