@@ -5,10 +5,11 @@
  * Based on the constants from dimension-validation.ts.
  */
 
-import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 import { dimensionValues } from './schema';
+import type * as schema from './schema';
+import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 
-type DB = LibSQLDatabase<Record<string, never>>;
+type DB = LibSQLDatabase<typeof schema>;
 
 /**
  * Standard hardwood thickness values (surfaced and rough)
