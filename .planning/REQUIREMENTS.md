@@ -9,15 +9,15 @@ Requirements for BOM Lumber Categorization & Cut Item Integration milestone.
 
 ### Lumber Categorization
 
-- [ ] **CAT-01**: Replace `lumber` category with `hardwood`, `common`, `sheet` in all type definitions
-- [ ] **CAT-02**: Add `cutItem` boolean field to bomItems table schema
-- [ ] **CAT-03**: Set `cutItem = true` automatically for hardwood/common/sheet categories
-- [ ] **CAT-04**: Remove board feet utility functions and calculations entirely
+- [x] **CAT-01**: Replace `lumber` category with `hardwood`, `common`, `sheet` in all type definitions
+- [x] **CAT-02**: Add `cutItem` boolean field to bomItems table schema
+- [x] **CAT-03**: Set `cutItem = true` automatically for hardwood/common/sheet categories
+- [x] **CAT-04**: Remove board feet utility functions and calculations entirely
 
 ### Dimensional Requirements
 
-- [ ] **DIM-01**: Rename `height` field to `thickness` for clarity (schema migration)
-- [ ] **DIM-02**: Add dimensional validation with admin-managed allowed values
+- [x] **DIM-01**: Rename `height` field to `thickness` for clarity (schema migration)
+- [x] **DIM-02**: Add dimensional validation with admin-managed allowed values
 - [x] **DIM-03**: Validate dimensions are present when saving items with cutItem=true
 - [x] **DIM-04**: Display warning (not block) for non-standard dimension values
 
@@ -54,20 +54,20 @@ Requirements for BOM Lumber Categorization & Cut Item Integration milestone.
 
 ### Admin Dimension Management
 
-- [ ] **ADM-01**: Create `dimensionValues` database table (category, dimension_type, values JSON)
-- [ ] **ADM-02**: Seed default dimension values on first run
-- [ ] **ADM-03**: Create `/admin/dimensions` route for dimension management UI
-- [ ] **ADM-04**: Admin can view current accepted values per category/dimension type
-- [ ] **ADM-05**: Admin can add new accepted values
-- [ ] **ADM-06**: Admin can remove accepted values
-- [ ] **ADM-07**: Admin can reset dimension values to defaults
-- [ ] **ADM-08**: Validation logic reads from database instead of hardcoded constants
+- [x] **ADM-01**: Create `dimensionValues` database table (category, dimension_type, values JSON)
+- [x] **ADM-02**: Seed default dimension values on first run
+- [x] **ADM-03**: Create `/admin/dimensions` route for dimension management UI
+- [x] **ADM-04**: Admin can view current accepted values per category/dimension type
+- [x] **ADM-05**: Admin can add new accepted values
+- [x] **ADM-06**: Admin can remove accepted values
+- [x] **ADM-07**: Admin can reset dimension values to defaults
+- [x] **ADM-08**: Validation logic reads from database instead of hardcoded constants
 
 ### Data Migration
 
-- [ ] **MIG-01**: Create migration script for existing BOMs (lumber → hardwood by default)
-- [ ] **MIG-02**: Backfill cutItem=true for existing lumber items
-- [ ] **MIG-03**: Rename height → thickness in existing data
+- [x] **MIG-01**: Create migration script for existing BOMs (lumber → hardwood by default)
+- [x] **MIG-02**: Backfill cutItem=true for existing lumber items
+- [x] **MIG-03**: Rename height → thickness in existing data
 
 ## Future Requirements
 
@@ -126,19 +126,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CUT-02 | Phase 27 | Complete |
 | CUT-03 | Phase 27 | Complete |
 | CUT-04 | Phase 27 | Complete |
-| MIG-01 | Phase 28 | Pending |
-| MIG-02 | Phase 28 | Pending |
-| MIG-03 | Phase 28 | Pending |
+| MIG-01 | Phase 28 | Complete |
+| MIG-02 | Phase 28 | Complete |
+| MIG-03 | Phase 28 | Complete |
 | DIM-03 | Phase 25 | Complete |
 | DIM-04 | Phase 25 | Complete |
-| ADM-01 | Phase 29 | Pending |
-| ADM-02 | Phase 29 | Pending |
-| ADM-03 | Phase 29 | Pending |
-| ADM-04 | Phase 29 | Pending |
-| ADM-05 | Phase 29 | Pending |
-| ADM-06 | Phase 29 | Pending |
-| ADM-07 | Phase 29 | Pending |
-| ADM-08 | Phase 29 | Pending |
+| ADM-01 | Phase 29 | Complete |
+| ADM-02 | Phase 29 | Complete |
+| ADM-03 | Phase 29 | Complete |
+| ADM-04 | Phase 29 | Complete |
+| ADM-05 | Phase 29 | Complete |
+| ADM-06 | Phase 29 | Complete |
+| ADM-07 | Phase 29 | Complete |
+| ADM-08 | Phase 29 | Complete |
 
 **Coverage:**
 - v4.0 requirements: 35 total
@@ -147,4 +147,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-04 after Phase 27 execution*
+*Last updated: 2026-02-04 after Phase 29 execution*

@@ -11,8 +11,8 @@
 | 25 | API Validation | Add dimension validation and CSV updates | VAL-01 to VAL-04, DIM-03, DIM-04 | ✓ Complete |
 | 26 | AI & Wizard | Update AI prompts and add consumables toggle | AI-01 to AI-03, WIZ-01 to WIZ-03 | ✓ Complete |
 | 27 | Cut List Integration | Update optimizer to filter by cutItem flag | CUT-01 to CUT-04 | ✓ Complete |
-| 28 | Data Migration | Migrate existing data and verify all flows | MIG-01 to MIG-03 | ○ Pending |
-| 29 | Admin Dimensions | Admin management of accepted dimension values | ADM-01 to ADM-08 | ○ Pending |
+| 28 | Data Migration | Migrate existing data and verify all flows | MIG-01 to MIG-03 | ✓ Complete |
+| 29 | Admin Dimensions | Admin management of accepted dimension values | ADM-01 to ADM-08 | ✓ Complete |
 
 **Total:** 7 phases | 35 requirements
 
@@ -175,6 +175,11 @@ Plans:
 
 **Goal:** Migrate existing data and ensure all flows work correctly.
 
+**Plans:** 1 plan
+
+Plans:
+- [x] 28-01-PLAN.md — Create and execute v4.0 data migration script
+
 **Requirements:**
 - MIG-01: Create migration script for existing BOMs (lumber → hardwood by default)
 - MIG-02: Backfill cutItem=true for existing lumber items
@@ -187,14 +192,19 @@ Plans:
 4. Full app test passes (BOM create, edit, cut list, CSV)
 
 **Key Files:**
-- Migration script (one-time)
-- Database verification queries
+- `scripts/migrate-v4-data.ts` (NEW)
 
 ---
 
 ### Phase 29: Admin Dimension Management
 
 **Goal:** Allow admin users to manage accepted dimension values for lumber categories.
+
+**Plans:** 2 plans
+
+Plans:
+- [x] 29-01-PLAN.md — Database schema with dimensionValues table, startup seeding, async validation
+- [x] 29-02-PLAN.md — Admin UI for dimension management with view/add/remove/reset
 
 **Requirements:**
 - ADM-01: Create `dimensionValues` database table
@@ -216,10 +226,10 @@ Plans:
 
 **Key Files:**
 - `src/lib/server/schema.ts` (add dimensionValues table)
+- `src/lib/server/seed-dimensions.ts` (NEW - seeding function)
 - `src/routes/admin/dimensions/+page.svelte` (NEW)
 - `src/routes/admin/dimensions/+page.server.ts` (NEW)
-- `src/routes/api/admin/dimensions/+server.ts` (NEW)
-- `src/lib/utils/dimension-validation.ts` (read from DB)
+- `src/lib/utils/dimension-validation.ts` (read from DB with caching)
 
 ---
 
@@ -230,4 +240,4 @@ Plans:
 - **v1.0 MVP** — Phases 1-7 (shipped 2026-01-23) — [Archive](milestones/v1.0-ROADMAP.md)
 
 ---
-*Updated: 2026-02-04 after Phase 27 execution*
+*Updated: 2026-02-04 after Phase 29 execution*
